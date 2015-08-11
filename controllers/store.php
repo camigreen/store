@@ -57,7 +57,7 @@ class StoreController extends AppController {
         }
 
         echo 'Store App';
-        echo "Version: $this->version"
+        echo "Version: $this->version";
         echo "Branch: $this->branch";
     }
  
