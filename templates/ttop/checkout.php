@@ -75,9 +75,9 @@ $this->app->document->addScript('assets:js/jquery-validation-1.13.1/dist/jquery.
         <div class="uk-vertical-align" style="height:110px">
             <div class="uk-width-1-1 uk-text-center uk-vertical-align-middle ttop-checkout-processing-modal-content">
                 <span><i class="uk-icon-spinner uk-icon-spin"></i>Processing</span>
-                <span class="uk-article-lead uk-text-center">Please be patient...</span>
-                <span class="uk-article-lead uk-text-center">Processing your credit card may take up to a minute,</span>
-                <span class="uk-article-lead uk-text-center">please do not hit the back button.</span>
+                <div class="uk-text small uk-text-center">Please be patient...</div>
+                <div class="uk-text-small uk-text-center">Processing your credit card may take up to a minute,</div>
+                <div class="uk-text-small uk-text-center">please do not hit the back button.</div>
             </div>
         </div>
         
