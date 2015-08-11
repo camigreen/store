@@ -66,22 +66,20 @@ public function setData($order) {
     $billing = $order->billing;
     $shipping = $order->shipping;
     $data['Bill To'] = array(
-                $billing->firstname.' '.$billing->lastname,
-                $billing->address,
-                $billing->city.', '.$billing->state.'  '.$billing->zip,
-                $billing->phoneNumber,
-                $billing->altNumber,
-                $billing->email
-            );
-    if(!$order->localPickup) {
-        $data['ShipTo'] = array(
-            $shipping->firstname.' '.$shipping->lastname,
-            $shipping->address,
-            $shipping->city.', '.$shipping->state.'  '.$shipping->zip,
-            $shipping->phoneNumber,
-            $shipping->altNumber
-        );
-    }
+        $billing->firstname.' '.$billing->lastname,
+        $billing->address,
+        $billing->city.', '.$billing->state.'  '.$billing->zip,
+        $billing->phoneNumber,
+        $billing->altNumber,
+        $billing->email
+    );
+    $data['ShipTo'] = array(
+        $shipping->firstname.' '.$shipping->lastname,
+        $shipping->address,
+        $shipping->city.', '.$shipping->state.'  '.$shipping->zip,
+        $shipping->phoneNumber,
+        $shipping->altNumber
+    );
     
     $data['Order Date'] = $order->getOrderDate();
     $data['Salesperson'] = $order->getSalesPerson();
