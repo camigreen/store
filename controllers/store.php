@@ -13,6 +13,7 @@
 class StoreController extends AppController {
 
     public $version = '1.0.0';
+    public $branch = 'Master';
     
     public function __construct($default = array()) {
         parent::__construct($default);
@@ -56,7 +57,8 @@ class StoreController extends AppController {
         }
 
         echo 'Store App';
-        echo "Version: $this->version Branch: Master";
+        echo "Version: $this->version"
+        echo "Branch: $this->branch";
     }
  
     
