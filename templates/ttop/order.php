@@ -11,7 +11,7 @@
 	<a href="/orders/all-orders" class="uk-button uk-button-primary">Back to All Orders</a>
 </div>
 <div class="uk-width-1-1 uk-margin-bottom">
-	<a href="/store/checkout?task=getOrder&id=<?php echo $this->order->id; ?>" class="uk-button uk-button-primary">Print Work Order</a>
+	<a href="/store/checkout?task=getOrder&id=<?php echo $this->order->id; ?>" target="_blank" class="uk-button uk-button-primary">Print Work Order</a>
 </div>
 <div class="uk-width-1-1">
 	<div class="uk-grid">
