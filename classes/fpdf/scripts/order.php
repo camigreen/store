@@ -252,9 +252,9 @@ function Label($text)
 
 function ShipTo()
 {
-    if(!isset($this->order_data['Ship To'])) {
-        return;
-    }
+    // if(!isset($this->order_data['Ship To'])) {
+    //     return;
+    // }
     $r1  = $this->w - 85;
     $r2  = $r1 + 75;
     $y1  = 40;
