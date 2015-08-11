@@ -55,7 +55,8 @@ class StoreController extends AppController {
             return $this->app->error->raiseError(500, JText::_('No template selected'));
         }
 
-        echo "Version: $this->version";
+        echo 'Store App';
+        echo "Version: $this->version Branch: Master";
     }
  
     
