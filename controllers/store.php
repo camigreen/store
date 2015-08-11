@@ -11,6 +11,8 @@
         Site controller class
 */
 class StoreController extends AppController {
+
+    public $version = '1.0.0';
     
     public function __construct($default = array()) {
         parent::__construct($default);
@@ -46,6 +48,14 @@ class StoreController extends AppController {
             $this->taskMap['__default'] = null;
             $task = $this->params->get('page');
             $this->execute($task);
+    }
+
+    public function version () {
+        if (!$this->template = $this->application->getTemplate()) {
+            return $this->app->error->raiseError(500, JText::_('No template selected'));
+        }
+
+        echo "Version: $this->version";
     }
  
     
