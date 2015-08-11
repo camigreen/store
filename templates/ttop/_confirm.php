@@ -52,6 +52,9 @@ $article->load(22); // Get Article ID
             </div>
         <?php endif; ?>
         <div class="uk-width-1-1 uk-margin-top">
+            <div>Delivery Method: <?php $order->localPickup ? 'Local Pickup' : 'UPS Ground' ?></div>
+        </div>
+        <div class="uk-width-1-1 uk-margin-top">
             <h3>Payment</h3>
             <div>Card Number: <?php echo $creditCard->maskCardNumber(); ?></div>
             <div>Card Expiration: <?php echo $creditCard->getExpDate();?></div>
