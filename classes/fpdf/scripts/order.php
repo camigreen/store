@@ -73,7 +73,6 @@ public function generate($output = "F") {
 }
 
 public function setData($order) {
-    var_dump($order);
     $billing = $order->billing;
     $shipping = $order->shipping;
     $data['Bill To'] = array(
@@ -84,7 +83,7 @@ public function setData($order) {
         $billing->altNumber,
         $billing->email
     );
-    $data['ShipTo'] = array(
+    $data['Ship To'] = array(
         $shipping->firstname.' '.$shipping->lastname,
         $shipping->address,
         $shipping->city.', '.$shipping->state.'  '.$shipping->zip,
