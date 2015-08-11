@@ -59,6 +59,7 @@ class StoreController extends AppController {
         echo '<p>Store App</p>';
         echo "<p>Version: $this->version</p>";
         echo "<p>Branch: $this->branch</p>";
+        echo 'Author: Shawn Gibbons';
     }
  
     
