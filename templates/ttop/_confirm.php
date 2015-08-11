@@ -29,7 +29,6 @@ $article->load(22); // Get Article ID
                     <div>Phone: <?php echo $billing->get('phoneNumber') ?></div>
                     <div>Alternate Phone: <?php echo $billing->get('altNumber') ?></div>
                 </div>
-                <?php echo $order->localPickup; ?>
                 <?php if(!$order->localPickup) : ?>
                     <div class="uk-width-1-2">
                         <h3>Ship To:</h3>

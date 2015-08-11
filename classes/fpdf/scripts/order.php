@@ -37,7 +37,7 @@ public function __construct($app, $orientation='P', $unit='mm', $size='A4') {
     parent::__construct($app, $orientation, $unit, $size);
 }
 
-public function generate() {
+public function generate($output = "F") {
     $this->grid = false;
     $this->AddPage('P','Letter');
     $this->Company();
@@ -53,12 +53,22 @@ public function generate() {
             $this->addData($f['x'], $f['y'], $f['w'], $f['h'], $value, (isset($f['align']) ? $f['align'] : 'C'), (isset($f['fontSize']) ? $f['fontSize'] : 8));
         } 
     }
+    switch ($output) {
+        case 'F':
+            $name = '/'.$this->app->utility->generateUUID().'.pdf';
+            $path = $this->app->path->path('assets:pdfs/');
+            $name = $path.$name;
+            $this->Output($path.$name,$output);
+            return $name;
+            break;
+        case 'I':
+            $name = 'Order-'.$this->order_data['Order Number'];
+            $this->Output($name, $output);
+            break;
+    }
+
     
-    $name = '/'.$this->app->utility->generateUUID().'.pdf';
-    $path = $this->app->path->path('assets:pdfs/');
-    $this->Output($path.$name,'F');
-    $url = $this->app->path->url('assets:pdfs/'.$name);
-    return $name;
+    
         
 }
 

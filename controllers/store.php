@@ -224,6 +224,19 @@ class StoreController extends AppController {
         echo json_encode($data);
 
     }
+    public function getReceipt() {
+        // set template and params
+        if (!$this->template = $this->application->getTemplate()) {
+                return $this->app->error->raiseError(500, JText::_('No template selected'));
+        }
+
+        $pdf_receipt = $this->app->pdf->receipt;
+        $id = $this->app->request->get('id','int');
+        $order = $this->app->order->create($id);
+
+        $pdf_receipt->setData($order)->generate('I');
+
+    }
     
     public function checkout() {
             // set template and params
