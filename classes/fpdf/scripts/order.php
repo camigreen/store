@@ -73,7 +73,7 @@ public function generate($output = "F") {
 }
 
 public function setData($order) {
-    var_dump($order);
+    //var_dump($order);
     $billing = $order->billing;
     $shipping = $order->shipping;
     $data['Bill To'] = array(
