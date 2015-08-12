@@ -13,7 +13,7 @@
 class StoreController extends AppController {
 
     public $version = '1.0.0';
-    public $branch = 'Master';
+    public $branch = 'PDF';
     
     public function __construct($default = array()) {
         parent::__construct($default);
