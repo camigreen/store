@@ -37,7 +37,7 @@ public function __construct($app, $orientation='P', $unit='mm', $size='A4') {
     parent::__construct($app, $orientation, $unit, $size);
 }
 
-public function generate() {
+public function generate($output = "F") {
     $this->grid = false;
     $this->AddPage('P','Letter');
     $this->Company();
@@ -81,7 +81,7 @@ public function setData($order) {
         $billing->altNumber,
         $billing->email
     );
-    $data['ShipTo'] = array(
+    $data['Ship To'] = array(
         $shipping->firstname.' '.$shipping->lastname,
         $shipping->address,
         $shipping->city.', '.$shipping->state.'  '.$shipping->zip,
