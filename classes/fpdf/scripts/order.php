@@ -102,7 +102,7 @@ public function setData($order) {
     $data['Taxes'] = '$'.number_format($order->tax_total,2,'.','');
     $data['Total'] = '$'.number_format($order->total,2,'.','');
     $this->order_data = $data;
-    var_dump($this->order_data);
+    //var_dump($this->order_data);
     $this->items = $order->items;
     return $this;
 }
