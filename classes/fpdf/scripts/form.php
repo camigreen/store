@@ -13,20 +13,15 @@ class FormPDF extends GridPDF {
 		$path = $this->app->path->path('classes:fpdf/scripts/'.$type.'.xml');
 	    $this->form = simplexml_load_file($path);
 	    $this->grid = (bool) (string) $this->form->grid;
+	    $this->loadPages();
     	parent::__construct();
 	}
 
 	public function generate() {
 		$margins = $this->form->margins;
 		$this->SetMargins((int)$margins->left,(int)$margins->top, (int) $margins->right);
-	    $this->AddPage('P','Letter');
+	    $this->AddPage(1,'P','Letter');
 	    $this->SetAutoPageBreak(false);
-	    $this->getFields();
-	    foreach($this->_fields as $field) {
-	    	if($field->type != 'table') {
-	    		$this->{$field->type}($field);
-	    	}
-	    }
 	    $this->formTitle();
 	    $this->populate($this->order_data);
 	    foreach($this->items as $item) {
@@ -42,6 +37,16 @@ class FormPDF extends GridPDF {
 	    
 	    return $this;
 	        
+	}
+
+	public function AddPage($page, $orientation='P', $size='letter') {
+
+		parent::AddPage($orientation, $size);
+	    foreach($this->_pages->$page->fields->field as $field) {
+	    	if($field->type != 'table') {
+	    		$this->{$field->type}($field);
+	    	}
+	    }
 	}
 
 	public function setData($order) {
@@ -216,13 +221,12 @@ class FormPDF extends GridPDF {
 	    return $this->app->data->create($arr);
 	}
 
-	public function getFields() {
+	public function loadPages() {
 
-		$fields = $this->form->fields->field;
+		$pages = $this->form->page->pages;
 		
-			$obj = $this->xml2obj($fields);
-			$this->_fields = $obj;
-		//return $this->_fields;
+			$obj = $this->xml2obj($pages);
+			$this->_pages = $obj;
 	}
 
 	public function populate($data) {
