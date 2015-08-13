@@ -21,8 +21,6 @@ class FormPDF extends GridPDF {
 		$margins = $this->form->margins;
 		$this->SetMargins((int)$margins->left,(int)$margins->top, (int) $margins->right);
 	    $this->_AddPage(1,'P','Letter');
-	    $this->SetAutoPageBreak(false);
-	    $this->formTitle();
 	    $this->populate($this->order_data);
 	    foreach($this->items as $item) {
 	    	$data[] = array(
@@ -42,6 +40,8 @@ class FormPDF extends GridPDF {
 	public function _AddPage($page, $orientation='P', $size='letter') {
 
 		$this->AddPage($orientation, $size);
+		$this->SetAutoPageBreak(false);
+	    $this->formTitle();
 	    foreach($this->_pages->$page->fields as $field) {
 	    	if($field->type != 'table') {
 	    		$this->{$field->type}($field);
