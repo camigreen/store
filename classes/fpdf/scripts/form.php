@@ -128,14 +128,25 @@ class FormPDF extends GridPDF {
 		if ($title = $field->get('title')) {
 			if(is_object($title)) {
 				$title_params = $title->get('params');
-				$align = $title_params->get('align');
+				$align = $title_params->get('align','L');
+				$this->SetFont('Arial','B',8);
 				switch($align) {
-					case 'L':
-						$this->SetXY($params->x-20, $params->y);
-						$this->SetFont('Arial','B',8);
-						$this->Cell(20, $params->h, $title->get('text',''), $title_params->get('border',0),0, $align);
+					case 'R':
+						$this->SetXY(($params->x+$params->w), $params->y);
 						break;
+					case 'L':
+						$this->SetXY($params->x-$title_params->get('w',20), $params->y);
+						break;
+					case 'T':
+						$this->SetXY($params->x,$params->y-$title_params->get('h',5));
+						break;
+					case 'B'
+						$this->SetXY($params->x,$params->y+$title_params->get('h',5));
+						break;
+					default:
+						$this->SetXY($params->x-$title_params->get('w',20), $params->y);
 				}
+				$this->Cell($title_params->get('w',20), $title_params->get('h',$params->h), $title->get('text',''), $title_params->get('border',0),0, $title_params->get('text-align','L'));
 			}
 			// 
 			// 

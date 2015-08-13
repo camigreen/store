@@ -50,7 +50,7 @@
 		<field x="175" y="20" h="5" w="30" align="R" border="0">
 			<name>order_date</name>
 			<type>textbox</type>
-			<title align="L">Order Date:</title>
+			<title align="L" text-align="R">Order Date:</title>
 		</field>
 		<field x="58.75" y="84" h="6" w="48.75" align="C">
 			<name>order_number</name>
