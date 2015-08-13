@@ -27,8 +27,6 @@ class FormPDF extends GridPDF {
 	    }
 	    $this->formTitle();
 	    //$this->OrderData();
-	    $this->ShipTo();
-	    //$this->BillTo();
 	    
 	    //foreach($this->order_data as $field => $value) {
 	    //     if(isset($this->_fields[$field])) {
