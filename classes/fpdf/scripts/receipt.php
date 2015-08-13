@@ -37,7 +37,7 @@ public function __construct($app, $orientation='P', $unit='mm', $size='A4') {
     parent::__construct($app, $orientation, $unit, $size);
 }
 
-public function generate() {
+public function generate($output = "F") {
     $this->grid = false;
     $this->AddPage('P','Letter');
     $this->Company();
@@ -54,11 +54,18 @@ public function generate() {
         } 
     }
     
-    $name = '/'.$this->app->utility->generateUUID().'.pdf';
-    $path = $this->app->path->path('assets:pdfs/');
-    $this->Output($path.$name,'F');
-    $url = $this->app->path->url('assets:pdfs/'.$name);
-    return $name;
+    switch ($output) {
+        case 'F':
+            $name = '/'.$this->app->utility->generateUUID().'.pdf';
+            $path = $this->app->path->path('assets:pdfs/');
+            $this->Output($path.$name,$output);
+            return $name;
+            break;
+        case 'I':
+            $name = 'Order-'.$this->order_data['Order Number'];
+            $this->Output($name, $output);
+            break;
+    }
         
 }
 
@@ -73,7 +80,7 @@ public function setData($order) {
         $billing->altNumber,
         $billing->email
     );
-    $data['ShipTo'] = array(
+    $data['Ship To'] = array(
         $shipping->firstname.' '.$shipping->lastname,
         $shipping->address,
         $shipping->city.', '.$shipping->state.'  '.$shipping->zip,
