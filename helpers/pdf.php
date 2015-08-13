@@ -38,7 +38,7 @@ class PDFHelper extends AppHelper {
     }
     
     public function __get($name) {
-        return $this->get($name);
+        return $this->create($name);
     }
         
         
