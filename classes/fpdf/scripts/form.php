@@ -204,7 +204,10 @@ class FormPDF extends GridPDF {
 	        	$test = $element instanceof SimpleXMLElement ? $this->xml2obj($element) : $e;
 	        	if(!isset($test->name) || is_object($test->name)) {
 	        		$name = $tag;
-	        		$test->text = trim($element);
+	        		if (!trim($element) == '') {
+						$test->text = trim($element);
+	        		}
+	        		
 	        	} else {
 	        		$name = $test->name;
 	        	}
