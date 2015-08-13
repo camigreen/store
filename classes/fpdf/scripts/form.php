@@ -140,7 +140,7 @@ class FormPDF extends GridPDF {
 					case 'T':
 						$this->SetXY($params->x,$params->y-$title_params->get('h',5));
 						break;
-					case 'B'
+					case 'B':
 						$this->SetXY($params->x,$params->y+$title_params->get('h',5));
 						break;
 					default:
