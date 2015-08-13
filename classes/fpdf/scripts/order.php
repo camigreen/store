@@ -41,7 +41,7 @@ public function generate($output = "F") {
     $this->grid = false;
     $this->AddPage('P','Letter');
     $this->Company();
-    $this->Label('Order');
+    $this->Label('Work Order');
     $this->OrderData();
     $this->ShipTo();
     $this->BillTo();
