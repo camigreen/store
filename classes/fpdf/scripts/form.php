@@ -3,7 +3,7 @@
 class FormPDF extends GridPDF {
 	public $form;
 	public $app;
-	public $_fields;
+	public $_pages;
 	public $type;
 	public $table_x = 0;
 
@@ -31,9 +31,9 @@ class FormPDF extends GridPDF {
 	    		'price' => $item->price
 	    	);
 	    }
-	    foreach($data as $item) {
-	    	$this->populateTable($item);
-	    }
+	    // foreach($data as $item) {
+	    // 	$this->populateTable($item);
+	    // }
 	    
 	    return $this;
 	        
@@ -223,7 +223,7 @@ class FormPDF extends GridPDF {
 
 	public function loadPages() {
 
-		$pages = $this->form->page->pages;
+		$pages = $this->form->pages->page;
 		
 			$obj = $this->xml2obj($pages);
 			$this->_pages = $obj;
