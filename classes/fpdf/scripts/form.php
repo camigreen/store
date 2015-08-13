@@ -201,15 +201,16 @@ class FormPDF extends GridPDF {
 	        {
 	        	$test = $element instanceof SimpleXMLElement ? $this->xml2obj($element) : $e;
 	        	if(!isset($test->name)) {
-	        		$arr[$tag] = $test;
+	        		$name = $tag;
 	        	} else {
+	        		$name = $test->name;
 	        		if($attrs) {
 			        	foreach($attrs as $key =>$attr) {
 			        		$params[$key] = (string) $attr;
 			        	}
 			        	$test->params = $this->app->data->create($params);
 		        	}
-	        		$arr[$test->name] = $test;
+	        		$arr[$name] = $test;
 	        	}
 	        }
 	        else
