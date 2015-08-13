@@ -21,14 +21,14 @@ class FormPDF extends GridPDF {
 		$margins = $this->form->margins;
 		$this->SetMargins((int)$margins->left,(int)$margins->top, (int) $margins->right);
 	    $this->_AddPage(1,'P','Letter');
-	    $this->populate($this->order_data);
-	    foreach($this->items as $item) {
-	    	$data[] = array(
-	    		'name' => $item->name,
-	    		'qty' => $item->qty,
-	    		'price' => $item->price
-	    	);
-	    }
+	    //$this->populate($this->order_data);
+	    // foreach($this->items as $item) {
+	    // 	$data[] = array(
+	    // 		'name' => $item->name,
+	    // 		'qty' => $item->qty,
+	    // 		'price' => $item->price
+	    // 	);
+	    // }
 	    // foreach($data as $item) {
 	    // 	$this->populateTable($item);
 	    // }
