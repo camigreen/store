@@ -85,22 +85,22 @@
 		<field x="185" y="245" h="5" w="20" align="C">
 			<name>subtotal</name>
 			<type>textbox</type>
-			<title align="L">Subtotal</title>
+			<title align="R">Subtotal</title>
 		</field>
 		<field x="185" y="250" h="5" w="20">
 			<name>shipping</name>
 			<type>textbox</type>
-			<title align="L">Shipping</title>
+			<title align="R">Shipping</title>
 		</field>
 		<field x="185" y="255" h="5" w="20">
 			<name>taxes</name>
 			<type>textbox</type>
-			<title align="L">Taxes</title>
+			<title align="R">Taxes</title>
 		</field>
 		<field x="185" y="260" h="5" w="20">
 			<name>total</name>
 			<type>textbox</type>
-			<title align="L">Total</title>
+			<title align="R">Total</title>
 		</field>
 
 	</fields>
