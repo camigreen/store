@@ -1,6 +1,6 @@
 <?php
 
-class OrderPDF extends GridPDF
+class ReceiptPDF extends GridPDF
 {
     protected $company = array(
         "logo_path" => "images/logos/ttop/TTop_100x100.png",
@@ -13,8 +13,8 @@ class OrderPDF extends GridPDF
             "info@ttopcovers.com"
         )
     );
-    public $order_data;
-    public $items;
+    protected $order_data;
+    protected $items;
     public $fields = array();
     
     public $table = array(
@@ -41,7 +41,7 @@ public function generate($output = "F") {
     $this->grid = false;
     $this->AddPage('P','Letter');
     $this->Company();
-    $this->Label('Work Order');
+    $this->Label('Receipt');
     $this->OrderData();
     $this->ShipTo();
     $this->BillTo();
@@ -53,6 +53,7 @@ public function generate($output = "F") {
             $this->addData($f['x'], $f['y'], $f['w'], $f['h'], $value, (isset($f['align']) ? $f['align'] : 'C'), (isset($f['fontSize']) ? $f['fontSize'] : 8));
         } 
     }
+    
     switch ($output) {
         case 'F':
             $name = '/'.$this->app->utility->generateUUID().'.pdf';
@@ -65,14 +66,10 @@ public function generate($output = "F") {
             $this->Output($name, $output);
             break;
     }
-
-    
-    
         
 }
 
 public function setData($order) {
-    //var_dump($order);
     $billing = $order->billing;
     $shipping = $order->shipping;
     $data['Bill To'] = array(
@@ -89,19 +86,17 @@ public function setData($order) {
         $shipping->city.', '.$shipping->state.'  '.$shipping->zip,
         $shipping->phoneNumber,
         $shipping->altNumber
-    );
-    
+    ); 
     $data['Order Date'] = $order->getOrderDate();
     $data['Salesperson'] = $order->getSalesPerson();
     $data['Order Number'] = $order->id;
     $data['Delivery'] = $order->localPickup ? 'Local Pickup' : 'UPS Ground';
-    $data['Transaction ID'] = $order->transaction_id;
+    $data['Payment Information'] = $order->creditCard->card_name.' ending in '.substr($order->creditCard->cardNumber, -4);
     $data['Subtotal'] = '$'.number_format($order->subtotal,2,'.','');
     $data['Shipping'] = '$'.number_format($order->ship_total,2,'.','');
     $data['Taxes'] = '$'.number_format($order->tax_total,2,'.','');
     $data['Total'] = '$'.number_format($order->total,2,'.','');
     $this->order_data = $data;
-    //var_dump($this->order_data);
     $this->items = $order->items;
     return $this;
 }
@@ -207,7 +202,6 @@ public function addData($x, $y, $w, $h, $text, $align = 'L', $fontSize = 10) {
     $this->SetFont('Arial','',$fontSize);
     if (is_array($text)) {
         $txt = implode("\n",$text);
-        
         $this->MultiCell($this->GetStringWidth($txt), $h, $txt);
     } else {
         $this->cell($w, $h, $text,0,0, $align);
@@ -253,9 +247,9 @@ function Label($text)
 
 function ShipTo()
 {
-    // if(!isset($this->order_data['Ship To'])) {
-    //     return;
-    // }
+    if(!isset($this->order_data['Ship To'])) {
+        return;
+    }
     $r1  = $this->w - 85;
     $r2  = $r1 + 75;
     $y1  = 40;
@@ -384,12 +378,12 @@ public function OrderData() {
     $this->SetFont( "Arial", "B", 8);
     $this->Cell($w,5, 'Delivery Method', 0, 0, "C");
     
-    // Transaction ID
+    // Payment Information
     $x += $w;
     $y = 80;
     $h = 10;
     $w = ($this->w - 20)/4;
-    $this->fields['Transaction ID'] = array(
+    $this->fields['Payment Information'] = array(
         'x' => $x,
         'y' => $y+5,
         'w' => $w,
@@ -399,7 +393,7 @@ public function OrderData() {
     $this->line($x, $y + 5, $x + $w, $y + 5);
     $this->SetXY( $x, $y );
     $this->SetFont( "Arial", "B", 8);
-    $this->Cell($w,5, 'Transaction ID', 0, 0, "C");
+    $this->Cell($w,5, 'Payment Information', 0, 0, "C");
     
 
 }
@@ -433,14 +427,14 @@ public function table($items) {
     }
     $top = 99;
     $bottom = 99;
-    foreach($items as $key => $item) {
+    foreach($items as $key => $value) {
         
         // Item Description
         $col = $table['columns']['Item Description'];
-        $name = $item->name;
-        $this->addData($col['x'], $top, $col['w'], $col['h'], $name);
+        $item = $value->name;
+        $this->addData($col['x'], $top, $col['w'], $col['h'], $item);
         $bottom += 5;
-        foreach($item->options as $option => $text) {
+        foreach($value->options as $option => $text) {
             $text = $text['name'].':  '.$text['text'];
             $this->addData($col['x']+2, $bottom, $col['w'], $col['h'], $text, 'L', 8);
             $bottom += 5;
@@ -448,11 +442,11 @@ public function table($items) {
         
         // Item Quantity
         $col = $table['columns']['Quantity'];
-        $text = $item->qty;
+        $text = $value->qty;
         $this->addData($col['x'], $top, $col['w'], $col['h'], $text, 'C');
         // Item Total
         $col = $table['columns']['Unit Price'];
-        $text = $item->getTotal();
+        $text = $value->getTotal();
         $this->addData($col['x'], $top, $col['w'], $col['h'], $text, 'C');
         $top = $bottom;
     }
