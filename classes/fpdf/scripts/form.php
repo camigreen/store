@@ -6,9 +6,9 @@ class FormPDF extends GridPDF {
 	public $_fields;
 	public $table_x = 0;
 
-	public function __construct($app) {
+	public function __construct($app, $type) {
 		$this->app = $app;
-		$path = $this->app->path->path('classes:fpdf/scripts/'.$this->type.'.xml');
+		$path = $this->app->path->path('classes:fpdf/scripts/'.$type.'.xml');
 	    $this->form = simplexml_load_file($path);
 	    $this->grid = (bool) (string) $this->form->grid;
     	parent::__construct();
