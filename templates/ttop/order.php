@@ -9,8 +9,8 @@
 ?>
 <div class="uk-width-1-1 uk-margin-bottom">
 	<a href="/orders/all-orders" class="uk-button uk-button-primary">Back to All Orders</a>
-	<a href="/store/checkout?task=getOrder&id=<?php echo $this->order->id; ?>" target="_blank" class="uk-button uk-button-primary">Print Work Order</a>
-	<a href="/store/checkout?task=getReceipt&id=<?php echo $this->order->id; ?>" target="_blank" class="uk-button uk-button-primary">Download Receipt</a>
+	<a href="/store/checkout?task=getPDF&type=receipt&id=<?php echo $this->order->id; ?>" target="_blank" class="uk-button uk-button-primary">Print Work Order</a>
+	<a href="/store/checkout?task=getPDF&type=workorder&id=<?php echo $this->order->id; ?>" target="_blank" class="uk-button uk-button-primary">Download Receipt</a>
 </div>
 <div class="uk-width-1-1">
 	<div class="uk-grid">

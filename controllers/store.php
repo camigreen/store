@@ -224,33 +224,19 @@ class StoreController extends AppController {
         echo json_encode($data);
 
     }
-    public function getOrder() {
-        // set template and params
-        if (!$this->template = $this->application->getTemplate()) {
-                return $this->app->error->raiseError(500, JText::_('No template selected'));
+    public function getPDF() {
+        $type = $this->app->request->get('type','word');
+        if (!$this->app->path->path('classes:fpdf/scripts/'.$type.'.xml')) {
+            return $this->app->error->raiseError(500, JText::_('PDF template does not exist'));
         }
+
         $this->app->document->setMimeEncoding('application/pdf');
 
-        $pdf_order = $this->app->pdf->order;
-        $id = $this->app->request->get('id','int');
-        $order = $this->app->order->create($id);
-
-        $pdf_order->setData($order)->generate('I');
-
-    }
-    public function getReceipt() {
-        // set template and params
-        if (!$this->template = $this->application->getTemplate()) {
-                return $this->app->error->raiseError(500, JText::_('No template selected'));
-        }
-        $this->app->document->setMimeEncoding('application/pdf');
-
-        $pdf = $this->app->pdf->create('receipt');
+        $pdf = $this->app->pdf->$type;
         $id = $this->app->request->get('id','int');
         $order = $this->app->order->create($id);
 
         $pdf->setData($order)->generate()->toBrowser();
-
     }
     
     public function checkout() {
