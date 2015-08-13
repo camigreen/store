@@ -220,7 +220,6 @@ class FormPDF extends GridPDF {
 		$fields = $this->form->fields->field;
 		
 			$obj = $this->xml2obj($fields);
-			var_dump($obj);
 			$this->_fields = $obj;
 		//return $this->_fields;
 	}
