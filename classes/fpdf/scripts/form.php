@@ -199,8 +199,8 @@ class FormPDF extends GridPDF {
 	        if (!empty($e))
 	        {
 	        	$test = $element instanceof SimpleXMLElement ? $this->xml2obj($element) : $e;
-	        	if(!isset($test->name)) {
-	        		$name = 'tag';
+	        	if(!isset($test->name) || is_object($test->name)) {
+	        		$name = $tag;
 	        		$test->text = trim($element);
 	        	} else {
 	        		$name = $test->name;
@@ -211,13 +211,10 @@ class FormPDF extends GridPDF {
 		        	}
 		        	$test->params = $this->app->data->create($params);
 	        	}
-	        	echo 'Tag = '.$tag.'</br>';
-	        	echo 'Name = '.$name.'</br>';
 	        	$arr[$name] = $test;
 	        }
 	        else
 	        {
-	        	echo 'XXXXXXXXXXXX'.$tag.'XXXXXXXXXXXXXX</br>';
 	            $arr[$tag] = trim($element);
 	        }
 	    }
