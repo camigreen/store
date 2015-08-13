@@ -140,7 +140,7 @@ class FormPDF extends GridPDF {
 		if ($title = $field->get('title')) {
 			//var_dump($title);
 			if(is_object($title)) {
-				var_dump($title);
+				print_r($title);
 				$params = $title->get('params');
 				switch($params->get('align')) {
 					case 'L':
