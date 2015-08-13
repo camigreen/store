@@ -204,14 +204,14 @@ class FormPDF extends GridPDF {
 	        		$name = $tag;
 	        	} else {
 	        		$name = $test->name;
-	        		if($attrs) {
-			        	foreach($attrs as $key =>$attr) {
-			        		$params[$key] = (string) $attr;
-			        	}
-			        	$test->params = $this->app->data->create($params);
-		        	}
-	        		$arr[$name] = $test;
 	        	}
+	        	if($attrs) {
+		        	foreach($attrs as $key =>$attr) {
+		        		$params[$key] = (string) $attr;
+		        	}
+		        	$test->params = $this->app->data->create($params);
+	        	}
+	        	$arr[$name] = $test;
 	        }
 	        else
 	        {
