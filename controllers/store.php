@@ -245,7 +245,7 @@ class StoreController extends AppController {
         }
         $this->app->document->setMimeEncoding('application/pdf');
 
-        $pdf = $this->app->pdf->receipt;
+        $pdf = $this->app->pdf->create('receipt');
         $id = $this->app->request->get('id','int');
         $order = $this->app->order->create($id);
 
