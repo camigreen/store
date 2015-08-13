@@ -217,7 +217,7 @@ class FormPDF extends GridPDF {
 	        }
 	        else
 	        {
-	        	echo 'XXXXXXXXXXXX'.$tag.'XXXXXXXXXXXXXX';
+	        	echo 'XXXXXXXXXXXX'.$tag.'XXXXXXXXXXXXXX</br>';
 	            $arr[$tag] = trim($element);
 	        }
 	    }
