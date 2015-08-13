@@ -42,9 +42,6 @@ class FormPDF extends GridPDF {
 	public function _AddPage($page, $orientation='P', $size='letter') {
 
 		$this->AddPage($orientation, $size);
-		echo '<pre>';
-			var_dump($this->_pages->$page->fields);
-			echo '</pre>';
 	    foreach($this->_pages->$page->fields as $field) {
 	    	if($field->type != 'table') {
 	    		$this->{$field->type}($field);
