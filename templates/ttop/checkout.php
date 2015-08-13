@@ -320,7 +320,7 @@ $this->app->document->addScript('assets:js/jquery-validation-1.13.1/dist/jquery.
                                 console.log($(this).data('id'));
                                 $.ajax({
                                     type: 'POST',
-                                    url: "?option=com_zoo&controller=store&task=getReceipt&format=json",
+                                    url: "?option=com_zoo&controller=store&task=getReceipt",
                                     data: {id: $(this).data('id')},
                                     success: function(data){
                                         console.log(data);
