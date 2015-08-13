@@ -133,6 +133,9 @@ class FormPDF extends GridPDF {
 
 	}
 	public function textbox($field) {
+		echo '<pre>';
+		var_dump($field);
+		echo '</pre>';
 		$params = $field->params;
 		$this->SetXY($params->x, $params->y);
 		//var_dump($params);
