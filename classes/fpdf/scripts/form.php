@@ -133,18 +133,12 @@ class FormPDF extends GridPDF {
 
 	}
 	public function textbox($field) {
-		echo '<pre>';
-		var_dump($field);
-		echo '</pre>';
 		$params = $field->params;
 		$this->SetXY($params->x, $params->y);
-		//var_dump($params);
 		$this->Cell($params->w, $params->h, '', $params->get('border'), 0);
 		if ($title = $field->get('title')) {
-			//var_dump($title);
 			if(is_object($title)) {
 				$params = $title->get('params');
-				var_dump($params);
 				switch($params->get('align')) {
 					case 'L':
 						$this->SetXY($params->x-20, $params->y);
@@ -196,7 +190,6 @@ class FormPDF extends GridPDF {
 	    	$attrs = $element->attributes();
 	        $tag = $element->getName();
 	        $e = get_object_vars($element);
-	        var_dump($e);
 	        if (!empty($e))
 	        {
 	        	$test = $element instanceof SimpleXMLElement ? $this->xml2obj($element) : $e;
