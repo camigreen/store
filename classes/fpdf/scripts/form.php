@@ -215,7 +215,7 @@ class FormPDF extends GridPDF {
 	        }
 	        else
 	        {
-	            $arr[$tag] = trim($element);
+	            $arr[$tag.'textonly'] = trim($element);
 	        }
 	    }
 	    return $this->app->data->create($arr);
