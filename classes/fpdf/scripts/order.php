@@ -41,7 +41,7 @@ public function generate($output = "F") {
     $this->grid = false;
     $this->AddPage('P','Letter');
     $this->Company();
-    $this->Label('Order');
+    $this->Label('Work Order');
     $this->OrderData();
     $this->ShipTo();
     $this->BillTo();
@@ -57,7 +57,6 @@ public function generate($output = "F") {
         case 'F':
             $name = '/'.$this->app->utility->generateUUID().'.pdf';
             $path = $this->app->path->path('assets:pdfs/');
-            $name = $path.$name;
             $this->Output($path.$name,$output);
             return $name;
             break;
