@@ -26,14 +26,6 @@ class FormPDF extends GridPDF {
 	    	}
 	    }
 	    $this->formTitle();
-	    //$this->OrderData();
-	    
-	    //foreach($this->order_data as $field => $value) {
-	    //     if(isset($this->_fields[$field])) {
-	    //         $f = $this->_fields[$field];
-	    //         $this->addData($f['x'], $f['y'], $f['w'], $f['h'], $value, (isset($f['align']) ? $f['align'] : 'C'), (isset($f['fontSize']) ? $f['fontSize'] : 8));
-	    //     } 
-	    // }
 	    $this->populate($this->order_data);
 	    foreach($this->items as $item) {
 	    	$data[] = array(
@@ -46,9 +38,6 @@ class FormPDF extends GridPDF {
 	    	$this->populateTable($item);
 	    }
 	    
-		
-		//$this->table($this->items);
-		//$this->totals();
 	    return $this;
 	        
 	}

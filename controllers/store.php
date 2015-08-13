@@ -249,7 +249,7 @@ class StoreController extends AppController {
         $id = $this->app->request->get('id','int');
         $order = $this->app->order->create($id);
 
-        $pdf->setData($order)->generate('I');
+        $pdf->setData($order)->generate()->toBrowser();
 
     }
     
