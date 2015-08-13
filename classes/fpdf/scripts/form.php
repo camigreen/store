@@ -211,7 +211,7 @@ class FormPDF extends GridPDF {
 		        	}
 		        	$test->params = $this->app->data->create($params);
 	        	}
-	        	echo $name;
+	        	echo $tag;
 	        	$arr[$name] = $test;
 	        }
 	        else
