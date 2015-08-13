@@ -141,6 +141,7 @@ class FormPDF extends GridPDF {
 			//var_dump($title);
 			if(is_object($title)) {
 				$params = $title->get('params');
+				var_dump($params);
 				switch($params->get('align')) {
 					case 'L':
 						$this->SetXY($params->x-20, $params->y);
