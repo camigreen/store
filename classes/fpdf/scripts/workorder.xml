@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<name>Work Order</name>
+	<grid>1</grid>
+	<margins>
+		<left>0</left>
+		<right>0</right>
+		<top>0</top>
+		<bottom>0</bottom>
+	</margins>
+	<data>
+		<company>
+			<name>Laportes T-Top Boat Covers</name>
+			<address>
+				<street>4651 Franchise Street</street>
+				<city>North Charleston</city>
+				<state>SC</state>
+				<zip>29418</zip>
+			</address>
+			<phone>(843) 760-6101</phone>
+			<website>http://www.ttopcovers.com</website>
+			<email>info@ttopcovers.com</email>
+			<logoPath>images/logos/ttop/TTop_100x100.png</logoPath>
+		</company>
+	</data>
+	<fields>
+		<field x="35" y="8" h="35" w="80" border="0">
+			<name>company_info</name>
+			<type>company</type>
+		</field>
+		<field x="10" y="45" h="30" w="75" data-padding="5">
+			<name>billto</name>
+			<type>box</type>
+			<title>Bill To</title>
+		</field>
+		<field x="130" y="45" h="30" w="75" data-padding="5">
+			<name>shipto</name>
+			<type>box</type>
+			<title>Ship To</title>
+		</field>
+		<field x="10" y="10" h="25" w="25" border="0">
+			<name>logo</name>
+			<type>logo</type>
+		</field>
+		<field x="10" y="84" h="6" w="48.75" align="C">
+			<name>salesperson</name>
+			<type>box</type>
+			<title>Salesperson</title>
+		</field>
+		<field x="175" y="20" h="5" w="30" align="R" border="0">
+			<name>order_date</name>
+			<type>textbox</type>
+			<title align="L" text-align="R">Order Date:</title>
+		</field>
+		<field x="58.75" y="84" h="6" w="48.75" align="C">
+			<name>order_number</name>
+			<type>box</type>
+			<title>Order Number</title>
+		</field>
+		<field x="107.5" y="84" h="6" w="48.75" align="C">
+			<name>delivery_method</name>
+			<type>box</type>
+			<title>Delivery Method</title>
+		</field>
+		<field x="156.25" y="84" h="6" w="48.75" align="C">
+			<name>transaction_id</name>
+			<type>box</type>
+			<title>Transaction ID</title>
+		</field>
+		<field x="10" y="98" h="142" w="155" fontsize="10">
+			<name>name</name>
+			<type>box</type>
+			<title>Item Description</title>
+		</field>
+		<field x="165" y="98" h="142" w="20" align="C">
+			<name>qty</name>
+			<type>box</type>
+			<title>Qty</title>
+		</field>
+		<field x="185" y="98" h="142" w="20" format="currency" align="C">
+			<name>price</name>
+			<type>box</type>
+			<title>Unit Price</title>
+		</field>
+		<field x="185" y="245" h="5" w="20" align="C">
+			<name>subtotal</name>
+			<type>textbox</type>
+			<title align="L" text-align="R">Subtotal</title>
+		</field>
+		<field x="185" y="250" h="5" w="20">
+			<name>shipping</name>
+			<type>textbox</type>
+			<title  align="L" text-align="R">Shipping</title>
+		</field>
+		<field x="185" y="255" h="5" w="20">
+			<name>taxes</name>
+			<type>textbox</type>
+			<title align="L" text-align="R">Taxes</title>
+		</field>
+		<field x="185" y="260" h="5" w="20">
+			<name>total</name>
+			<type>textbox</type>
+			<title align="L" text-align="R">Total</title>
+		</field>
+
+	</fields>
+</form>
