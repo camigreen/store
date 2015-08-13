@@ -1,8 +1,18 @@
 <?php
 
-class ReceiptPDF extends FormPDF
+class ReceiptPDF extends GridPDF
 {
-    protected $type = 'receip';
+    protected $company = array(
+        "logo_path" => "images/logos/ttop/TTop_100x100.png",
+        "name" => "Laporte's T-Top Boat Covers",
+        "address" => array(
+            "4651 Franchise Street",
+            "North Charleston, SC  29418",
+            "(843) 760-6101",
+            "http://www.ttopcovers.com",
+            "info@ttopcovers.com"
+        )
+    );
     protected $order_data;
     protected $items;
     public $fields = array();
@@ -22,6 +32,74 @@ class ReceiptPDF extends FormPDF
     );
     
     protected $angle = 0;
+
+public function __construct($app, $orientation='P', $unit='mm', $size='A4') {
+    parent::__construct($app, $orientation, $unit, $size);
+}
+
+public function generate($output = "F") {
+    $this->grid = false;
+    $this->AddPage('P','Letter');
+    $this->Company();
+    $this->Label('Receipt');
+    $this->OrderData();
+    $this->ShipTo();
+    $this->BillTo();
+    $this->table($this->items);
+    $this->totals();
+    foreach($this->order_data as $field => $value) {
+        if(isset($this->fields[$field])) {
+            $f = $this->fields[$field];
+            $this->addData($f['x'], $f['y'], $f['w'], $f['h'], $value, (isset($f['align']) ? $f['align'] : 'C'), (isset($f['fontSize']) ? $f['fontSize'] : 8));
+        } 
+    }
+    
+    switch ($output) {
+        case 'F':
+            $name = '/'.$this->app->utility->generateUUID().'.pdf';
+            $path = $this->app->path->path('assets:pdfs/');
+            $this->Output($path.$name,$output);
+            return $name;
+            break;
+        case 'I':
+            $name = 'Order-'.$this->order_data['Order Number'];
+            $this->Output($name, $output);
+            break;
+    }
+        
+}
+
+public function setData($order) {
+    $billing = $order->billing;
+    $shipping = $order->shipping;
+    $data['Bill To'] = array(
+        $billing->firstname.' '.$billing->lastname,
+        $billing->address,
+        $billing->city.', '.$billing->state.'  '.$billing->zip,
+        $billing->phoneNumber,
+        $billing->altNumber,
+        $billing->email
+    );
+    $data['Ship To'] = array(
+        $shipping->firstname.' '.$shipping->lastname,
+        $shipping->address,
+        $shipping->city.', '.$shipping->state.'  '.$shipping->zip,
+        $shipping->phoneNumber,
+        $shipping->altNumber
+    ); 
+    $data['Order Date'] = $order->getOrderDate();
+    $data['Salesperson'] = $order->getSalesPerson();
+    $data['Order Number'] = $order->id;
+    $data['Delivery'] = $order->localPickup ? 'Local Pickup' : 'UPS Ground';
+    $data['Payment Information'] = $order->creditCard->card_name.' ending in '.substr($order->creditCard->cardNumber, -4);
+    $data['Subtotal'] = '$'.number_format($order->subtotal,2,'.','');
+    $data['Shipping'] = '$'.number_format($order->ship_total,2,'.','');
+    $data['Taxes'] = '$'.number_format($order->tax_total,2,'.','');
+    $data['Total'] = '$'.number_format($order->total,2,'.','');
+    $this->order_data = $data;
+    $this->items = $order->items;
+    return $this;
+}
 
 // private functions
 function RoundedRect($x, $y, $w, $h, $r, $style = '')
@@ -119,9 +197,39 @@ function sizeOfText( $texte, $largeur )
     return $nb_lines;
 }
 
+public function addData($x, $y, $w, $h, $text, $align = 'L', $fontSize = 10) {
+    $this->SetXY($x, $y);
+    $this->SetFont('Arial','',$fontSize);
+    if (is_array($text)) {
+        $txt = implode("\n",$text);
+        $this->MultiCell($this->GetStringWidth($txt), $h, $txt);
+    } else {
+        $this->cell($w, $h, $text,0,0, $align);
+    }
+    
+    
+}
 
-
-
+// Company
+function Company()
+{
+    $name = $this->company['name'];
+    $address = implode("\n", $this->company['address']);
+    $logo = $this->company['logo_path'];
+    $x = 10;
+    $y = 8;
+    $this->SetXY($x, $y);
+    $this->Image($logo, $x, $y, 23, 23, "png");
+    //Positionnement en bas
+    $this->SetXY( $x + 23, $y);
+    $this->SetFont('Arial','B',12);
+    $length = $this->GetStringWidth( $name );
+    $this->Cell( $length, 2, $name);
+    $this->SetXY( $x + 23, $y + 4 );
+    $this->SetFont('Arial','',10);
+    $length = $this->GetStringWidth( $address );
+    $this->MultiCell($length, 4, $address);
+}
 
 // Label of invoice/estimate
 function Label($text)
@@ -150,7 +258,7 @@ function ShipTo()
     $this->fields['Ship To'] = array(
         'x' => $r1 + 3,
         'y' => $y1 + 6,
-        'w' => 70,
+        'w' => 25,
         'h' => 4,
         'align' => 'L',
         'multicell' => true,
@@ -173,7 +281,7 @@ function BillTo()
     $this->fields['Bill To'] = array(
         'x' => $box_x + 3,
         'y' => $box_y + 6,
-        'w' => 70,
+        'w' => 25,
         'h' => 4,
         'align' => 'L',
         'multicell' => true,
@@ -289,24 +397,6 @@ public function OrderData() {
     
 
 }
-
-public function addData($x, $y, $w, $h, $text, $align = 'L', $fontSize = 10) {
-    $this->SetXY($x, $y);
-    $this->SetFont('Arial','',$fontSize);
-    if (is_array($text)) {
-        $text = implode("\n",$text);
-        $this->MultiCell($w,5,$text);
-    } else {
-        $this->MultiCell($w,5,$text);
-    }
-    $this->SetY($y+$h);
-}
-
-public function checkRow($row_h, $col_h) {
-    return $row_h < $col_h ? false : true;
-
-}
-
 public function table($items) {
     $x = 10;
     $y = 92;
@@ -315,7 +405,7 @@ public function table($items) {
     );
 
     $table = array(
-        'w' => 195,
+        'w' => $this->w - ($x*2),
         'h' => $this->h - ($y + $this->bMargin + 30)
     );
     
@@ -335,70 +425,32 @@ public function table($items) {
         $this->Rect($x, $y+ $header['h'], $w, $table['h']);
         $x += $w;
     }
-    $top = 100;
-    $top_of_row = $top;
-    $t_hgt = 0;
-    $i = 0;
+    $top = 99;
+    $bottom = 99;
     foreach($items as $key => $value) {
-        if($i > 2000) {
-            return;
-        }
-        $this->SetY($top_of_row);
-
-        // Item Quantity
-        $col = $table['columns']['Quantity'];
-        $text = $value->qty;
-        $this->addData($col['x'], $top_of_row, $col['w'], $col['h'], $text, 'C');
-        // Item Total
-        $col = $table['columns']['Unit Price'];
-        $text = $value->getTotal();
-        $this->addData($col['x'], $top_of_row, $col['w'], $col['h'], $text, 'C');
-        $this->SetY($top_of_row);
-
+        
         // Item Description
         $col = $table['columns']['Item Description'];
         $item = $value->name;
-        $hgt = $this->NbLines($col['w'],$item)*5;
-        if($this->checkRow($t_hgt + $hgt, $table['h'])) {
-            $this->AddPage('P','Letter');
-            $top = 100;
-            $this->SetY($top);
-            $t_hgt = 0;
-        }
-        $item .= $hgt;
-        $this->addData($col['x'], $this->GetY(), $col['w'], $hgt, $item);
-        $t_hgt += $hgt;
-        $options_text = '';
-        $row_hgt = 0;
+        $this->addData($col['x'], $top, $col['w'], $col['h'], $item);
+        $bottom += 5;
         foreach($value->options as $option => $text) {
-            $row_text = $text['name'].':  '.$text['text'];
-            $line_hgt = $this->NbLines($col['w'],$row_text)*5;
-            if($this->checkRow($t_hgt + $row_hgt + $line_hgt, $table['h'])) {
-                $this->addData($col['x']+2, $this->GetY(), $col['w'], $row_hgt, $options_text, 'L', 8);
-                $options_text = '';
-                $row_hgt = 0;
-                $this->AddPage('P','Letter');
-                $top = 100;
-                $this->SetY($top);
-                $t_hgt = 0;
-            }
-            $row_hgt += $line_hgt;
-            $options_text .= $row_text."\n";
+            $text = $text['name'].':  '.$text['text'];
+            $this->addData($col['x']+2, $bottom, $col['w'], $col['h'], $text, 'L', 8);
+            $bottom += 5;
         }
-        if(strlen($options_text) > 0) {
-            $this->addData($col['x']+2, $this->GetY(), $col['w']-5, $row_hgt, $options_text, 'L', 8);
-            $t_hgt += $row_hgt;
-        }
-
-        $t_hgt += 5;
-
-        $top_of_row = $top + $t_hgt;
-        $i++;
-        //echo 'Top: '.$top.'</br>';
-
+        
+        // Item Quantity
+        $col = $table['columns']['Quantity'];
+        $text = $value->qty;
+        $this->addData($col['x'], $top, $col['w'], $col['h'], $text, 'C');
+        // Item Total
+        $col = $table['columns']['Unit Price'];
+        $text = $value->getTotal();
+        $this->addData($col['x'], $top, $col['w'], $col['h'], $text, 'C');
+        $top = $bottom;
     }
-    //echo $t_hgt;
-    //echo 'Table Height: '.$table['h'];
+    
     
 }
 
