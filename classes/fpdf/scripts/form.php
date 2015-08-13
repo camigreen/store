@@ -20,7 +20,7 @@ class FormPDF extends GridPDF {
 	public function generate() {
 		$margins = $this->form->margins;
 		$this->SetMargins((int)$margins->left,(int)$margins->top, (int) $margins->right);
-	    $this->AddPage(1,'P','Letter');
+	    $this->_AddPage(1,'P','Letter');
 	    $this->SetAutoPageBreak(false);
 	    $this->formTitle();
 	    $this->populate($this->order_data);
@@ -39,9 +39,9 @@ class FormPDF extends GridPDF {
 	        
 	}
 
-	public function AddPage($page, $orientation='P', $size='letter') {
+	public function _AddPage($page, $orientation='P', $size='letter') {
 
-		parent::AddPage($orientation, $size);
+		$this->AddPage($orientation, $size);
 	    foreach($this->_pages->$page->fields->field as $field) {
 	    	if($field->type != 'table') {
 	    		$this->{$field->type}($field);
