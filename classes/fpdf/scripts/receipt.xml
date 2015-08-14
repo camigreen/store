@@ -70,20 +70,24 @@
 					<type>box</type>
 					<title>Payment Information</title>
 				</field>
-				<field x="10" y="98" h="142" w="155" fontsize="10">
-					<name>name</name>
-					<type>box</type>
-					<title>Item Description</title>
-				</field>
-				<field x="165" y="98" h="142" w="20" align="C">
-					<name>qty</name>
-					<type>box</type>
-					<title>Qty</title>
-				</field>
-				<field x="185" y="98" h="142" w="20" format="currency" align="C">
-					<name>price</name>
-					<type>box</type>
-					<title>Unit Price</title>
+				<field x="10" y="98" rows="28" w="155" fontsize="10">
+					<name>items</name>
+					<type>table</type>
+					<title>Items</title>
+					<columns>
+						<column w=".75">
+							<name>name</name>
+							<header>Item Description</header>
+						</column>
+						<column w=".25">
+							<name>qty</name>
+							<header>Qty</header>
+						</column>
+						<column w=".25">
+							<name>price</name>
+							<header>Unit Price</header>
+						</column>
+					</columns>
 				</field>
 				<field x="185" y="245" h="5" w="20" align="C">
 					<name>subtotal</name>

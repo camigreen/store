@@ -22,7 +22,7 @@ class FormPDF extends GridPDF {
 		$this->SetMargins((int)$margins->left,(int)$margins->top, (int) $margins->right);
 		
 	    $this->_AddPage(1,'P','Letter');
-	    $this->arrangeItems();
+	    //$this->arrangeItems();
 	    $this->_AddPage(1,'P','Letter');
 	    
 	    // foreach($this->items as $item) {
@@ -127,6 +127,10 @@ class FormPDF extends GridPDF {
 			$this->SetFont('Arial','B',8);
 			$this->Cell($params->w, 4, $title, 'R,L,T',0,'C');
 		}
+
+
+	}
+	public function table($field) {
 
 
 	}
