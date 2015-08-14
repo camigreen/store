@@ -267,6 +267,7 @@ class FormPDF extends GridPDF {
 	    	);
 	    }
 	    $i = 0;
+	    $echo $this->cMargin;
 	    foreach($data as $row) {
 	    	echo '<pre>';
 			var_dump($this->NbLines(100,$row['name']));
