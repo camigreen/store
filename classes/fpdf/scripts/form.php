@@ -260,7 +260,7 @@ class FormPDF extends GridPDF {
 	public function arrangeItems() {
 		$columns = array('name','qty','price');
 		$rows = array(
-			'count' => 0;
+			'count' => 0,
 			'columns' => array()
 		);
 
