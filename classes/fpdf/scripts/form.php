@@ -46,9 +46,7 @@ class FormPDF extends GridPDF {
 	    $this->formTitle();
 
 	    foreach($this->_pages->$page->fields as $field) {
-	    	if($field->type != 'table') {
 	    		$this->{$field->type}($field);
-	    	}
 	    }
 	    //$this->populate($this->order_data);
 	}
