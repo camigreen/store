@@ -264,14 +264,14 @@ class FormPDF extends GridPDF {
 	    	$data[] = array(
 	    		'name' => $item->name,
 	    		'qty' => $item->qty,
-	    		'price' => $item->price
+	    		'price' => $item->price,
+	    		'options' => implode("\n",$item->options)
 	    	);
 	    }
 	    $i = 0;
-	    echo $this->cMargin;
 	    foreach($data as $row) {
 	    	echo '<pre>';
-			var_dump($this->NbLines(100,$row['name']));
+			var_dump($this->NbLines(100,$row['options']));
 			echo '</pre>';
 	    }
 		
@@ -309,7 +309,6 @@ class FormPDF extends GridPDF {
 	    $cw=&$this->CurrentFont['cw'];
 	    if($w==0)
 	        $w=$this->w-$this->rMargin-$this->x;
-	    echo 'FontSize: '.$this->FontSize;
 	    $wmax=($w-2*$this->cMargin)*1000/$this->FontSize;
 	    $s=str_replace("\r",'',$txt);
 	    $nb=strlen($s);
