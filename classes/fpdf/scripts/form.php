@@ -22,7 +22,7 @@ class FormPDF extends GridPDF {
 		$this->SetMargins((int)$margins->left,(int)$margins->top, (int) $margins->right);
 	    $this->_AddPage(1,'P','Letter');
 	    $this->_AddPage(1,'P','Letter');
-	    //$this->populate($this->order_data);
+	    
 	    // foreach($this->items as $item) {
 	    // 	$data[] = array(
 	    // 		'name' => $item->name,
@@ -48,6 +48,7 @@ class FormPDF extends GridPDF {
 	    		$this->{$field->type}($field);
 	    	}
 	    }
+	    $this->populate($this->order_data);
 	}
 
 	public function setData($order) {
