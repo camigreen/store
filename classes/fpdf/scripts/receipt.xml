@@ -70,7 +70,7 @@
 					<type>box</type>
 					<title>Payment Information</title>
 				</field>
-				<field x="10" y="98" rows="28" w="155" fontsize="10">
+				<field x="10" y="98" rows="28" w="195" fontsize="10">
 					<name>items</name>
 					<type>table</type>
 					<title>Items</title>
