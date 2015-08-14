@@ -23,7 +23,6 @@ class FormPDF extends GridPDF {
 		
 	    $this->_AddPage(1,'P','Letter');
 	    //$this->arrangeItems();
-	    $this->_AddPage(1,'P','Letter');
 	    
 	    // foreach($this->items as $item) {
 	    // 	$data[] = array(
@@ -132,6 +131,11 @@ class FormPDF extends GridPDF {
 
 	}
 	public function table($field) {
+		$params = $field->params;
+		$this->SetXY($params->x,$params->y);
+		echo '<pre>';
+		var_dump($field);
+		echo '</pre>';
 
 
 	}
