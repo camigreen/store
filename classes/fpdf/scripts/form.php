@@ -280,7 +280,7 @@ class FormPDF extends GridPDF {
 	    	$starting_row = $last_row;
 	    	foreach($columns as $column) {
 	    		$line_number = $starting_row;
-	    		$lines = $this->NbLines(100,$item[$column])
+	    		$lines = $this->NbLines(100,$item[$column]);
 		    	foreach($lines as $line) {
 		    		$rows['columns'][$column][$line_number] = $line;
 		    		$line_number++;
