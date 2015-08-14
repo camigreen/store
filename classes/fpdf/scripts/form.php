@@ -137,7 +137,6 @@ class FormPDF extends GridPDF {
 		foreach($field->columns as $column) {
 			$col_w = (float) $column->params->w;
 			$w = $params->w*$col_w;
-			echo $w;
 			$this->Cell($w, 5,$column->header,1,0,'C');
 		}
 
