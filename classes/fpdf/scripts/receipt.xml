@@ -75,15 +75,15 @@
 					<type>table</type>
 					<title>Items</title>
 					<columns>
-						<column w=".50">
+						<column w=".70">
 							<name>name</name>
 							<header>Item Description</header>
 						</column>
-						<column w=".25">
+						<column w=".15">
 							<name>qty</name>
 							<header>Qty</header>
 						</column>
-						<column w=".25">
+						<column w=".15">
 							<name>price</name>
 							<header>Unit Price</header>
 						</column>
