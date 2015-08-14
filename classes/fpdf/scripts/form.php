@@ -236,9 +236,10 @@ class FormPDF extends GridPDF {
 
 	public function populate($data) {
 		$this->SetFont('Arial','',8);
+		$fields = $this->_pages->fields;
 		foreach($data as $key => $value) {
-			if(isset($this->_fields[$key])) {
-				$field = $this->_fields[$key];
+			if(isset($fields->$key)) {
+				$field = $fields->$key;
 				if(is_string($value)) {
 					$this->SetXY($field->params->x, $field->params->y);
 					$this->Cell($field->params->w, $field->params->h, $value, 0, 0, $field->params->get('align'));
