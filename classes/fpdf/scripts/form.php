@@ -260,14 +260,12 @@ class FormPDF extends GridPDF {
 	public function arrangeItems() {
 
 		$columns = array('name','qty','price');
-		$options = '';
-		echo '<pre>';
-		var_dump($this->items);
-		echo '</pre>';
-		foreach ($this->items->options as $option => $value) {
-			$options .= $option.':  '.$value."\n";
-		}
+		
 		foreach($this->items as $item) {
+			$options = '';
+			foreach ($item->options as $option => $value) {
+				$options .= $option.':  '.$value."\n";
+			}
 	    	$data[] = array(
 	    		'name' => $item->name,
 	    		'qty' => $item->qty,
