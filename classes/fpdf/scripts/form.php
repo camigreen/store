@@ -276,14 +276,19 @@ class FormPDF extends GridPDF {
 	    	);
 	    }
 	    $last_row = 0;
-	    foreach ($data as $key => $value) {
-    		$line_number = $last_row;
-    		$lines = $this->NbLines(100,$value);
-	    	foreach($lines as $line) {
-	    		$rows['columns'][$key][$line_number] = $line;
-	    		$line_number++;
-	    	}
+	    foreach ($data as $item) {
+	    	$starting_row = $last_row;
+	    	foreach($item as $key => $value) {
+	    		$line_number = $starting_row;
+	    		$lines = $this->NbLines(100,$value);
+		    	foreach($lines as $line) {
+		    		$rows['columns'][$key][$line_number] = $line;
+		    		$line_number++;
+		    	}
 	    	$last_row = $last_row > $line_number ? $last_row : $line_number;
+	    	}
+    		
+    		
 	    }
 	    $rows['count'] = $last_row;
 	    
