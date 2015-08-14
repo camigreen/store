@@ -258,7 +258,6 @@ class FormPDF extends GridPDF {
 	}
 
 	public function arrangeItems() {
-		$columns = array('name','qty','price');
 		$rows = array(
 			'count' => 0,
 			'columns' => array()
@@ -270,23 +269,21 @@ class FormPDF extends GridPDF {
 				$options .= $option['name'].':  '.$option['text']."\n";
 			}
 	    	$data[] = array(
-	    		'name' => $item->name."\n".$options,
+	    		'name' => $item->name,
 	    		'qty' => $item->qty,
 	    		'price' => $item->price,
+	    		'options' => $options
 	    	);
 	    }
 	    $last_row = 0;
-	    foreach ($data as $item) {
-	    	$starting_row = $last_row;
-	    	foreach($columns as $column) {
-	    		$line_number = $starting_row;
-	    		$lines = $this->NbLines(100,$item[$column]);
-		    	foreach($lines as $line) {
-		    		$rows['columns'][$column][$line_number] = $line;
-		    		$line_number++;
-		    	}
-		    	$last_row = $last_row > $line_number ? $last_row : $line_number;
+	    foreach ($data as $key => $value) {
+    		$line_number = $last_row;
+    		$lines = $this->NbLines(100,$value);
+	    	foreach($lines as $line) {
+	    		$rows['columns'][$key][$line_number] = $line;
+	    		$line_number++;
 	    	}
+	    	$last_row = $last_row > $line_number ? $last_row : $line_number;
 	    }
 	    $rows['count'] = $last_row;
 	    
