@@ -257,6 +257,8 @@ class FormPDF extends GridPDF {
 	}
 
 	public function arrangeItems() {
+
+		$columns = array('name','qty','price');
 		foreach($this->items as $item) {
 	    	$data[] = array(
 	    		'name' => $item->name,
@@ -264,9 +266,13 @@ class FormPDF extends GridPDF {
 	    		'price' => $item->price
 	    	);
 	    }
-		echo '<pre>';
-		var_dump($data);
-		echo '</pre>';
+	    $i = 0;
+	    foreach($data as $row) {
+	    	echo '<pre>';
+			var_dump($this->NbLines(100,$row['name']));
+			echo '</pre>';
+	    }
+		
 
 	}
 
@@ -306,44 +312,63 @@ class FormPDF extends GridPDF {
 	    $nb=strlen($s);
 	    if($nb>0 and $s[$nb-1]=="\n")
 	        $nb--;
-	    $sep=-1;
 	    $i=0;
-	    $j=0;
-	    $l=0;
-	    $nl=1;
+	    $ll=0;
+	    $wl=0;
+	    $arr = array();
+	    $text = '';
+	    $word = '';
 	    while($i<$nb)
 	    {
 	        $c=$s[$i];
+	        // Check if the character is a newline
 	        if($c=="\n")
 	        {
 	            $i++;
-	            $sep=-1;
-	            $j=$i;
-	            $l=0;
-	            $nl++;
+	            $ll=0;
+	            $wl=0;
+	            $text .= $word;
+	            $arr[] = $text;
+	            $text = '';
+	            $word = '';
 	            continue;
 	        }
-	        if($c==' ')
-	            $sep=$i;
-	        $l+=$cw[$c];
-	        if($l>$wmax)
-	        {
-	            if($sep==-1)
-	            {
-	                if($i==$j)
-	                    $i++;
-	            }
-	            else
-	                $i=$sep+1;
-	            $sep=-1;
-	            $j=$i;
-	            $l=0;
-	            $nl++;
+	        // Check if the character is a space
+	        if($c==' ') {
+	        	if (($ll + $wl) > $wmax) { // if the line length + word length is greater than the length allowed.
+	        		$arr[] = trim($text);
+	        		$word .= $c;
+	        		$wl += $cw[$c];
+	        		$text = $word;
+	        		$ll = $wl;
+	        		$word = '';
+	        		$wl=0;
+	        		$i++;
+
+	        	} else {
+	        		$word .= $c;
+	        		$wl += $cw[$c];
+	        		$text .= $word;
+	        		$ll += $wl;
+	        		$word = '';
+	        		$wl=0;
+	        		$i++;
+	        	}
+	        	continue;
 	        }
-	        else
-	            $i++;
+	        $word .= $c;
+	        $wl += $cw[$c];
+	        $i++;
+
 	    }
-	    return $nl;
+	    if(($ll + $wl) > $wmax) {
+	    	$arr[] = trim($text);
+	    	$arr[] = trim($word);
+	    } else {
+	    	$text .= $word;
+	    	$arr[] = $text;
+	    }
+	    return $arr;
 	}
 }
 
