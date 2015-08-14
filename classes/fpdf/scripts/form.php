@@ -20,6 +20,7 @@ class FormPDF extends GridPDF {
 	public function generate() {
 		$margins = $this->form->margins;
 		$this->SetMargins((int)$margins->left,(int)$margins->top, (int) $margins->right);
+		$this->arrangeItems();
 	    $this->_AddPage(1,'P','Letter');
 	    $this->_AddPage(1,'P','Letter');
 	    
@@ -253,6 +254,18 @@ class FormPDF extends GridPDF {
 		}
 
 		//var_dump($data);
+
+	public function arrangeItems() {
+		foreach($this->items as $item) {
+	    	$data[] = array(
+	    		'name' => $item->name,
+	    		'qty' => $item->qty,
+	    		'price' => $item->price
+	    	);
+	    }
+		echo '<pre>';
+		var_dump($data);
+		echo '</pre>';
 
 	}
 
