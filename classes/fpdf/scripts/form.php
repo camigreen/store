@@ -261,7 +261,7 @@ class FormPDF extends GridPDF {
 
 		$columns = array('name','qty','price');
 		$options = '';
-		foreach ($item->options as $option => $value) {
+		foreach ($this->items->options as $option => $value) {
 			$options .= $option.':  '.$value."\n";
 		}
 		foreach($this->items as $item) {
