@@ -308,7 +308,7 @@ class FormPDF extends GridPDF {
 	    $cw=&$this->CurrentFont['cw'];
 	    if($w==0)
 	        $w=$this->w-$this->rMargin-$this->x;
-	    echo $this->FontSize;
+	    echo 'FontSize: '.$this->FontSize;
 	    $wmax=($w-2*$this->cMargin)*1000/$this->FontSize;
 	    $s=str_replace("\r",'',$txt);
 	    $nb=strlen($s);
