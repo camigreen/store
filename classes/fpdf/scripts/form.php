@@ -254,6 +254,7 @@ class FormPDF extends GridPDF {
 		}
 
 		//var_dump($data);
+	}
 
 	public function arrangeItems() {
 		foreach($this->items as $item) {
