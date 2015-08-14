@@ -269,26 +269,35 @@ class FormPDF extends GridPDF {
 				$options .= $option['name'].':  '.$option['text']."\n";
 			}
 	    	$data[] = array(
-	    		'name' => $item->name,
+	    		'name' => array('name' => $item->name,'options' => $options),
 	    		'qty' => $item->qty,
 	    		'price' => $item->price,
-	    		'options' => $options
 	    	);
 	    }
 	    $last_row = 0;
 	    foreach ($data as $item) {
 	    	$starting_row = $last_row;
-	    	foreach($item as $key => $value) {
+	    	foreach($item as $column => $value) {
 	    		$line_number = $starting_row;
-	    		$lines = $this->NbLines(100,$value);
-		    	foreach($lines as $line) {
-		    		$rows['columns'][$key][$line_number] = $line;
-		    		$line_number++;
-		    	}
+	    		if(is_array($value)) {
+	    			foreach($value as $k => $v) {
+	    				$lines = $this->NbLines(100,$v);
+				    	foreach($lines as $line) {
+				    		$rows['columns'][$column][$k] = array();
+				    		$rows['columns'][$column][$k][$line_number] = $line;
+				    		$line_number++;
+				    	}
+	    			}
+
+	    		} else {
+	    			$lines = $this->NbLines(100,$value);
+			    	foreach($lines as $line) {
+			    		$rows['columns'][$key][$line_number] = $line;
+			    		$line_number++;
+			    	}
+	    		}
 	    	$last_row = $last_row > $line_number ? $last_row : $line_number;
-	    	}
-    		
-    		
+	    	}	
 	    }
 	    $rows['count'] = $last_row;
 	    
