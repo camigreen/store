@@ -283,8 +283,8 @@ class FormPDF extends GridPDF {
 	    			foreach($value as $k => $v) {
 	    				$lines = $this->NbLines(100,$v);
 				    	foreach($lines as $line) {
-				    		$rows['columns'][$column][$k] = array();
-				    		$rows['columns'][$column][$k][$line_number] = $line;
+				    		$rows['columns'][$column][$line_number][$k] = array();
+				    		$rows['columns'][$column][$line_number][$k] = $line;
 				    		$line_number++;
 				    	}
 	    			}
