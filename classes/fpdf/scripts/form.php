@@ -134,6 +134,9 @@ class FormPDF extends GridPDF {
 		echo '<pre>';
 		var_dump($field);
 		echo '</pre>';
+		foreach($field->columns as $column) {
+			echo $column->name;
+		}
 
 
 	}
