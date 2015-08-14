@@ -75,7 +75,7 @@
 					<type>table</type>
 					<title>Items</title>
 					<columns>
-						<column w=".75">
+						<column w=".50">
 							<name>name</name>
 							<header>Item Description</header>
 						</column>
