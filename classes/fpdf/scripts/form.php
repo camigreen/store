@@ -48,7 +48,8 @@ class FormPDF extends GridPDF {
 		$this->SetAutoPageBreak(false);
 	    $this->formTitle();
 	    $this->currentPage = $page;
-	    foreach($this->_pages->$page->fields as $field) {
+	    $pages = $this->form->pages;
+	    foreach($pages->$page->fields as $field) {
 	    		$this->{$field->type}($field);
 	    }
 	    //$this->populate($this->order_data);
