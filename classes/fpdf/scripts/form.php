@@ -11,7 +11,7 @@ class FormPDF extends GridPDF {
 		$this->app = $app;
 		$this->type = $type;
 		$path = $this->app->path->path('classes:fpdf/scripts/'.$type.'.xml');
-	    $this->form = simplexml_load_file($path);
+	    $this->form = $this->xml2obj(simplexml_load_file($path));
 	    $this->grid = (bool) (string) $this->form->grid;
 	    $this->loadPages();
     	parent::__construct();
@@ -20,7 +20,8 @@ class FormPDF extends GridPDF {
 	public function generate() {
 		$margins = $this->form->margins;
 		$this->SetMargins((int)$margins->left,(int)$margins->top, (int) $margins->right);
-		
+		$font = $this->form->font;
+		$this->SetFont($font->get('family','arial'),$font->get('style',''),$font->get('size',10));
 	    $this->_AddPage(1,'P','Letter');
 	    //$this->arrangeItems();
 	    
