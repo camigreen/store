@@ -182,7 +182,7 @@ class FormPDF extends GridPDF {
 					default:
 						$this->SetXY($params->x-$title_params->get('w',$w), $params->y);
 				}
-				$this->Cell($title_params->get('w',$w), $title_params->get('h',$h), $title->get('text',''), $title_params->get('border',0),0, $title_params->get('text-align','L'));
+				$this->Cell($title_params->get('w',$w), $title_params->get('h',$h), $title->get('text',''), 1,0, $title_params->get('text-align','L'));
 			}
 			// 
 			// 
