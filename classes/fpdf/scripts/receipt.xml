@@ -45,7 +45,7 @@
 					<name>logo</name>
 					<type>logo</type>
 				</field>
-				<field x="10" y="84" h="6" w="48.75" align="C">
+				<field x="10" y="84" h="6" w="48.75" align="C" border="1">
 					<name>salesperson</name>
 					<type>textbox</type>
 					<title align="T" text-align="C" border="1">Salesperson</title>
