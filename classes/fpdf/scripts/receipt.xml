@@ -34,7 +34,7 @@
 				<field x="10" y="45" h="30" w="75" border="1" data-padding="5">
 					<name>billto</name>
 					<type>textbox</type>
-					<title align="T" text-align="C">Bill To</title>
+					<title align="T" text-align="C" border="1">Bill To</title>
 				</field>
 				<field x="130" y="45" h="30" w="75" data-padding="5">
 					<name>shipto</name>
