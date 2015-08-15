@@ -76,8 +76,8 @@ class FormPDF extends GridPDF {
     $billing = $order->billing;
     $shipping = $order->shipping;
     $company = $this->form->company;
-    $data['company'] = array(
-    	$company->companyname,
+    $data['companyname'] = $company->companyname;
+    $data['companyaddress'] = array(
     	$company->address->street,
     	$company->address->city.', '.$company->address->state.'  '.$company->address->zip,
     	$company->phone,
