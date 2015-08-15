@@ -33,8 +33,8 @@
 				</field>
 				<field x="10" y="45" h="30" w="75" data-padding="5">
 					<name>billto</name>
-					<type>box</type>
-					<title>Bill To</title>
+					<type>textbox</type>
+					<title align="T" text-align="C">Bill To</title>
 				</field>
 				<field x="130" y="45" h="30" w="75" data-padding="5">
 					<name>shipto</name>
@@ -78,7 +78,7 @@
 				<field x="185" y="250" h="5" w="20">
 					<name>shipping</name>
 					<type>textbox</type>
-					<title  align="L" text-align="R">Shipping</title>
+					<title align="L" text-align="R">Shipping</title>
 				</field>
 				<field x="185" y="255" h="5" w="20">
 					<name>taxes</name>
