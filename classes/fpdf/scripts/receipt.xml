@@ -8,6 +8,11 @@
 		<top>0</top>
 		<bottom>0</bottom>
 	</margins>
+	<font>
+		<family>arial</family>
+		<style></style>
+		<size>8</size>
+	</font>
 	<data>
 		<company>
 			<name>Laportes T-Top Boat Covers</name>
@@ -36,7 +41,7 @@
 					<type>textbox</type>
 					<title align="T" text-align="C" border="1">Bill To</title>
 				</field>
-				<field x="130" y="45" h="30" w="75" data-padding="5">
+				<field x="130" y="45" h="30" w="75" font-size="" font-style="">
 					<name>shipto</name>
 					<type>textbox</type>
 					<title align="T" text-align="C" border="1">Ship To</title>
