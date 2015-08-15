@@ -70,6 +70,26 @@
 					<type>box</type>
 					<title>Payment Information</title>
 				</field>
+				<field x="185" y="245" h="5" w="20" align="C">
+					<name>subtotal</name>
+					<type>textbox</type>
+					<title align="L" text-align="R">Subtotal</title>
+				</field>
+				<field x="185" y="250" h="5" w="20">
+					<name>shipping</name>
+					<type>textbox</type>
+					<title  align="L" text-align="R">Shipping</title>
+				</field>
+				<field x="185" y="255" h="5" w="20">
+					<name>taxes</name>
+					<type>textbox</type>
+					<title align="L" text-align="R">Taxes</title>
+				</field>
+				<field x="185" y="260" h="5" w="20">
+					<name>total</name>
+					<type>textbox</type>
+					<title align="L" text-align="R">Total</title>
+				</field>
 				<field x="10" y="95" rows="28" w="195" fontsize="10">
 					<name>items</name>
 					<type>table</type>
@@ -83,33 +103,13 @@
 						<column w=".15">
 							<name>qty</name>
 							<header>Qty</header>
+							<footer border="1"></footer>
 						</column>
 						<column w=".15">
 							<name>price</name>
 							<header>Unit Price</header>
 							<footer>
-								<fields>
-									<field x="185" y="245" h="5" w="20" align="C">
-										<name>subtotal</name>
-										<type>textbox</type>
-										<title align="L" text-align="R">Subtotal</title>
-									</field>
-									<field x="185" y="250" h="5" w="20">
-										<name>shipping</name>
-										<type>textbox</type>
-										<title  align="L" text-align="R">Shipping</title>
-									</field>
-									<field x="185" y="255" h="5" w="20">
-										<name>taxes</name>
-										<type>textbox</type>
-										<title align="L" text-align="R">Taxes</title>
-									</field>
-									<field x="185" y="260" h="5" w="20">
-										<name>total</name>
-										<type>textbox</type>
-										<title align="L" text-align="R">Total</title>
-									</field>
-								</fields>
+								
 							</footer>
 						</column>
 					</columns>
