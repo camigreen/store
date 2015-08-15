@@ -19,6 +19,9 @@ class FormPDF extends GridPDF {
 	public function generate() {
 		$margins = $this->form->margins;
 		$this->SetMargins((int)$margins->left,(int)$margins->top, (int) $margins->right);
+		echo '<pre>';
+		var_dump($this->form);
+		echo '</pre>';
 		$font = $this->form->font;
 		$this->SetFont($font->get('family','arial'),$font->get('style',''),$font->get('size',10));
 	    $this->_AddPage(1,'P','Letter');
