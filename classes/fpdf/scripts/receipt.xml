@@ -31,7 +31,7 @@
 		<page>
 			<name>1</name>
 			<fields>
-				<field x="145" y="8" h="10" w="60" font-size="30" font-style="B" all-caps="1">
+				<field x="145" y="8" h="10" w="60" font-size="30" font-style="B" all-caps="1" align="R">
 					<name>form_title</name>
 					<type>textbox</type>
 				</field>
