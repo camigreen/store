@@ -13,7 +13,6 @@ class FormPDF extends GridPDF {
 		$path = $this->app->path->path('classes:fpdf/scripts/'.$type.'.xml');
 	    $this->form = $this->xml2obj(simplexml_load_file($path));
 	    $this->grid = (bool) (string) $this->form->grid;
-	    $this->loadPages();
     	parent::__construct();
 	}
 
