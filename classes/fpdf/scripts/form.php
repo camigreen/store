@@ -44,7 +44,7 @@ class FormPDF extends GridPDF {
 		$this->AddPage($orientation, $size);
 		$this->SetAutoPageBreak(false);
 	    $this->formTitle();
-
+	    $this->currentPage = $page;
 	    foreach($this->_pages->$page->fields as $field) {
 	    		$this->{$field->type}($field);
 	    }
@@ -131,9 +131,6 @@ class FormPDF extends GridPDF {
 	public function table($field) {
 		$params = $field->params;
 		$this->SetXY($params->x,$params->y);
-		// echo '<pre>';
-		// var_dump($field);
-		// echo '</pre>';
 		$col_x = $params->x;
 		$col_y = $params->y;
 		foreach($field->columns as $column) {
@@ -146,14 +143,15 @@ class FormPDF extends GridPDF {
 			$this->Cell($w,$h,'',1,0,'C');
 			$col_y = $params->y;
 			$col_x += $w;
+			$column->params->x = $col_x;
+			$column->params->y = $col_y;
 		}
-
-
 	}
 	public function textbox($field) {
 		$params = $field->params;
+		$value = $this->order_data[$field->name];
 		$this->SetXY($params->x, $params->y);
-		$this->Cell($params->w, $params->h, '', $params->get('border'), 0);
+		$this->Cell($params->w, $params->h, $value, $params->get('border'), 0);
 		if ($title = $field->get('title')) {
 			if(is_object($title)) {
 				$title_params = $title->get('params');
@@ -330,29 +328,12 @@ class FormPDF extends GridPDF {
 	}
 
 	public function populateTable($data) {
-		$field = $this->_fields['name'];
-		$hgt = 0;
-		foreach($data as $key => $value) {
-			if(isset($this->_fields[$key])) {
-				$field = $this->_fields[$key];
-				$this->SetFont('Arial','',$field->params->get('fontsize',8));
-				if(!is_array($value)) {
-					if($field->params->get('format') == 'currency') {
-						$value = $this->app->number->currency($value,array('currency' => 'USD'));
-					}
-					$this->SetXY($field->params->x, $field->params->y + $this->table_x);
-					$this->Cell($field->params->w, 5, $value, 0, 0, $field->params->get('align'));
-					
-				} else {
-					$this->SetXY($field->params->x+$field->params->get('data-padding'), $field->params->y);
-					$txt = implode("\n",$value);
-					$this->Multicell($field->params->w,$this->table_LH, $txt);
-				}
+		$page = $this->currentPage;
+		foreach($this->_pages->$page->fields as $field) {
+			if ($field->type == 'table') {
+				$table = $field;
 			}
-			
 		}
-		$hgt += 5;
-		$this->table_x += $hgt;
 	}
 
 	function NbLines($w,$txt) {
