@@ -179,7 +179,9 @@ class FormPDF extends GridPDF {
 	}
 	public function textbox($field) {
 		$params = $field->params;
-		echo $params->get('font-style',$this->getFont('style'));
+		echo 'Font Family: '.$params->get('font-family',$this->getFont('family')).'</br>';
+		echo 'Font Style: '.$params->get('font-style',$this->getFont('style')).'</br>';
+		echo 'Font size: '.$params->get('font-size',$this->getFont('size')).'</br>';
 		$this->SetFont($params->get('font-family',$this->getFont('family')),$params->get('font-style',$this->getFont('style')),$params->get('font-size',$this->getFont('size')));
 		$text = isset($this->order_data[$field->name]) ? $this->order_data[$field->name] : '';
 		$this->SetXY($params->x, $params->y);
