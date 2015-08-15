@@ -47,8 +47,8 @@
 				</field>
 				<field x="10" y="84" h="6" w="48.75" align="C">
 					<name>salesperson</name>
-					<type>box</type>
-					<title>Salesperson</title>
+					<type>textbox</type>
+					<title align="T" text-align="C" border="1">Salesperson</title>
 				</field>
 				<field x="175" y="20" h="5" w="30" align="R">
 					<name>order_date</name>
