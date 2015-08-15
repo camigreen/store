@@ -151,7 +151,12 @@ class FormPDF extends GridPDF {
 		$params = $field->params;
 		$value = $this->order_data[$field->name];
 		$this->SetXY($params->x, $params->y);
-		$this->Cell($params->w, $params->h, $value, $params->get('border'), 0);
+		if(is_array($value)) {
+			$this->MultiCell($params->w, $params->h, $value, $params->get('border'), 0);
+		} else {
+			$this->Cell($params->w, $params->h, $value, $params->get('border'), 0);
+		}
+		
 		if ($title = $field->get('title')) {
 			if(is_object($title)) {
 				$title_params = $title->get('params');
