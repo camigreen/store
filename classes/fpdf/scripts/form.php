@@ -167,16 +167,19 @@ class FormPDF extends GridPDF {
 				$h = 5;
 				switch($align) {
 					case 'R':
-						$w = 20;
+						$w = $this->GetStringWidth($title->get('text',''));
 						$this->SetXY(($params->x+$params->w), $params->y);
 						break;
 					case 'L':
+						$w = $this->GetStringWidth($title->get('text',''));
 						$this->SetXY($params->x-$title_params->get('w',20), $params->y);
 						break;
 					case 'T':
+						$w = $params->w;
 						$this->SetXY($params->x,$params->y-$title_params->get('h',$h));
 						break;
 					case 'B':
+						$w = $params->w;
 						$this->SetXY($params->x,$params->y+$title_params->get('h',$h));
 						break;
 					default:
