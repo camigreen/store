@@ -115,34 +115,6 @@ class FormPDF extends GridPDF {
     return $this;
 	}
 
-	// Company
-	function company($field) {
-		$x = $field->params->get('x');
-		$y = $field->params->get('y');
-		$w = $field->params->get('w');
-		$h = $field->params->get('h');
-		$title = $field->params->get('title');
-		$border = $field->params->get('border');
-
-	    $company = $this->form->data->company;
-	    $name = $company->name;
-	    $address = array(
-	        (string) $company->address->street,
-	        (string) $company->address->city.', '.(string) $company->address->state.'  '.(string) $company->address->zip,
-	        (string) $company->phone,
-	        (string) $company->website,
-	        (string) $company->email
-	    );
-	    $this->SetXY($x, $y);
-	    $this->SetFont('Arial','B',12);
-	    $this->Cell( $w, 7, $name, $border, 1);
-	    $this->SetFont('Arial','',10);
-	    foreach($address as $line) {
-	    	$this->SetX($x);
-	    	$this->Cell( $w, 4, $line, $border, 1);
-	    }
-	}
-
 	public function box($field) {
 
 		$params = $field->params;
@@ -155,8 +127,6 @@ class FormPDF extends GridPDF {
 			$this->SetFont('Arial','B',8);
 			$this->Cell($params->w, 4, $title, 'R,L,T',0,'C');
 		}
-
-
 	}
 	public function table($field) {
 		$params = $field->params;
@@ -178,13 +148,11 @@ class FormPDF extends GridPDF {
 		}
 	}
 	public function textbox($field) {
-		echo '<pre>';
-		var_dump($field);
-		echo '</pre>';
+		// echo '<pre>';
+		// var_dump($field);
+		// echo '</pre>';
 		$params = $field->params;
-		echo 'Font Family: '.$params->get('font-family',$this->getFont('family')).'</br>';
-		echo 'Font Style: '.$params->get('font-style',$this->getFont('style')).'</br>';
-		echo 'Font size: '.$params->get('font-size',$this->getFont('size')).':'.$this->getFont('size').'</br>';
+
 		$this->SetFont($params->get('font-family',$this->getFont('family')),$params->get('font-style',$this->getFont('style')),$params->get('font-size',$this->getFont('size')));
 		$text = isset($this->order_data[$field->name]) ? $this->order_data[$field->name] : '';
 		$this->SetXY($params->x, $params->y);
