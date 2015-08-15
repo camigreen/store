@@ -50,7 +50,7 @@
 					<type>box</type>
 					<title>Salesperson</title>
 				</field>
-				<field x="175" y="20" h="5" w="30" align="R" border="1">
+				<field x="175" y="20" h="5" w="30" align="R">
 					<name>order_date</name>
 					<type>textbox</type>
 					<title align="L" text-align="R">Order Date:</title>
