@@ -30,11 +30,11 @@
 		<page>
 			<name>1</name>
 			<fields>
-				<field x="35" y="8" h="5" w="80" font-size="10" font-style="B">
+				<field x="35" y="8" h="5" w="80" font-size="12" font-style="B">
 					<name>companyname</name>
 					<type>textbox</type>
 				</field>
-				<field x="35" y="13" h="35" w="80">
+				<field x="35" y="13" h="35" w="80" line-height="3">
 					<name>companyaddress</name>
 					<type>textbox</type>
 				</field>
