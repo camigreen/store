@@ -31,8 +31,8 @@
 			<name>1</name>
 			<fields>
 				<field x="35" y="8" h="35" w="80" border="0">
-					<name>company_info</name>
-					<type>company</type>
+					<name>company</name>
+					<type>textbox</type>
 				</field>
 				<field x="10" y="45" h="30" w="75" border="1" data-padding="5">
 					<name>billto</name>
