@@ -13,21 +13,19 @@
 		<style></style>
 		<size>8</size>
 	</font>
-	<data>
-		<company>
-			<name>Laportes T-Top Boat Covers</name>
-			<address>
-				<street>4651 Franchise Street</street>
-				<city>North Charleston</city>
-				<state>SC</state>
-				<zip>29418</zip>
-			</address>
-			<phone>(843) 760-6101</phone>
-			<website>http://www.ttopcovers.com</website>
-			<email>info@ttopcovers.com</email>
-			<logoPath>images/logos/ttop/TTop_100x100.png</logoPath>
-		</company>
-	</data>
+	<company>
+		<companyname>Laportes T-Top Boat Covers</companyname>
+		<address>
+			<street>4651 Franchise Street</street>
+			<city>North Charleston</city>
+			<state>SC</state>
+			<zip>29418</zip>
+		</address>
+		<phone>(843) 760-6101</phone>
+		<website>http://www.ttopcovers.com</website>
+		<email>info@ttopcovers.com</email>
+		<logoPath>images/logos/ttop/TTop_100x100.png</logoPath>
+	</company>
 	<pages>
 		<page>
 			<name>1</name>
