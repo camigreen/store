@@ -149,12 +149,13 @@ class FormPDF extends GridPDF {
 	}
 	public function textbox($field) {
 		$params = $field->params;
-		$value = $this->order_data[$field->name];
+		$text = $this->order_data[$field->name];
 		$this->SetXY($params->x, $params->y);
 		if(is_array($value)) {
-			$this->MultiCell($params->w, $params->h, $value, $params->get('border'), 0);
+			$txt = implode("\n",$text);
+			$this->MultiCell($params->w, $params->h, $txt, $params->get('border'), 0);
 		} else {
-			$this->Cell($params->w, $params->h, $value, $params->get('border'), 0);
+			$this->Cell($params->w, $params->h, $text, $params->get('border'), 0);
 		}
 		
 		if ($title = $field->get('title')) {
