@@ -151,7 +151,7 @@ class FormPDF extends GridPDF {
 		$params = $field->params;
 		$text = $this->order_data[$field->name];
 		$this->SetXY($params->x, $params->y);
-		if(is_array($value)) {
+		if(is_array($text)) {
 			$txt = implode("\n",$text);
 			$this->MultiCell($params->w, $params->h, $txt, $params->get('border'), 0);
 		} else {
