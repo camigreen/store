@@ -30,19 +30,19 @@
 		<page>
 			<name>1</name>
 			<fields>
-				<field x="35" y="8" h="35" w="80" font-size="20">
+				<field x="35" y="8" h="35" w="80" font-size="10" font-style="B">
 					<name>company</name>
 					<type>textbox</type>
 				</field>
 				<field x="10" y="45" h="30" w="75" border="1">
 					<name>billto</name>
 					<type>textbox</type>
-					<title align="T" text-align="C" border="1">Bill To</title>
+					<title align="T" text-align="C" border="1" font-style="B">Bill To</title>
 				</field>
-				<field x="130" y="45" h="30" w="75">
+				<field x="130" y="45" h="30" w="75" border="1">
 					<name>shipto</name>
 					<type>textbox</type>
-					<title align="T" text-align="C" border="1">Ship To</title>
+					<title align="T" text-align="C" border="1" font-style="B">Ship To</title>
 				</field>
 				<field x="10" y="10" h="25" w="25" border="0">
 					<name>logo</name>
