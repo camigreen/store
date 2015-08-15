@@ -149,7 +149,7 @@ class FormPDF extends GridPDF {
 	}
 	public function textbox($field) {
 		$params = $field->params;
-		$text = $this->order_data[$field->name];
+		$text = isset($this->order_data[$field->name]) ? $this->order_data[$field->name] : '';
 		$this->SetXY($params->x, $params->y);
 		if(is_array($text)) {
 			$txt = implode("\n",$text);
