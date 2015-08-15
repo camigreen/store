@@ -156,11 +156,12 @@ class FormPDF extends GridPDF {
 		$this->SetFont($params->get('font-family',$this->getFont('family')),$params->get('font-style',$this->getFont('style')),$params->get('font-size',$this->getFont('size')));
 		$text = isset($this->order_data[$field->name]) ? $this->order_data[$field->name] : '';
 		$this->SetXY($params->x, $params->y);
+		$h = $params->get('line-height',$params->get('h',5));
 		if(is_array($text)) {
 			$txt = implode("\n",$text);
-			$this->MultiCell($params->w, $params->get('line-height',5), $txt, $params->get('border', 0), $params->get('align','L'));
+			$this->MultiCell($params->w, $h, $txt, $params->get('border', 0), $params->get('align','L'));
 		} else {
-			$this->Cell($params->w, $params->get('line-height',5), $text, $params->get('border', 0), 0, $params->get('align','L'));
+			$this->Cell($params->w, $h, $text, $params->get('border', 0), 0, $params->get('align','L'));
 		}
 		
 		if ($title = $field->get('title')) {
