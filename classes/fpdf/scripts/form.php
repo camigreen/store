@@ -181,8 +181,8 @@ class FormPDF extends GridPDF {
 		$params = $field->params;
 		echo 'Font Family: '.$params->get('font-family',$this->getFont('family')).'</br>';
 		echo 'Font Style: '.$params->get('font-style',$this->getFont('style')).'</br>';
-		echo 'Font size: '.$params->get('font-size',$this->getFont('size')).'</br>';
-		$this->SetFont($params->get('font-family',$this->getFont('family')),$params->get('font-style',$this->getFont('style')),$params->get('font-size',$this->getFont('size'))).':'.$this->getFont('size');
+		echo 'Font size: '.$params->get('font-size',$this->getFont('size')).':'.$this->getFont('size').'</br>';
+		$this->SetFont($params->get('font-family',$this->getFont('family')),$params->get('font-style',$this->getFont('style')),$params->get('font-size',$this->getFont('size')));
 		$text = isset($this->order_data[$field->name]) ? $this->order_data[$field->name] : '';
 		$this->SetXY($params->x, $params->y);
 		if(is_array($text)) {
