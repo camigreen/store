@@ -179,7 +179,7 @@ class FormPDF extends GridPDF {
 	}
 	public function textbox($field) {
 		$params = $field->params;
-		$this->SetFont($params->get('font-family',$this->getFont('family'),$params->get('font-style',$this->getFont('style')),$params->get('font-size',$this->getFont('size')));
+		$this->SetFont($params->get('font-family',$this->getFont('family')),$params->get('font-style',$this->getFont('style')),$params->get('font-size',$this->getFont('size')));
 		$text = isset($this->order_data[$field->name]) ? $this->order_data[$field->name] : '';
 		$this->SetXY($params->x, $params->y);
 		if(is_array($text)) {
@@ -193,7 +193,7 @@ class FormPDF extends GridPDF {
 			if(is_object($title)) {
 				$title_params = $title->get('params');
 				$align = $title_params->get('align','L');
-				$this->SetFont($title_params->get('font-family',$this->getFont('family'),$title_params->get('font-style',$this->getFont('style')),$title_params->get('font-size',$this->getFont('size')));
+				$this->SetFont($title_params->get('font-family',$this->getFont('family')),$title_params->get('font-style',$this->getFont('style')),$title_params->get('font-size',$this->getFont('size')));
 				$w = $params->w;
 				$h = 5;
 				switch($align) {
