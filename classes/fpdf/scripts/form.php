@@ -284,6 +284,7 @@ class FormPDF extends GridPDF {
 		        		$params[$key] = (string) $attr;
 		        	}
 		        	$test->params = $this->app->data->create($params);
+		        	$params= array();
 	        	}
 	        	$arr[$name] = $test;
 	        }
