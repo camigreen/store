@@ -23,7 +23,7 @@ class FormPDF extends GridPDF {
 		// var_dump($this->form);
 		// echo '</pre>';
 		$font = $this->form->font;
-		$this->SetFont($font->get('family','arial'),$font->get('style',''),$font->get('size',10));
+		$this->SetFont($this->getFont('family'),$this->getFont('style'),$this->getFont('size'));
 	    $this->_AddPage(1,'P','Letter');
 	    //$this->arrangeItems();
 	    
@@ -40,6 +40,23 @@ class FormPDF extends GridPDF {
 	    
 	    return $this;
 	        
+	}
+
+	public function getFont($attribute) {
+		$font = $this->form->font;
+		switch ($attribute) {
+			case 'family':
+				return $font->get('family','arial');
+				break;
+			case 'style':
+				return $font->get('style','');
+				break;
+			case 'size':
+				return $font->get('size',8);
+				break;
+			default: 
+				return '';
+		}
 	}
 
 	public function _AddPage($page, $orientation='P', $size='letter') {
@@ -162,6 +179,7 @@ class FormPDF extends GridPDF {
 	}
 	public function textbox($field) {
 		$params = $field->params;
+		$this->SetFont($params->get('font-family',$this->getFont('family'),$params->get('font-style',$this->getFont('style')),$params->get('font-size',$this->getFont('size')));
 		$text = isset($this->order_data[$field->name]) ? $this->order_data[$field->name] : '';
 		$this->SetXY($params->x, $params->y);
 		if(is_array($text)) {
@@ -175,7 +193,7 @@ class FormPDF extends GridPDF {
 			if(is_object($title)) {
 				$title_params = $title->get('params');
 				$align = $title_params->get('align','L');
-				$this->SetFont('Arial','B',8);
+				$this->SetFont($title_params->get('font-family',$this->getFont('family'),$title_params->get('font-style',$this->getFont('style')),$title_params->get('font-size',$this->getFont('size')));
 				$w = $params->w;
 				$h = 5;
 				switch($align) {
