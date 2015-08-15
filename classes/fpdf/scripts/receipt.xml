@@ -31,7 +31,7 @@
 					<name>company_info</name>
 					<type>company</type>
 				</field>
-				<field x="10" y="45" h="30" w="75" data-padding="5">
+				<field x="10" y="45" h="30" w="75" border="1" data-padding="5">
 					<name>billto</name>
 					<type>textbox</type>
 					<title align="T" text-align="C">Bill To</title>
