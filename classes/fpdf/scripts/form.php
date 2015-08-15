@@ -63,7 +63,6 @@ class FormPDF extends GridPDF {
 
 		$this->AddPage($orientation, $size);
 		$this->SetAutoPageBreak(false);
-	    $this->formTitle();
 	    $this->currentPage = $page;
 	    $pages = $this->form->pages;
 	    foreach($pages->$page->fields as $field) {
@@ -76,6 +75,7 @@ class FormPDF extends GridPDF {
     $billing = $order->billing;
     $shipping = $order->shipping;
     $company = $this->form->company;
+    $data['form_title'] = $this->form->title;
     $data['companyname'] = $company->companyname;
     $data['companyaddress'] = array(
     	$company->address->street,
@@ -155,6 +155,7 @@ class FormPDF extends GridPDF {
 
 		$this->SetFont($params->get('font-family',$this->getFont('family')),$params->get('font-style',$this->getFont('style')),$params->get('font-size',$this->getFont('size')));
 		$text = isset($this->order_data[$field->name]) ? $this->order_data[$field->name] : '';
+		$text = $params->get('all-caps',0) ? strtoupper($text) : $text;
 		$this->SetXY($params->x, $params->y);
 		$h = $params->get('h',5);
 		if(is_array($text)) {
@@ -209,14 +210,6 @@ class FormPDF extends GridPDF {
 		$border = $field->params->get('border');
 		$path = $this->form->company->logoPath;
 		$this->Image($path,$x,$y,$w,$h);
-	}
-
-	public function formTitle() {
-		$this->SetXY(145,8);
-		$this->SetFont( "Arial", "B", 30);
-		$text  = strtoupper((string) $this->form->name);
-		$this->Cell(60,10, $text, 0, 0, "R" );
-    
 	}
 
 	public function toFile() {

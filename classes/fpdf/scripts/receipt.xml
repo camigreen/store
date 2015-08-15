@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
-	<name>Receipt</name>
+	<name>receipt</name>
+	<title>Receipt</title>
 	<grid>1</grid>
 	<margins>
 		<left>0</left>
@@ -30,6 +31,10 @@
 		<page>
 			<name>1</name>
 			<fields>
+				<field x="145" y="8" h="10" w="60" font-size="30" font-style="B" all-caps="1">
+					<name>form_title</name>
+					<type>textbox</type>
+				</field>
 				<field x="35" y="10" h="5" w="80" font-size="12" font-style="B">
 					<name>companyname</name>
 					<type>textbox</type>
