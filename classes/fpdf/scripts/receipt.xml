@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<form name="receipt" grid="1" title="Reciept">
+<form name="receipt" grid="0" title="Reciept">
 	<margins>
 		<left>0</left>
 		<right>0</right>
@@ -45,7 +45,7 @@
 				</field>
 				<field name="logo" type="logo" x="10" y="10" h="25" w="25" border="0" />
 				<field name="order_date" type="textbox" x="175" y="20" h="5" w="30" align="R" >
-					<title align="L" text-align="R" text="Order Date" />
+					<title align="L" text-align="R" text="Order Date:" />
 				</field>
 				<field name="subtotal" type="textbox" x="176" y="242" h="5" w="29" align="C" font-size="10">
 					<title align="L" text-align="R" text="Subtotal"  font-size="10"/>
@@ -100,7 +100,7 @@
 				<field name="logo" type="logo" x="10" y="10" h="25" w="25" border="0" />
 				<field name="totals_box" type="textbox" x="156.25" y="240" h="25" w="48.75" border="1" />
 				<field name="order_date" type="textbox" x="175" y="20" h="5" w="30" align="R">
-					<title align="L" text-align="R" text="Order Date" />
+					<title align="L" text-align="R" text="Order Date:" />
 				</field>
 				<field name="subtotal" type="textbox" x="176" y="242" h="5" w="29" align="C" font-size="10">
 					<title align="L" text-align="R" text="Subtotal"  font-size="10"/>
