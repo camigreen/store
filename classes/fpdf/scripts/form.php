@@ -174,7 +174,7 @@ class FormPDF extends GridPDF {
 			$this->SetXY($params->x, $params->y);
 			$this->MultiCell($params->w, $params->get('line-height',5), $txt, 0, $params->get('align','L'));
 		} else {
-			$this->Cell($params->w, $h, $text, $params->get('border', 0), 0, $params->get('align','L'));
+			$this->Cell($params->w, $params->get('h', 0), $text, $params->get('border', 0), 0, $params->get('align','L'));
 		}
 		
 		if ($title = $field->get('title')) {
