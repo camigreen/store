@@ -58,13 +58,13 @@
 							<header font-style="B" text="Salesperson" />
 						</column>
 						<column name="order_number" w=".25">
-							<header text="Order Number" />
+							<header font-style="B" text="Order Number" />
 						</column>
 						<column name="delivery_method" w=".25">
-							<header text="Delivery Method" />
+							<header font-style="B" text="Delivery Method" />
 						</column>
 						<column name="payment_information" w=".25">
-							<header text="Payment Information" /> 
+							<header font-style="B" text="Payment Information" /> 
 						</column>
 					</columns>
 				</field>
