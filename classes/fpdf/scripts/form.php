@@ -159,7 +159,6 @@ class FormPDF extends GridPDF {
 			
 			$rows = $data['total_rows'];
 			for($i = 0; $i <= $rows; $i++) {
-				echo $i.':'.$rows.'</br>';
 				switch(true) {
 					case ($i == 0 && $i != $rows): //First row but not last.
 						$b[] = 'T';
@@ -176,7 +175,6 @@ class FormPDF extends GridPDF {
 				$b[] = 'L';
 				$border = implode(',',$b);
 				$b=array();
-				echo $border.'</br>';
 				$this->format($column);
 				$text = isset($data['columns'][$i][$column->name]['text']) ? $data['columns'][$i][$column->name]['text'] : '';
 					$this->Cell($w,$column->get('line-height',5), $text,$border,1,$column->get('align','L'));
