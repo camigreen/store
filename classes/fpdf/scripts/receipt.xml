@@ -54,16 +54,16 @@
 				</field>
 				<field name="order_details" type="table" x="10" y="80" rows="1" w="195">
 					<columns>
-						<column name="salesperson" w=".25">
+						<column name="salesperson" w=".25" align="C">
 							<header font-style="B" text="Salesperson" />
 						</column>
-						<column name="order_number" w=".25">
+						<column name="order_number" w=".25" align="C">
 							<header font-style="B" text="Order Number" />
 						</column>
-						<column name="delivery_method" w=".25">
+						<column name="delivery_method" w=".25" align="C">
 							<header font-style="B" text="Delivery Method" />
 						</column>
-						<column name="payment_information" w=".25">
+						<column name="payment_information" w=".25" align="C">
 							<header font-style="B" text="Payment Information" /> 
 						</column>
 					</columns>
