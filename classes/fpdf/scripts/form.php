@@ -149,7 +149,7 @@ class FormPDF extends GridPDF {
 			$w = $params->w*$col_w;
 			$h = $params->rows*5;
 			$this->SetXY($col_x,$col_y);
-			$this->Cell($w, 5,$column->header,1,1,'C');
+			$this->Cell($w, 5,$column->header->text,1,1,'C');
 			$this->SetXY($col_x,$col_y+5);
 			$this->Cell($w,$h,'',1,0,'C');
 			$col_y = $params->y;
