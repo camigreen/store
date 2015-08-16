@@ -28,8 +28,7 @@ class FormPDF extends GridPDF {
 		$font = $this->form->font;
 		$this->SetFont($this->getFont('family'),$this->getFont('style'),$this->getFont('size'));
 	    $this->_AddPage(1,'P','Letter');
-	    $test = new FormTablePDF($this);
-	    $test->test();
+	    
 	    //$this->arrangeItems();
 	    
 	    // foreach($this->items as $item) {
@@ -68,7 +67,10 @@ class FormPDF extends GridPDF {
 
 		$this->AddPage($orientation, $size);
 		$this->SetAutoPageBreak(false);
+
 	    $this->currentPage = $page;
+	    $test = new FormTablePDF($this);
+	    $test->test();
 	    $pages = $this->form->pages;
 	    foreach($pages->$page->fields as $field) {
 	    	$this->{$field->type}($field);
