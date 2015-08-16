@@ -151,6 +151,7 @@ class FormPDF extends GridPDF {
 		$col_y = $field->y;
 		$data = $this->arrangeItems($field, $this->order_data[$field->name]);
 		$start = $data['starting_row'];
+		$overflow = false;
 		foreach($field->columns as $column) {
 			$w = $field->w*$column->w;
 			$this->SetXY($col_x,$col_y);
@@ -184,6 +185,7 @@ class FormPDF extends GridPDF {
 				$available_rows--;
 				if ($available_rows <= 0) {
 					$data['starting_row'] = $i;
+					$overflow = true;
 					break;
 				}
 					
@@ -195,9 +197,9 @@ class FormPDF extends GridPDF {
 			$column->x = $col_x;
 			$column->y = $col_y;
 		}
-		// if ($data['starting_row'] != 0) {
-		// 	$this->_AddPage(1);
-		// }
+		if ($data['starting_row'] != 0) {
+			$this->_AddPage(1);
+		}
 			
 	}
 	public function textbox($field) {
