@@ -127,10 +127,7 @@ class FormPDF extends GridPDF {
 	protected function format($format, $text = null) {
 
 		if(is_string($format)) {
-			$params = $this->form->formats->get($format,null);
-			if(is_null($params)) {
-				return;
-			}
+			$params = $this->form->formats->get($format,$this->app->data->create());
 		} else {
 			$params = $format;
 		}
