@@ -173,7 +173,7 @@ class FormPDF extends GridPDF {
 				switch(true) {
 					case true: //First Row
 						echo 'foo';
-					case true: //Last Row
+					case false: //Last Row
 						echo 'bar';
 					default:
 						echo 'fail';
