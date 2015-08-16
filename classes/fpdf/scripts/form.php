@@ -118,8 +118,8 @@ class FormPDF extends GridPDF {
     			array('format' => 'item-name','text' => $item->name),
     			array('format' => 'item-options','text' => implode("\n",$options))
     		),
-    		'qty' => array('format' => '', $item->qty),
-    		'price' => array('format' => '', $item->price)
+    		'qty' => array('text' => $item->qty),
+    		'price' => array('text' => $item->price)
     	);
     	$options = array();
     }
@@ -130,15 +130,6 @@ class FormPDF extends GridPDF {
     		'delivery_method' => array('text' => $order->localPickup ? 'Local Pickup' : 'UPS Ground'),
     		'payment_information' => array('text' => $order->creditCard->card_name.' ending in '.substr($order->creditCard->cardNumber, -4))
     ));
-    $data['order_detailsx'] = array(
-    	'total_rows' => 1,
-    	'columns' => array(
-			'salesperson' => array(0 => array('text' => $order->getSalesPerson())),
-    		'order_number' => array(0 => array('text' => $order->id)),
-    		'delivery_method' => array(0 => array('text' => $order->localPickup ? 'Local Pickup' : 'UPS Ground')),
-    		'payment_information' => array(0 => array('text' => $order->creditCard->card_name.' ending in '.substr($order->creditCard->cardNumber, -4)))
-    	)	
-    );
 	// echo '<pre>';
 	// var_dump($data['items']);
 	// echo '</pre>';
