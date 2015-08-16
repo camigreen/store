@@ -6,6 +6,7 @@ class FormPDF extends GridPDF {
 	public $_pages;
 	public $type;
 	public $table_x = 0;
+	public $overflow = false;
 
 	public function __construct($app, $type) {
 		$this->app = $app;
@@ -146,6 +147,12 @@ class FormPDF extends GridPDF {
 
 	}
 	public function table($field) {
+		if($this->overflow) {
+			echo '<pre>';
+			var_dump($this->tableData[$field->name]);
+			echo '</pre>';
+			return;
+		}
 		$this->SetXY($field->x,$field->y);
 		$col_x = $field->x;
 		$col_y = $field->y;
@@ -195,6 +202,7 @@ class FormPDF extends GridPDF {
 			$column->y = $col_y;
 		}
 		if ($overflow) {
+			$this->overflow = true;
 			// echo 'overflow starting at '.$data['starting_row'];
 			// echo $data['starting_row'];
 			$this->_AddPage(1);
