@@ -208,7 +208,7 @@ class FormPDF extends GridPDF {
 			$column->y = $col_y;
 		}
 		if ($overflow) {
-			$page = $this->form->pages->get($this->currentPage)->goToPage;
+			$page = $this->form->pages->get($this->currentPage)->gotopage;
 			$this->_AddPage($page);
 		}
 			
