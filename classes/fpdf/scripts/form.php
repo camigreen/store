@@ -139,7 +139,7 @@ class FormPDF extends GridPDF {
 			$this->SetX($this->GetX()+$indent);
 		}
 
-		if($mask = $params->get('mask') && !is_null($text)) {
+		if($mask = $params->get('mask') && !is_null($text) && $text != '') {
 			switch($mask) {
 				case 'currency':
 					$text = $this->app->number->currency($text,array('currency' => 'USD'));
