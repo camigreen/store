@@ -184,6 +184,7 @@ class FormPDF extends GridPDF {
 					$this->Cell($w,$column->get('line-height',5), $text,$border,1,$column->get('align','L'));
 				$available_rows--;
 				if ($available_rows <= 0 && $i < $rows) {
+					echo 'Out of Rows';
 					$data['starting_row'] = $i;
 					$overflow = true;
 					break;
