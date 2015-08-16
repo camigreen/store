@@ -169,6 +169,7 @@ class FormPDF extends GridPDF {
 						$b[] = 'R';
 				}
 				$border = implode(',',$b);
+				$b = array();
 				echo $border.'</br>';
 				$this->format($column);
 				$text = isset($data['columns'][$i][$column->name]['text']) ? $data['columns'][$i][$column->name]['text'] : '';
