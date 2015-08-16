@@ -183,7 +183,7 @@ class FormPDF extends GridPDF {
 				$text = isset($data['columns'][$i][$column->name]['text']) ? $data['columns'][$i][$column->name]['text'] : '';
 					$this->Cell($w,$column->get('line-height',5), $text,$border,1,$column->get('align','L'));
 				$available_rows--;
-				if ($available_rows <= 0 && $i != $rows) {
+				if ($available_rows <= 0 && $i < $rows) {
 					$data['starting_row'] = $i;
 					$overflow = true;
 					break;
