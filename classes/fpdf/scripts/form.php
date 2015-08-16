@@ -22,6 +22,7 @@ class FormPDF extends GridPDF {
 		// echo '<pre>';
 		// var_dump($this->form);
 		// echo '</pre>';
+		$this->format();
 		$font = $this->form->font;
 		$this->SetFont($this->getFont('family'),$this->getFont('style'),$this->getFont('size'));
 	    $this->_AddPage(1,'P','Letter');
@@ -102,17 +103,37 @@ class FormPDF extends GridPDF {
         );
     }
     $data['order_date'] = $order->getOrderDate();
-    $data['salesperson'] = $order->getSalesPerson();
-    $data['order_number'] = $order->id;
-    $data['delivery_method'] = $order->localPickup ? 'Local Pickup' : 'UPS Ground';
-    $data['payment_information'] = $order->creditCard->card_name.' ending in '.substr($order->creditCard->cardNumber, -4);
     $data['subtotal'] = '$'.number_format($order->subtotal,2,'.','');
     $data['shipping'] = '$'.number_format($order->ship_total,2,'.','');
     $data['taxes'] = '$'.number_format($order->tax_total,2,'.','');
     $data['total'] = '$'.number_format($order->total,2,'.','');
+    $data['items'] = array();
+    $data['order_details'] = array(
+    	'salesperson' => array('text' => $order->getSalesPerson()),
+    	'order_number' => array('text' => $order->id),
+    	'delivery_method' => array('text' => $order->localPickup ? 'Local Pickup' : 'UPS Ground'),
+    	'payment_information' => array('text' => $order->creditCard->card_name.' ending in '.substr($order->creditCard->cardNumber, -4))
+    );
     $this->order_data = $data;
     $this->items = $this->app->data->create($order->items);
     return $this;
+	}
+
+	protected function format($params) {
+
+		$foo = 'foo';
+		${$foo} = 'bar';
+		echo $foo;
+
+		// foreach($params as $key => $params) {
+
+		// }
+		// $x = $params->get('y', 0);
+		// $y = $params->get('y', 0);
+		// $w = $params->get('w', 0);
+		// $h = $params->get('h', 0);
+
+
 	}
 
 	public function box($field) {
