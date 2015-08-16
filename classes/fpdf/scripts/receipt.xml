@@ -49,13 +49,13 @@
 				<field name="subtotal" type="textbox" x="185" y="245" h="5" w="20" align="C">
 					<title align="L" text-align="R" text="Subtotal" />
 				</field>
-				<field name="shipping" type="textbox" x="185" y="250" h="5" w="20">
+				<field name="shipping" type="textbox" x="185" y="250" h="5" w="20" align="C">
 					<title align="L" text-align="R" text="Shipping" />
 				</field>
-				<field name="taxes" type="textbox" x="185" y="255" h="5" w="20">
+				<field name="taxes" type="textbox" x="185" y="255" h="5" w="20" align="C">
 					<title align="L" text-align="R" text="Taxes" />
 				</field>
-				<field name="total" type="textbox" x="185" y="260" h="5" w="20">
+				<field name="total" type="textbox" x="185" y="260" h="5" w="20" align="C">
 					<title align="L" text-align="R" text="Total" />
 				</field>
 				<field name="order_details" type="table" x="10" y="80" rows="1" w="195">
@@ -103,13 +103,13 @@
 				<field name="subtotal" type="textbox" x="185" y="245" h="5" w="20" align="C">
 					<title align="L" text-align="R" text="Subtotal" />
 				</field>
-				<field name="shipping" type="textbox" x="185" y="250" h="5" w="20">
+				<field name="shipping" type="textbox" x="185" y="250" h="5" w="20" align="C">
 					<title align="L" text-align="R" text="Shipping" />
 				</field>
-				<field name="taxes" type="textbox" x="185" y="255" h="5" w="20">
+				<field name="taxes" type="textbox" x="185" y="255" h="5" w="20" align="C">
 					<title align="L" text-align="R" text="Taxes" />
 				</field>
-				<field name="total" type="textbox" x="185" y="260" h="5" w="20">
+				<field name="total" type="textbox" x="185" y="260" h="5" w="20" align="C">
 					<title align="L" text-align="R" text="Total" />
 				</field>
 				<field name="order_details" type="table" x="10" y="40" rows="1" w="195">
