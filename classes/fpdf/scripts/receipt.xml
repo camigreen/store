@@ -24,6 +24,9 @@
 		<email>info@ttopcovers.com</email>
 		<logoPath>images/logos/ttop/TTop_100x100.png</logoPath>
 	</company>
+	<formats>
+		<format name="item-name" font-style="B" font-size="10"/>
+	</formats>
 	<pages>
 		<page name="1">
 			<fields>

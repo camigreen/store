@@ -23,25 +23,9 @@ class FormPDF extends GridPDF {
 	public function generate() {
 		$margins = $this->form->margins;
 		$this->SetMargins((int)$margins->left,(int)$margins->top, (int) $margins->right);
-		// echo '<pre>';
-		// var_dump($this->form);
-		// echo '</pre>';
 		$font = $this->form->font;
 		$this->SetFont($this->getFont('family'),$this->getFont('style'),$this->getFont('size'));
 	    $this->_AddPage(1,'P','Letter');
-	    
-	    //$this->arrangeItems();
-	    
-	    // foreach($this->items as $item) {
-	    // 	$data[] = array(
-	    // 		'name' => $item->name,
-	    // 		'qty' => $item->qty,
-	    // 		'price' => $item->price
-	    // 	);
-	    // }
-	    // foreach($data as $item) {
-	    // 	$this->populateTable($item);
-	    // }
 	    
 	    return $this;
 	        
@@ -140,19 +124,20 @@ class FormPDF extends GridPDF {
     return $this;
 	}
 
-	protected function format($params) {
+	protected function format($format, $text = null) {
+
+		if(is_string($format)) {
+			$params = $this->form->formats->$params;
+		} else {
+			$params = $format;
+		}
 
 		$font = $this->form->font;
 		$this->setFont($params->get('font-family',$font->get('family','Arial')),$params->get('font-style',$font->get('style','')), $params->get('font-size', $font->get('size', 8)));
 
 	}
 	public function table($field) {
-		// if($this->overflow) {
-		// 	echo '<pre>';
-		// 	var_dump($this->tableData[$field->name]);
-		// 	echo '</pre>';
-		// 	return;
-		// }
+
 		$this->SetXY($field->x,$field->y);
 		$col_x = $field->x;
 		$col_y = $field->y;
@@ -191,7 +176,7 @@ class FormPDF extends GridPDF {
 				$b[] = 'L';
 				$border = implode(',',$b);
 				$b=array();
-				$this->format($column);
+				if(isset($data['columns'][$i][$column->name]['format'])) $this->format($data['columns'][$i][$column->name]['format']);
 				$text = isset($data['columns'][$i][$column->name]['text']) ? $data['columns'][$i][$column->name]['text'] : '';
 					$this->Cell($w,$column->get('line-height',5), $text,$border,1,$column->get('align','L'));
 				$this->SetXY($col_x, $col_y += $column->get('line-height',5));
@@ -204,9 +189,6 @@ class FormPDF extends GridPDF {
 			$column->y = $col_y;
 		}
 		if ($overflow) {
-			$this->overflow = true;
-			// echo 'overflow starting at '.$data['starting_row'];
-			// echo $data['starting_row'];
 			$this->_AddPage(1);
 		}
 			
@@ -214,10 +196,6 @@ class FormPDF extends GridPDF {
 	public function textbox($field) {
 		
 		$this->format($field);
-		// echo '<pre>';
-		// var_dump($test);
-		// echo '</pre>';
-		//$this->SetFont($params->get('font-family',$this->getFont('family')),$params->get('font-style',$this->getFont('style')),$params->get('font-size',$this->getFont('size')));
 		$text = isset($this->order_data[$field->name]) ? $this->order_data[$field->name] : '';
 		$text = $field->get('all-caps',0) ? strtoupper($text) : $text;
 		$this->SetXY($field->x, $field->y);
