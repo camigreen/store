@@ -70,10 +70,10 @@
 				</field>
 				<field name="items" type="table" x="10" y="95" rows="28" w="195">
 					<columns>
-						<column name="item_description" w=".70">
+						<column name="item_description" w=".75">
 							<header text="Item Description" />
 						</column>
-						<column name="qty" w=".15" align="C">
+						<column name="qty" w=".10" align="C">
 							<header text="Qty" />
 						</column>
 						<column name="price" w=".15" align="C">
