@@ -127,12 +127,12 @@ class FormPDF extends GridPDF {
     	$options = array();
     }
     $data['items'] = $item_array;
-	$data['order_details'] = array(
+	$data['order_details'] = array(array(
 			'salesperson' => array('text' => $order->getSalesPerson()),
     		'order_number' => array('text' => $order->id),
     		'delivery_method' => array('text' => $order->localPickup ? 'Local Pickup' : 'UPS Ground'),
     		'payment_information' => array('text' => $order->creditCard->card_name.' ending in '.substr($order->creditCard->cardNumber, -4))
-    );
+    ));
     $data['order_detailsx'] = array(
     	'total_rows' => 1,
     	'columns' => array(
