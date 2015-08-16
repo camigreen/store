@@ -115,7 +115,8 @@ class FormPDF extends GridPDF {
 			'salesperson' => array('text' => $order->getSalesPerson()),
     		'order_number' => array('text' => $order->id),
     		'delivery_method' => array('text' => $order->localPickup ? 'Local Pickup' : 'UPS Ground'),
-    		'payment_information' => array('text' => $order->creditCard->card_name.' ending in '.substr($order->creditCard->cardNumber, -4))
+    		'payment_information' => array('text' => $order->creditCard->card_name.' ending in '.substr($order->creditCard->cardNumber, -4)),
+    		'transaction_id' => array('text' => $order->transaction_id)
     ));
 	// echo '<pre>';
 	// var_dump($data['items']);
