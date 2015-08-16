@@ -171,9 +171,9 @@ class FormPDF extends GridPDF {
 				// 		$border = 'L,R';
 				// }
 				switch(true) {
-					case true: //First Row
+					case false: //First Row
 						echo 'foo';
-					case false: //Last Row
+					case true: //Last Row
 						echo 'bar';
 					default:
 						echo 'fail';
