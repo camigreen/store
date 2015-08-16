@@ -320,23 +320,26 @@ class FormPDF extends GridPDF {
 	    	$starting_row = $last_row;
 	    	foreach($item as $column => $value) {
 	    		$line_number = $starting_row;
-				if($value['text'] == '') 
-					continue;
-				$columns = $field->columns;
-				$lines = $this->NbLines($field->w*$columns->$column->w,$value['text']);
-		    	foreach($lines as $line) {
-		    		$table['columns'][$column][$line_number]['text'] = $line;
-		    		$table['columns'][$column][$line_number]['format'] = isset($value['format']) ? $value['format'] : NULL;
-		    		$line_number++;
-		    	}
+	    		$value = (array) $value;
+	    		foreach($value as $key => $v) {
+					if($v['text'] == '') 
+						continue;
+					$columns = $field->columns;
+					$lines = $this->NbLines($field->w*$columns->$column->w,$v['text']);
+			    	foreach($lines as $line) {
+			    		$table['columns'][$column][$line_number]['text'] = $line;
+			    		$table['columns'][$column][$line_number]['format'] = isset($v['format']) ? $v['format'] : NULL;
+			    		$line_number++;
+			    	}
+			    }
 	    	$last_row = $last_row > $line_number ? $last_row : $line_number;
 	    	}	
 	    }
 	    $table['total_rows'] = $last_row;
 	    
-		// echo '<pre>';
-		// var_dump($table);
-		// echo '</pre>';
+		echo '<pre>';
+		var_dump($table);
+		echo '</pre>';
 
 		return $table;
 
