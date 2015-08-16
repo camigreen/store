@@ -170,7 +170,7 @@ class FormPDF extends GridPDF {
 				}
 				$border = implode(',',$b);
 				$b = array();
-				echo $i.':'.$rows.'</br>';
+				echo (($rows - 1) == $i).'</br>';
 				echo $border.'</br>';
 				$this->format($column);
 				$text = isset($data['columns'][$i][$column->name]['text']) ? $data['columns'][$i][$column->name]['text'] : '';
