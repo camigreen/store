@@ -69,6 +69,8 @@ class FormPDF extends GridPDF {
 	    $this->currentPage = $page;
 	    $pages = $this->form->pages;
 	    foreach($pages->$page->fields as $field) {
+	    		if($field->name == 'items')
+	    			continue;
 	    		$this->{$field->type}($field);
 	    }
 	    //$this->populate($this->order_data);
