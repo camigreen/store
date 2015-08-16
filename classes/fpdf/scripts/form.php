@@ -145,7 +145,7 @@ class FormPDF extends GridPDF {
 		$this->setFont($params->get('font-family',$font->get('family','Arial')),$params->get('font-style',$font->get('style','')), $params->get('font-size', $font->get('size', 8)));
 
 	}
-	public function table($field, $starting_row = 0) {
+	public function table($field) {
 		$this->SetXY($field->x,$field->y);
 		$col_x = $field->x;
 		$col_y = $field->y;
@@ -160,7 +160,7 @@ class FormPDF extends GridPDF {
 			}
 			$available_rows = $field->rows;
 			$rows = $data['total_rows'];
-			for($i = 0; $i <= $rows; $i++) {
+			for($i = $data['starting_row']; $i <= $rows; $i++) {
 				switch(true) {
 					case ($i == 0 && $i != $rows): //First row but not last.
 						$b[] = 'T';
@@ -182,6 +182,7 @@ class FormPDF extends GridPDF {
 					$this->Cell($w,$column->get('line-height',5), $text,$border,1,$column->get('align','L'));
 				$available_rows--;
 				if ($available_rows <= 0)
+					$data['starting_row'] = $i;
 					break;
 				$this->SetXY($col_x, $col_y += $column->get('line-height',5));
 			}
@@ -191,6 +192,8 @@ class FormPDF extends GridPDF {
 			$column->x = $col_x;
 			$column->y = $col_y;
 		}
+		if ($data['starting_row'] != 0)
+			$this->_AddPage(1);
 	}
 	public function textbox($field) {
 		
