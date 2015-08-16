@@ -128,7 +128,7 @@ class FormPDF extends GridPDF {
 		$font = $this->form->font;
 		$this->setFont($params->get('font-family',$font->get('family','Arial')),$params->get('font-style',$font->get('style','')), $params->get('font-size', $font->get('size', 8)));
 
-		return compact($x, $y, $w, $h);
+		return compact('x', 'y', 'w', 'h');
 	}
 
 	public function box($field) {
