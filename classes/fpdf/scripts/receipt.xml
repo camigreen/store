@@ -31,101 +31,57 @@
 		<page>
 			<name>1</name>
 			<fields>
-				<field x="145" y="8" h="10" w="60" font-size="30" font-style="B" all-caps="1" align="R">
-					<name>form_title</name>
-					<type>textbox</type>
+				<field name="form_title" type="textbox" x="145" y="8" h="10" w="60" font-size="30" font-style="B" all-caps="1" align="R" />
+				<field name="companyname" type="textbox" x="35" y="10" h="5" w="80" font-size="12" font-style="B" />
+				<field name="companyaddress" type="textbox" x="35" y="15" h="35" w="80" line-height="4" />
+				<field name="billto" type="textbox" x="10" y="45" h="30" w="75" border="1">
+					<title align="T" text-align="C" border="1" font-style="B" text="Bill To" />
 				</field>
-				<field x="35" y="10" h="5" w="80" font-size="12" font-style="B">
-					<name>companyname</name>
-					<type>textbox</type>
+				<field name="shipto" type="textbox" x="130" y="45" h="30" w="75" border="1">
+					<title align="T" text-align="C" border="1" font-style="B" text="Ship To" />
 				</field>
-				<field x="35" y="15" h="35" w="80" line-height="4">
-					<name>companyaddress</name>
-					<type>textbox</type>
+				<field name="logo" type="logo" x="10" y="10" h="25" w="25" border="0" />
+				<field name="order_date" type="textbox" x="175" y="20" h="5" w="30" align="R">
+					<title align="L" text-align="R" text="Order Date" />
 				</field>
-				<field x="10" y="45" h="30" w="75" border="1">
-					<name>billto</name>
-					<type>textbox</type>
-					<title align="T" text-align="C" border="1" font-style="B">Bill To</title>
+				<field name="subtotal" type="textbox" x="185" y="245" h="5" w="20" align="C">
+					<title align="L" text-align="R" text="Subtotal" />
 				</field>
-				<field x="130" y="45" h="30" w="75" border="1">
-					<name>shipto</name>
-					<type>textbox</type>
-					<title align="T" text-align="C" border="1" font-style="B">Ship To</title>
+				<field name="shipping" type="textbox" x="185" y="250" h="5" w="20">
+					<title align="L" text-align="R" text="Shipping" />
 				</field>
-				<field x="10" y="10" h="25" w="25" border="0">
-					<name>logo</name>
-					<type>logo</type>
+				<field name="taxes" type="textbox" x="185" y="255" h="5" w="20">
+					<title align="L" text-align="R" text="Taxes" />
 				</field>
-				<field x="175" y="20" h="5" w="30" align="R">
-					<name>order_date</name>
-					<type>textbox</type>
-					<title align="L" text-align="R">Order Date:</title>
+				<field name="total" type="textbox" x="185" y="260" h="5" w="20">
+					<title align="L" text-align="R" text="Total" />
 				</field>
-				<field x="185" y="245" h="5" w="20" align="C">
-					<name>subtotal</name>
-					<type>textbox</type>
-					<title align="L" text-align="R">Subtotal</title>
-				</field>
-				<field x="185" y="250" h="5" w="20">
-					<name>shipping</name>
-					<type>textbox</type>
-					<title align="L" text-align="R">Shipping</title>
-				</field>
-				<field x="185" y="255" h="5" w="20">
-					<name>taxes</name>
-					<type>textbox</type>
-					<title align="L" text-align="R">Taxes</title>
-				</field>
-				<field x="185" y="260" h="5" w="20">
-					<name>total</name>
-					<type>textbox</type>
-					<title align="L" text-align="R">Total</title>
-				</field>
-				<field x="10" y="80" rows="1" w="195">
-					<name>order_details</name>
-					<type>table</type>
-					<title>Order Details</title>
+				<field name="order_details" type="table" x="10" y="80" rows="1" w="195">
 					<columns>
-						<column w=".25">
-							<name>salesperson</name>
-							<header font-style="B">Salesperson</header>
+						<column name="salesperson" w=".25">
+							<header font-style="B" text="Salesperson" />
 						</column>
-						<column w=".25">
-							<name>order_number</name>
-							<header>Order Number</header>
+						<column name="order_number" w=".25">
+							<header text="Order Number" />
 						</column>
-						<column w=".25">
-							<name>delivery_method</name>
-							<header>Delivery Method</header>
+						<column name="delivery_method" w=".25">
+							<header text="Delivery Method" />
 						</column>
-						<column w=".25">
-							<name>payment_information</name>
-							<header>Payment Information</header>
+						<column name="payment_information" w=".25">
+							<header text="Payment Information" /> 
 						</column>
 					</columns>
 				</field>
-				<field x="10" y="95" rows="28" w="195">
-					<name>items</name>
-					<type>table</type>
-					<title>Items</title>
+				<field name="items" type="table" x="10" y="95" rows="28" w="195">
 					<columns>
-						<column w=".70">
-							<name>name</name>
-							<header>Item Description</header>
-							<footer></footer>
+						<column name="item_description" w=".70">
+							<header text="Item Description" />
 						</column>
-						<column w=".15">
-							<name>qty</name>
-							<header>Qty</header>
-							<footer border="1"></footer>
+						<column name="qty" w=".15">
+							<header text="Qty" />
 						</column>
-						<column w=".15">
-							<name>price</name>
-							<header>Unit Price</header>
-							<footer>
-								
-							</footer>
+						<column name="price" w=".15">
+							<header text="Unit Price" />
 						</column>
 					</columns>
 				</field>
