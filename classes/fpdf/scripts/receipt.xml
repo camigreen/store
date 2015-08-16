@@ -57,15 +57,15 @@
 					<name>logo</name>
 					<type>logo</type>
 				</field>
-				<field x="10" y="84" h="6" w="48.75" align="C" border="1">
-					<name>salesperson</name>
-					<type>textbox</type>
-					<title align="T" text-align="C" border="1">Salesperson</title>
-				</field>
 				<field x="175" y="20" h="5" w="30" align="R">
 					<name>order_date</name>
 					<type>textbox</type>
 					<title align="L" text-align="R">Order Date:</title>
+				</field>
+				<field x="10" y="84" h="6" w="48.75" align="C" border="1">
+					<name>salesperson</name>
+					<type>textbox</type>
+					<title align="T" text-align="C" border="1">Salesperson</title>
 				</field>
 				<field x="58.75" y="84" h="6" w="48.75" align="C">
 					<name>order_number</name>
@@ -101,6 +101,29 @@
 					<name>total</name>
 					<type>textbox</type>
 					<title align="L" text-align="R">Total</title>
+				</field>
+				<field x="10" y="84" rows="1" w="195">
+					<name>order_details</name>
+					<type>table</type>
+					<title>Order Details</title>
+					<columns>
+						<column w=".25">
+							<name>salesperson</name>
+							<header>Salesperson</header>
+						</column>
+						<column w=".25">
+							<name>order_number</name>
+							<header>Order Number</header>
+						</column>
+						<column w=".25">
+							<name>delivery_method</name>
+							<header>Delivery Method</header>
+						</column>
+						<column w=".25">
+							<name>payment_information</name>
+							<header>Payment Information</header>
+						</column>
+					</columns>
 				</field>
 				<field x="10" y="95" rows="28" w="195">
 					<name>items</name>
