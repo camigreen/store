@@ -89,7 +89,7 @@
 					<columns>
 						<column w=".25">
 							<name>salesperson</name>
-							<header>Salesperson</header>
+							<header font-style="B">Salesperson</header>
 						</column>
 						<column w=".25">
 							<name>order_number</name>
