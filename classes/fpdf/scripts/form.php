@@ -170,7 +170,8 @@ class FormPDF extends GridPDF {
 				}
 				$border = implode(',',$b);
 				$this->format($column);
-				$this->Cell($w,$column->get('line-height',5), $data['columns'][$i][$column->name]['text'],$border,0,$column->get('align','L'));
+				if(isset($data['columns'][$i][$column->name]['text']))
+					$this->Cell($w,$column->get('line-height',5), $data['columns'][$i][$column->name]['text'],$border,0,$column->get('align','L'));
 			}
 			
 			$col_y = $field->y;
