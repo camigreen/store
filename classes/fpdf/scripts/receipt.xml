@@ -105,7 +105,7 @@
 						</column>
 					</columns>
 				</field>
-				<field x="10" y="95" rows="30" w="195">
+				<field x="10" y="95" rows="28" w="195">
 					<name>items</name>
 					<type>table</type>
 					<title>Items</title>
