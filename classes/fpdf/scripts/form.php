@@ -161,14 +161,14 @@ class FormPDF extends GridPDF {
 			for($i = 0; $i <= $rows; $i++) {
 				echo $i.':'.$rows.'</br>';
 				switch(true) {
-					case ($i == 0 && $i != $row): //First row but not last.
+					case ($i == 0 && $i != $rows): //First row but not last.
 						$b[] = 'T';
 						break;
-					case ($i == 0 && $i == $row): //First Row and last row.
+					case ($i == 0 && $i == $rows): //First Row and last row.
 						$b[] = 'T';
 						$b[] = 'B';
 						break;
-					case ($i != 0 && $i == $row): //Last row but not first
+					case ($i != 0 && $i == $rows): //Last row but not first
 						$b[] = 'B';
 						break;
 				}
