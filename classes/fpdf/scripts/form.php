@@ -163,7 +163,7 @@ class FormPDF extends GridPDF {
 			$rows = $field->rows;
 			if($rows < $data['total_rows']) {
 				$overflow = TRUE;
-				$data['starting_row'] = ($data['total_rows'] - $rows);
+				$data['starting_row'] = $rows + 1;
 			}
 			for($i = $start; $i <= $rows; $i++) {
 				switch(true) {
@@ -195,7 +195,7 @@ class FormPDF extends GridPDF {
 		}
 		if ($overflow) {
 			echo 'overflow starting at '.$data['starting_row'];
-			$this->_AddPage(1);
+			//$this->_AddPage(1);
 		}
 			
 	}
