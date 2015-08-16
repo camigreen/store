@@ -62,26 +62,6 @@
 					<type>textbox</type>
 					<title align="L" text-align="R">Order Date:</title>
 				</field>
-				<field x="10" y="84" h="6" w="48.75" align="C" border="1">
-					<name>salesperson</name>
-					<type>textbox</type>
-					<title align="T" text-align="C" border="1">Salesperson</title>
-				</field>
-				<field x="58.75" y="84" h="6" w="48.75" align="C">
-					<name>order_number</name>
-					<type>box</type>
-					<title>Order Number</title>
-				</field>
-				<field x="107.5" y="84" h="6" w="48.75" align="C">
-					<name>delivery_method</name>
-					<type>box</type>
-					<title>Delivery Method</title>
-				</field>
-				<field x="156.25" y="84" h="6" w="48.75" align="C">
-					<name>payment_information</name>
-					<type>box</type>
-					<title>Payment Information</title>
-				</field>
 				<field x="185" y="245" h="5" w="20" align="C">
 					<name>subtotal</name>
 					<type>textbox</type>
