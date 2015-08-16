@@ -159,6 +159,7 @@ class FormPDF extends GridPDF {
 		$this->SetXY($field->x,$field->y);
 		$col_x = $field->x;
 		$col_y = $field->y;
+		$data = $this->arrangeItems($field->columns, $this->order_data[$field->name]);
 		foreach($field->columns as $column) {
 			$w = $field->w*$column->w;
 			$this->SetXY($col_x,$col_y);
@@ -167,7 +168,7 @@ class FormPDF extends GridPDF {
 				$this->Cell($w, 5,$column->header->get('text',$column->header),1,1,'C');
 				$this->SetXY($col_x,$col_y+5);
 			}
-			$data = $this->arrangeItems($column, $this->order_data[$field->name]);
+			
 			$rows = $data['total_rows'];
 			for($i = 0; $i < $rows; $i++) {
 				switch($i) {
