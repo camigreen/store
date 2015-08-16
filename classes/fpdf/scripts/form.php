@@ -200,11 +200,11 @@ class FormPDF extends GridPDF {
 	}
 
 	public function logo($field) {
-		$x = $field->params->get('x');
-		$y = $field->params->get('y');
-		$w = $field->params->get('w');
-		$h = $field->params->get('h');
-		$border = $field->params->get('border');
+		$x = $field->get('x');
+		$y = $field->get('y');
+		$w = $field->get('w');
+		$h = $field->get('h');
+		$border = $field->get('border');
 		$path = $this->form->company->logoPath;
 		$this->Image($path,$x,$y,$w,$h);
 	}
