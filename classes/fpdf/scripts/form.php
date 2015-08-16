@@ -181,7 +181,7 @@ class FormPDF extends GridPDF {
 				$available_rows--;
 				if($available_rows <= 0) {
 					$data['starting_row'] = $i;
-					$this->AddPage(1);
+					$this->_AddPage(1);
 					return;
 				}
 				$this->SetXY($col_x, $col_y += $column->get('line-height',5));
