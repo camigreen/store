@@ -324,10 +324,6 @@ class FormPDF extends GridPDF {
 			'total_rows' => 0,
 			'columns' => array()
 		);
-		
-		echo '<pre>';
-		var_dump($data);
-		echo '</pre>';
 	    $last_row = 0;
 	    foreach ($data as $item) {
 	    	$starting_row = $last_row;
@@ -347,9 +343,9 @@ class FormPDF extends GridPDF {
 	    }
 	    $table['total_rows'] = $last_row;
 	    
-		echo '<pre>';
-		var_dump($table);
-		echo '</pre>';
+		// echo '<pre>';
+		// var_dump($table);
+		// echo '</pre>';
 
 		return $table;
 
