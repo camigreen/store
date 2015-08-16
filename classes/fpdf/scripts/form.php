@@ -173,16 +173,16 @@ class FormPDF extends GridPDF {
 				$overflow = TRUE;
 				$data['starting_row'] = $start + $rows + 1;
 			}
-			for($i = $start; $i <= $rows; $i++) {
+			for($i = $start; $i < $rows; $i++) {
 				switch(true) {
-					case ($i == 0 && $i != $rows): //First row but not last.
+					case ($i == 0 && $i != ($rows-1)): //First row but not last.
 						$b[] = 'T';
 						break;
-					case ($i == 0 && $i == $rows): //First Row and last row.
+					case ($i == 0 && $i == ($rows-1)): //First Row and last row.
 						$b[] = 'T';
 						$b[] = 'B';
 						break;
-					case ($i != 0 && $i == $rows): //Last row but not first
+					case ($i != 0 && $i == ($rows-1)): //Last row but not first
 						$b[] = 'B';
 						break;
 				}
