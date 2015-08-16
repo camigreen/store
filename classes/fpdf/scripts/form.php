@@ -195,9 +195,9 @@ class FormPDF extends GridPDF {
 			$column->y = $col_y;
 		}
 		if ($overflow) {
-			echo 'overflow starting at '.$data['starting_row'];
-			echo $data['starting_row'];
-			//$this->_AddPage(1);
+			// echo 'overflow starting at '.$data['starting_row'];
+			// echo $data['starting_row'];
+			$this->_AddPage(1);
 		}
 			
 	}
