@@ -187,9 +187,9 @@ class FormPDF extends GridPDF {
 					echo 'Out of Rows';
 					$data['starting_row'] = $i;
 					$overflow = true;
-					break;
 				}
-				echo $overflow ? 'True' : 'False';	
+				echo $overflow ? 'True' : 'False';
+				if($overflow) break;	
 				$this->SetXY($col_x, $col_y += $column->get('line-height',5));
 			}
 			
