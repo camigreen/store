@@ -116,7 +116,7 @@ class FormPDF extends GridPDF {
     	$item_array[] = array(
     		'item_description' => array(
     			array('format' => 'item-name','text' => $item->name),
-    			array('format' => 'item-options','text' => $options)
+    			array('format' => 'item-options','text' => implode("\n",$options))
     		),
     		'qty' => array('format' => '', $item->qty),
     		'price' => array('format' => '', $item->price)
