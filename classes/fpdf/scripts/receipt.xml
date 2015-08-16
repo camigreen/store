@@ -98,20 +98,21 @@
 				<field name="companyname" type="textbox" x="35" y="10" h="5" w="80" font-size="12" font-style="B" />
 				<field name="companyaddress" type="textbox" x="35" y="15" h="35" w="80" line-height="4" />
 				<field name="logo" type="logo" x="10" y="10" h="25" w="25" border="0" />
+				<field name="totals_box" type="textbox" x="156.25" y="240" h="25" w="48.75" border="1" />
 				<field name="order_date" type="textbox" x="175" y="20" h="5" w="30" align="R">
 					<title align="L" text-align="R" text="Order Date" />
 				</field>
-				<field name="subtotal" type="textbox" x="176" y="245" h="5" w="29" align="C" font-size="10">
-					<title align="L" text-align="R" text="Subtotal" font-size="10"/>
+				<field name="subtotal" type="textbox" x="176" y="242" h="5" w="29" align="C" font-size="10">
+					<title align="L" text-align="R" text="Subtotal"  font-size="10"/>
 				</field>
-				<field name="shipping" type="textbox" x="176" y="250" h="5" w="29" align="C" font-size="10">
-					<title align="L" text-align="R" text="Shipping" font-size="10"/>
+				<field name="shipping" type="textbox" x="176" y="247" h="5" w="29" align="C" font-size="10">
+					<title align="L" text-align="R" text="Shipping"  font-size="10"/>
 				</field>
-				<field name="taxes" type="textbox" x="176" y="255" h="5" w="29" align="C" font-size="10">
-					<title align="L" text-align="R" text="Taxes" font-size="10" />
+				<field name="taxes" type="textbox" x="176" y="252" h="5" w="29" align="C" font-size="10">
+					<title align="L" text-align="R" text="Taxes"  font-size="10"/>
 				</field>
-				<field name="total" type="textbox" x="176" y="260" h="5" w="29" align="C" font-size="10">
-					<title align="L" text-align="R" text="Total" font-size="10" />
+				<field name="total" type="textbox" x="176" y="257" h="5" w="29" align="C" font-size="10">
+					<title align="L" text-align="R" text="Total"  font-size="10"/>
 				</field>
 				<field name="order_details" type="table" x="10" y="40" rows="1" w="195">
 					<columns>
