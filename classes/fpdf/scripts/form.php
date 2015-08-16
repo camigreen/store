@@ -336,7 +336,7 @@ class FormPDF extends GridPDF {
 				if($value['text'] == '') 
 					continue;
 				$columns = $field->columns;
-				$lines = $this->NbLines($field-w*$columns->$column->w,$value['text']);
+				$lines = $this->NbLines($field->w*$columns->$column->w,$value['text']);
 		    	foreach($lines as $line) {
 		    		$table['columns'][$column][$line_number]['text'] = $line;
 		    		$table['columns'][$column][$line_number]['format'] = $value['format'];
