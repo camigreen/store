@@ -114,6 +114,7 @@ class FormPDF extends GridPDF {
     $items = $this->app->data->create($order->items);
     foreach($items as $item) {
     	foreach($item as $option) {
+    		var_dump($option);
     		$options[] = $option['name'].': '.$option['value']."\n";
     	}
     	$item_array[] = array(
