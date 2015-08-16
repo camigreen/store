@@ -193,7 +193,7 @@ class FormPDF extends GridPDF {
 				$text = isset($data['columns'][$i][$column->name]['text']) ? $data['columns'][$i][$column->name]['text'] : '';
 					$this->Cell($w,$column->get('line-height',5), '',$border);
 					$this->SetXY($col_x, $col_y);
-					$this->format($column);
+					$text = $this->format($column, $text);
 					if(isset($data['columns'][$i][$column->name]['format'])) {
 						$text = $this->format($data['columns'][$i][$column->name]['format'], $text);
 					}
