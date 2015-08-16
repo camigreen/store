@@ -153,6 +153,9 @@ class FormPDF extends GridPDF {
 			echo '</pre>';
 			return;
 		}
+		echo '<pre>';
+			var_dump($this->tableData[$field->name]);
+			echo '</pre>';
 		$this->SetXY($field->x,$field->y);
 		$col_x = $field->x;
 		$col_y = $field->y;
