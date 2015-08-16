@@ -44,7 +44,7 @@
 					<title align="T" text-align="C" border="1" font-style="B" text="Ship To" />
 				</field>
 				<field name="logo" type="logo" x="10" y="10" h="25" w="25" border="0" />
-				<field name="order_date" type="textbox" x="175" y="20" h="5" w="30" align="R" >
+				<field name="order_date" type="textbox" x="170" y="20" h="5" w="35" align="R" >
 					<title align="L" text-align="R" text="Order Date:" />
 				</field>
 				<field name="subtotal" type="textbox" x="176" y="242" h="5" w="29" align="C" font-size="10">
@@ -99,7 +99,7 @@
 				<field name="companyaddress" type="textbox" x="35" y="15" h="35" w="80" line-height="4" />
 				<field name="logo" type="logo" x="10" y="10" h="25" w="25" border="0" />
 				<field name="totals_box" type="textbox" x="156.25" y="240" h="25" w="48.75" border="1" />
-				<field name="order_date" type="textbox" x="175" y="20" h="5" w="30" align="R">
+				<field name="order_date" type="textbox" x="170" y="20" h="5" w="35" align="R" >
 					<title align="L" text-align="R" text="Order Date:" />
 				</field>
 				<field name="subtotal" type="textbox" x="176" y="242" h="5" w="29" align="C" font-size="10">
