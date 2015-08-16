@@ -127,30 +127,15 @@ class FormPDF extends GridPDF {
 		$this->setFont($params->get('font-family',$font->get('family','Arial')),$params->get('font-style',$font->get('style','')), $params->get('font-size', $font->get('size', 8)));
 
 	}
-
-	public function box($field) {
-
-		$params = $field->params;
-		$this->SetXY($params->x, $params->y);
-
-		$this->Cell($params->w, $params->h, '', 1);
-
-		if ($title = $field->get('title')) {
-			$this->SetXY($params->x, $params->y-4);
-			$this->SetFont('Arial','B',8);
-			$this->Cell($params->w, 4, $title, 'R,L,T',0,'C');
-		}
-	}
 	public function table($field) {
-		$params = $field->params;
-		$this->SetXY($params->x,$params->y);
-		$col_x = $params->x;
-		$col_y = $params->y;
+		$this->SetXY($field->x,$field->y);
+		$col_x = $field->x;
+		$col_y = $field->y;
 		foreach($field->columns as $column) {
-			$this->format($column->params);
-			$col_w = (float) $column->params->w;
-			$w = $params->w*$col_w;
-			$h = $params->rows*5;
+			$this->format($column);
+			$col_w = (float) $column->w;
+			$w = $field->w*$col_w;
+			$h = $field->rows*5;
 			$this->SetXY($col_x,$col_y);
 			echo '<pre>';
 			var_dump($column->header->text);
@@ -158,64 +143,60 @@ class FormPDF extends GridPDF {
 			$this->Cell($w, 5,$column->header->get('text',$column->header),1,1,'C');
 			$this->SetXY($col_x,$col_y+5);
 			$this->Cell($w,$h,'',1,0,'C');
-			$col_y = $params->y;
+			$col_y = $field->y;
 			$col_x += $w;
-			$column->params->x = $col_x;
-			$column->params->y = $col_y;
+			$column->x = $col_x;
+			$column->y = $col_y;
 		}
 	}
 	public function textbox($field) {
 		
-		$params = $field->params;
-		$this->format($params);
+		$this->format($field);
 		// echo '<pre>';
 		// var_dump($test);
 		// echo '</pre>';
 		//$this->SetFont($params->get('font-family',$this->getFont('family')),$params->get('font-style',$this->getFont('style')),$params->get('font-size',$this->getFont('size')));
 		$text = isset($this->order_data[$field->name]) ? $this->order_data[$field->name] : '';
-		$text = $params->get('all-caps',0) ? strtoupper($text) : $text;
-		$this->SetXY($params->x, $params->y);
+		$text = $field->get('all-caps',0) ? strtoupper($text) : $text;
+		$this->SetXY($field->x, $field->y);
 		if(is_array($text)) {
 			$txt = implode("\n",$text);
-			$this->Cell($params->w,$params->get('h', 0),'',$params->get('border', 0));
-			$this->SetXY($params->x, $params->y);
-			$this->MultiCell($params->w, $params->get('line-height',5), $txt, 0, $params->get('align','L'));
+			$this->Cell($field->w,$field->get('h', 0),'',$field->get('border', 0));
+			$this->SetXY($field->x, $field->y);
+			$this->MultiCell($field->w, $field->get('line-height',5), $txt, 0, $field->get('align','L'));
 		} else {
-			$this->Cell($params->w, $params->get('h', 0), $text, $params->get('border', 0), 0, $params->get('align','L'));
+			$this->Cell($field->w, $field->get('h', 0), $text, $field->get('border', 0), 0, $field->get('align','L'));
 		}
 		
 		if ($title = $field->get('title')) {
 			if(is_object($title)) {
-				$title_params = $title->get('params');
-				$align = $title_params->get('align','L');
-				$this->SetFont($title_params->get('font-family',$this->getFont('family')),$title_params->get('font-style',$this->getFont('style')),$title_params->get('font-size',$this->getFont('size')));
+				$title = $title->get('params');
+				$align = $title->get('align','L');
+				$this->SetFont($title->get('font-family',$this->getFont('family')),$title->get('font-style',$this->getFont('style')),$title->get('font-size',$this->getFont('size')));
 				$w = $params->w;
 				$h = 5;
 				switch($align) {
 					case 'R':
 						$w = $this->GetStringWidth($title->get('text',''))+5;
-						$this->SetXY($params->x+$title_params->get('w',$w), $params->y);
+						$this->SetXY($field->x+$title->get('w',$w), $field->y);
 						break;
 					case 'L':
 						$w = $this->GetStringWidth($title->get('text',''))+5;
-						$this->SetXY($params->x-$title_params->get('w',$w), $params->y);
+						$this->SetXY($field->x-$title->get('w',$w), $field->y);
 						break;
 					case 'T':
-						$w = $params->w;
-						$this->SetXY($params->x,$params->y-$title_params->get('h',$h));
+						$w = $field->w;
+						$this->SetXY($field->x,$field->y-$title->get('h',$h));
 						break;
 					case 'B':
-						$w = $params->w;
-						$this->SetXY($params->x,$params->y+$title_params->get('h',$h));
+						$w = $field->w;
+						$this->SetXY($field->x,$field->y+$title->get('h',$h));
 						break;
 					default:
-						$this->SetXY($params->x-$title_params->get('w',$w), $params->y);
+						$this->SetXY($field->x-$title->get('w',$w), $field->y);
 				}
-				$this->Cell($title_params->get('w',$w), $title_params->get('h',$h), $title->get('text',''), $title_params->get('border',0),0, $title_params->get('text-align','L'));
+				$this->Cell($title->get('w',$w), $title->get('h',$h), $title->get('text',''), $title->get('border',0),0, $title->get('text-align','L'));
 			}
-			// 
-			// 
-			// 
 		}
 	}
 
