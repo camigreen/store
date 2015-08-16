@@ -54,9 +54,8 @@ class FormPDF extends GridPDF {
 		$this->AddPage($page->get('orientation', 'P'), $page->get('size', 'Letter'));
 		$this->SetAutoPageBreak(false);
 
-	    $this->currentPage = $page;
-	    $pages = $this->form->pages;
-	    foreach($pages->$page->fields as $field) {
+	    $this->currentPage = $page->name;
+	    foreach($page->fields as $field) {
 	    	$this->{$field->type}($field);
 	    }
 	}
