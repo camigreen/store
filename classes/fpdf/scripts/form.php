@@ -15,7 +15,7 @@ class FormPDF extends GridPDF {
 	  //   	    echo '<pre>';
 			// var_dump($this->form);
 			// echo '</pre>';
-	    $this->grid = $this->form->get('grid',0);
+	    $this->grid = (bool) $this->form->get('grid',0);
     	parent::__construct();
 	}
 
@@ -232,18 +232,18 @@ class FormPDF extends GridPDF {
 	        {
 	        	$elem = $element instanceof SimpleXMLElement ? $this->xml2obj($element) : $e;
 	        	foreach($attrs as $key =>$attr) {
-	        		$elem->$key = (string) $attr;
+	        		$elem->$key = is_float($attr) ? (float) $attr : (string) $attr;
 	        	}
 	        	$name = $elem->get('name',$tag);
 	        	$xmlObj[$name] = $elem;
 	        }
 	        else
 	        {
-	            $xmlObj[$tag] = trim($element);
+	            $xmlObj[$tag] = is_float($element) ? (float) $element : (string) $element;
 	        }
 	    }
 	    foreach($xml->attributes() as $key => $value) {
-	    	$xmlObj[$key] = (string) $value;
+	    	$xmlObj[$key] = is_float($attr) ? (float) $attr : (string) $attr;
 	    }
 	    return $this->app->data->create($xmlObj);
 	}
