@@ -164,7 +164,7 @@ class FormPDF extends GridPDF {
 			$rows = $field->rows;
 			if($rows < $data['total_rows']) {
 				$overflow = TRUE;
-				$this->tableData['starting_row'] = $rows + 1;
+				$this->tableData[$field->name]['starting_row'] = $rows + 1;
 			}
 			for($i = $start; $i <= $rows; $i++) {
 				switch(true) {
