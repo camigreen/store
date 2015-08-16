@@ -22,7 +22,6 @@ class FormPDF extends GridPDF {
 		// echo '<pre>';
 		// var_dump($this->form);
 		// echo '</pre>';
-		$this->format();
 		$font = $this->form->font;
 		$this->SetFont($this->getFont('family'),$this->getFont('style'),$this->getFont('size'));
 	    $this->_AddPage(1,'P','Letter');
@@ -119,21 +118,17 @@ class FormPDF extends GridPDF {
     return $this;
 	}
 
-	protected function format() {
+	protected function format($params) {
 
-		$foo = 'foo';
-		${$foo} = 'bar';
-		echo $foo;
+		$x = $params->get('y', 0);
+		$y = $params->get('y', 0);
+		$w = $params->get('w', 0);
+		$h = $params->get('h', 0);
 
-		// foreach($params as $key => $params) {
+		$font = $this->form->font;
+		$this->setFont($params->get('font-family',$font->get('family','Arial')),$params->get('font-style',$font->get('style','')), $params->get('font-size', $font->get('size', 8)));
 
-		// }
-		// $x = $params->get('y', 0);
-		// $y = $params->get('y', 0);
-		// $w = $params->get('w', 0);
-		// $h = $params->get('h', 0);
-
-
+		return compact($x, $y, $w, $h);
 	}
 
 	public function box($field) {
@@ -173,7 +168,8 @@ class FormPDF extends GridPDF {
 		// var_dump($field);
 		// echo '</pre>';
 		$params = $field->params;
-
+		$this->format($params);
+		echo $x;
 		$this->SetFont($params->get('font-family',$this->getFont('family')),$params->get('font-style',$this->getFont('style')),$params->get('font-size',$this->getFont('size')));
 		$text = isset($this->order_data[$field->name]) ? $this->order_data[$field->name] : '';
 		$text = $params->get('all-caps',0) ? strtoupper($text) : $text;
