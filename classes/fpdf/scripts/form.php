@@ -235,15 +235,17 @@ class FormPDF extends GridPDF {
 	        		$elem->$key = (string) $attr;
 	        	}
 	        	$name = $elem->get('name',$tag);
-	        	$arr[$name] = $elem;
+	        	$xmlObj[$name] = $elem;
 	        }
 	        else
 	        {
-	            $arr[$tag] = trim($element);
+	            $xmlObj[$tag] = trim($element);
 	        }
 	    }
-	    
-	    return $this->app->data->create($arr);
+	    foreach($xml->attributes() as $key => $value) {
+	    	$xmlObj[$key] => $value;
+	    }
+	    return $this->app->data->create($xmlObj);
 	}
 
 	public function loadPages() {
