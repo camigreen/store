@@ -180,9 +180,11 @@ class FormPDF extends GridPDF {
 				$b[] = 'L';
 				$border = implode(',',$b);
 				$b=array();
-				if(isset($data['columns'][$i][$column->name]['format'])) $this->format($data['columns'][$i][$column->name]['format']);
 				$text = isset($data['columns'][$i][$column->name]['text']) ? $data['columns'][$i][$column->name]['text'] : '';
-					$this->Cell($w,$column->get('line-height',5), $text,$border,1,$column->get('align','L'));
+					$this->Cell($w,$column->get('line-height',5), '',$border);
+					$this->SetXY($col_x, $col_y);
+					if(isset($data['columns'][$i][$column->name]['format'])) $this->format($data['columns'][$i][$column->name]['format']);
+					$this->Cell($w,$column->get('line-height',5), $text,0,1,$column->get('align','L'));
 				$this->SetXY($col_x, $col_y += $column->get('line-height',5));
 				$i++;
 			}
