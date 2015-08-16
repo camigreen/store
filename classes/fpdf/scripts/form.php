@@ -170,10 +170,9 @@ class FormPDF extends GridPDF {
 		
 		if ($title = $field->get('title')) {
 			if(is_object($title)) {
-				$title = $title->get('params');
 				$align = $title->get('align','L');
-				$this->SetFont($title->get('font-family',$this->getFont('family')),$title->get('font-style',$this->getFont('style')),$title->get('font-size',$this->getFont('size')));
-				$w = $params->w;
+				$this->format($title);
+				$w = $field->w;
 				$h = 5;
 				switch($align) {
 					case 'R':
