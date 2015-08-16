@@ -111,10 +111,13 @@ class FormPDF extends GridPDF {
     $data['total'] = '$'.number_format($order->total,2,'.','');
     $data['items'] = array();
     $data['order_details'] = array(
-    	'salesperson' => array('text' => $order->getSalesPerson()),
-    	'order_number' => array('text' => $order->id),
-    	'delivery_method' => array('text' => $order->localPickup ? 'Local Pickup' : 'UPS Ground'),
-    	'payment_information' => array('text' => $order->creditCard->card_name.' ending in '.substr($order->creditCard->cardNumber, -4))
+    	'total_rows' => 1,
+    	'columns' => array(
+			'salesperson' => array(0 => array('text' => $order->getSalesPerson())),
+    		'order_number' => array(0 => array('text' => $order->id)),
+    		'delivery_method' => array(0 => array('text' => $order->localPickup ? 'Local Pickup' : 'UPS Ground')),
+    		'payment_information' => array(0 => array('text' => $order->creditCard->card_name.' ending in '.substr($order->creditCard->cardNumber, -4)))
+    	)	
     );
     $this->order_data = $data;
     $this->items = $this->app->data->create($order->items);
@@ -133,13 +136,27 @@ class FormPDF extends GridPDF {
 		$col_y = $field->y;
 		foreach($field->columns as $column) {
 			$w = $field->w*$column->w;
-			$h = $field->rows*5;
 			$this->SetXY($col_x,$col_y);
 			if($header = $column->get('header')) {
 				$this->Cell($w, 5,$column->header->get('text',$column->header),1,1,'C');
 				$this->SetXY($col_x,$col_y+5);
 			}
-			$this->Cell($w,$h,'',1,0,'C');
+			$data = $this->order_data[$field->name];
+			$rows = $data['total_rows'];
+			for($i = 0; $i < $rows; $i++) {
+				switch($i) {
+					case 0: //First Row
+						$border[] = 'T';
+					case ($i == $rows - 1): //Last Row
+						$border[] = 'B';
+					default:
+						$border[] = 'L';
+						$border[] = 'R';
+				}
+				$border = implode(',',$border);
+				$this->Cell($w,$column->get('line-height',5), $data['columns'][$column->name][$i]['text'],$border,0,$column->get('align','L'));
+			}
+			
 			$col_y = $field->y;
 			$col_x += $w;
 			$column->x = $col_x;
