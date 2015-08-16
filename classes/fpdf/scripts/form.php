@@ -331,6 +331,7 @@ class FormPDF extends GridPDF {
 		// var_dump($data);
 		// echo '</pre>';
 	    foreach ($data as $item) {
+	    	$itemNum = 1;
 	    	$starting_row = $last_row;
 	    	foreach($item as $column => $value) {
 	    		$line_number = $starting_row;
@@ -344,6 +345,10 @@ class FormPDF extends GridPDF {
 			    	foreach($lines as $line) {
 			    		$table['columns'][$line_number][$column]['text'] = $line;
 			    		$table['columns'][$line_number][$column]['format'] = isset($v['format']) ? $v['format'] : NULL;
+			    		$line_number++;
+			    	}
+			    	if(count($data) > 1 && $itemNum != count($data)) {
+			    		$table['columns'][$line_number][$column]['text'] = $line;
 			    		$line_number++;
 			    	}
 			    }
