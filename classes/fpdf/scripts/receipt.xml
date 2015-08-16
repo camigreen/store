@@ -87,7 +87,60 @@
 					</columns>
 				</field>
 			</fields>
-			<gotopage>page1</gotopage>
+			<gotopage>page2</gotopage>
+		</page>
+		<page name="page2">
+			<fields>
+				<field name="form_title" type="textbox" x="145" y="8" h="10" w="60" font-size="30" font-style="B" all-caps="1" align="R" />
+				<field name="companyname" type="textbox" x="35" y="10" h="5" w="80" font-size="12" font-style="B" />
+				<field name="companyaddress" type="textbox" x="35" y="15" h="35" w="80" line-height="4" />
+				<field name="logo" type="logo" x="10" y="10" h="25" w="25" border="0" />
+				<field name="order_date" type="textbox" x="175" y="20" h="5" w="30" align="R">
+					<title align="L" text-align="R" text="Order Date" />
+				</field>
+				<field name="subtotal" type="textbox" x="185" y="245" h="5" w="20" align="C">
+					<title align="L" text-align="R" text="Subtotal" />
+				</field>
+				<field name="shipping" type="textbox" x="185" y="250" h="5" w="20">
+					<title align="L" text-align="R" text="Shipping" />
+				</field>
+				<field name="taxes" type="textbox" x="185" y="255" h="5" w="20">
+					<title align="L" text-align="R" text="Taxes" />
+				</field>
+				<field name="total" type="textbox" x="185" y="260" h="5" w="20">
+					<title align="L" text-align="R" text="Total" />
+				</field>
+				<field name="order_details" type="table" x="10" y="80" rows="1" w="195">
+					<columns>
+						<column name="salesperson" w=".25" align="C">
+							<header font-style="B" text="Salesperson" />
+						</column>
+						<column name="order_number" w=".25" align="C">
+							<header font-style="B" text="Order Number" />
+						</column>
+						<column name="delivery_method" w=".25" align="C">
+							<header font-style="B" text="Delivery Method" />
+						</column>
+						<column name="payment_information" w=".25" align="C">
+							<header font-style="B" text="Payment Information" /> 
+						</column>
+					</columns>
+				</field>
+				<field name="items" type="table" x="10" y="95" rows="28" w="195">
+					<columns>
+						<column name="item_description" w=".75">
+							<header text="Item Description" />
+						</column>
+						<column name="qty" w=".10" align="C">
+							<header text="Qty" />
+						</column>
+						<column name="price" w=".15" align="C" mask="currency">
+							<header text="Unit Price" />
+						</column>
+					</columns>
+				</field>
+			</fields>
+			<gotopage>page2</gotopage>
 		</page>
 	</pages>
 </form>
