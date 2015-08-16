@@ -69,7 +69,7 @@ class FormPDF extends GridPDF {
 		$this->SetAutoPageBreak(false);
 
 	    $this->currentPage = $page;
-	    $test = new FormTablePDF($this);
+	    $test = new FormTable($this);
 	    $test->test();
 	    $pages = $this->form->pages;
 	    foreach($pages->$page->fields as $field) {
