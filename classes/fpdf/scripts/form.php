@@ -119,7 +119,7 @@ class FormPDF extends GridPDF {
     return $this;
 	}
 
-	protected function format($params) {
+	protected function format() {
 
 		$foo = 'foo';
 		${$foo} = 'bar';
