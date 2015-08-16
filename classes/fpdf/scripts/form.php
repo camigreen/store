@@ -162,7 +162,7 @@ class FormPDF extends GridPDF {
 				switch(true) {
 					case ($i == 0): //First Row
 						$b[] = 'T';
-					case ($rows - 1) == $i: //Last Row
+					case (($rows - 1) == $i): //Last Row
 						$b[] = 'B';
 					default:
 						$b[] = 'L';
