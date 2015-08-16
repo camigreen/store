@@ -187,7 +187,7 @@ class FormPDF extends GridPDF {
 						$b[] = 'B';
 						break;
 				}
-				echo $row_used;
+				echo $rows_used;
 				$b[] = 'R';
 				$b[] = 'L';
 				$border = implode(',',$b);
