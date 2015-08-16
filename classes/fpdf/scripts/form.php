@@ -111,8 +111,32 @@ class FormPDF extends GridPDF {
     $data['shipping'] = '$'.number_format($order->ship_total,2,'.','');
     $data['taxes'] = '$'.number_format($order->tax_total,2,'.','');
     $data['total'] = '$'.number_format($order->total,2,'.','');
-    $data['items'] = $this->app->data->create($order->items);
+    $items = $this->app->data->create($order->items);
+    foreach($items as $item) {
+    	foreach($item as $option) {
+    		$options[] = $option->name.': '.$option->value."\n";
+    	}
+    	$item_array[] = array(
+    		'item_description' = array(
+    			array('format' => 'item-name','data' => $item->name),
+    			array('format' => 'item-options','data' => $options)
+    		),
+    		'qty' => array('format' => '', $item->qty),
+    		'price' => array('format' => '', $item->price)
+    	)
+    	$options = array();
+    }
+    $data['items'] = $item_array;
     $data['order_details'] = array(
+    	'total_rows' => 1,
+    	'columns' => array(
+			'salesperson' => array(0 => array('text' => $order->getSalesPerson())),
+    		'order_number' => array(0 => array('text' => $order->id)),
+    		'delivery_method' => array(0 => array('text' => $order->localPickup ? 'Local Pickup' : 'UPS Ground')),
+    		'payment_information' => array(0 => array('text' => $order->creditCard->card_name.' ending in '.substr($order->creditCard->cardNumber, -4)))
+    	)	
+    );
+    $data['order_detailsx'] = array(
     	'total_rows' => 1,
     	'columns' => array(
 			'salesperson' => array(0 => array('text' => $order->getSalesPerson())),
@@ -297,7 +321,7 @@ class FormPDF extends GridPDF {
 		//var_dump($data);
 	}
 
-	public function arrangeItems() {
+	public function arrangeItems($columns) {
 		$rows = array(
 			'count' => 0,
 			'columns' => array()
