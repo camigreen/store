@@ -158,9 +158,8 @@ class FormPDF extends GridPDF {
 				$this->Cell($w, 5,$column->header->get('text',$column->header),1,1,'C');
 				$this->SetXY($col_x,$col_y += 5);
 			}
-			$available_rows = $field->rows;
 			$rows = $data['total_rows'];
-			for($i = $data['starting_row']; $i <= $rows; $i++) {
+			for($i = 0; $i <= $rows; $i++) {
 				switch(true) {
 					case ($i == 0 && $i != $rows): //First row but not last.
 						$b[] = 'T';
@@ -180,12 +179,6 @@ class FormPDF extends GridPDF {
 				$this->format($column);
 				$text = isset($data['columns'][$i][$column->name]['text']) ? $data['columns'][$i][$column->name]['text'] : '';
 					$this->Cell($w,$column->get('line-height',5), $text,$border,1,$column->get('align','L'));
-				$available_rows--;
-				if($available_rows <= 0) {
-					$data['starting_row'] = $i;
-					$this->_AddPage(1);
-					
-				}
 				$this->SetXY($col_x, $col_y += $column->get('line-height',5));
 			}
 			
