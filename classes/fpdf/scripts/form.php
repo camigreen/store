@@ -347,11 +347,12 @@ class FormPDF extends GridPDF {
 			    		$table['columns'][$line_number][$column]['format'] = isset($v['format']) ? $v['format'] : NULL;
 			    		$line_number++;
 			    	}
-			    	if(count($data) > 1 && $itemNum != count($data)) {
-			    		$table['columns'][$line_number][$column]['text'] = $line;
-			    		$line_number++;
-			    	}
 			    }
+			    if(count($data) > 1 && $itemNum != count($data)) {
+		    		$table['columns'][$line_number][$column]['text'] = '';
+		    		$line_number++;
+			    }
+			    $itemNum++;
 	    	$last_row = $last_row > $line_number ? $last_row : $line_number;
 	    	}	
 	    }
