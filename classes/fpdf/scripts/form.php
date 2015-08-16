@@ -358,23 +358,20 @@ class FormPDF extends GridPDF {
 	    	$itemNum = 1;
 	    	$starting_row = $last_row;
 	    	foreach($item as $column => $value) {
-	    		if($field->columns->get($column)) {
-	    			continue;
-	    		}
 	    		$line_number = $starting_row;
 	    		if(isset($value['text']))
 	    			$value = array($value);
 	    		foreach($value as $v) {
 					if($v['text'] == '') 
 						continue;
-					$columns = $field->columns;
+					$column_params = $field->columns->get($column,$this->app->data->create());
 					if(isset($v['format'])) {
 						$format = $this->form->formats->get($v['format'], $this->app->data->create());
 						$indent = $format->get('indent', 0);
 					} else {
 						$indent = 0;
 					}
-					$lines = $this->NbLines(($field->w*$columns->$column->w)-$indent,$v['text']);
+					$lines = $this->NbLines(($field->w*$column_params->get('w',0))-$indent,$v['text']);
 			    	foreach($lines as $line) {
 			    		$table['columns'][$line_number][$column]['text'] = $line;
 			    		$table['columns'][$line_number][$column]['format'] = isset($v['format']) ? $v['format'] : NULL;
