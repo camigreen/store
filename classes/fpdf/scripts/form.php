@@ -148,6 +148,9 @@ class FormPDF extends GridPDF {
 		$col_x = $field->x;
 		$col_y = $field->y;
 		$data = $this->arrangeItems($field, $this->order_data[$field->name]);
+		echo '<pre>';
+		var_dump($data);
+		echo '</pre>';
 		foreach($field->columns as $column) {
 			$w = $field->w*$column->w;
 			$this->SetXY($col_x,$col_y);
