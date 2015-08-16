@@ -159,6 +159,7 @@ class FormPDF extends GridPDF {
 			
 			$rows = $data['total_rows'];
 			for($i = 0; $i <= $rows; $i++) {
+				echo $i.':'.$rows.'</br>';
 				switch(true) {
 					case ($i == 0): //First Row
 						$b[] = 'T';
@@ -170,7 +171,7 @@ class FormPDF extends GridPDF {
 				}
 				$border = implode(',',$b);
 				$b = array();
-				echo $i.':'.$rows.'</br>';
+				
 				echo $border.'</br>';
 				$this->format($column);
 				$text = isset($data['columns'][$i][$column->name]['text']) ? $data['columns'][$i][$column->name]['text'] : '';
