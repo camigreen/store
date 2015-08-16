@@ -146,14 +146,14 @@ class FormPDF extends GridPDF {
 			for($i = 0; $i < $rows; $i++) {
 				switch($i) {
 					case 0: //First Row
-						$border[] = 'T';
+						$b[] = 'T';
 					case ($i == $rows - 1): //Last Row
-						$border[] = 'B';
+						$b[] = 'B';
 					default:
-						$border[] = 'L';
-						$border[] = 'R';
+						$b[] = 'L';
+						$b[] = 'R';
 				}
-				$border = implode(',',$border);
+				$border = implode(',',$b);
 				$this->Cell($w,$column->get('line-height',5), $data['columns'][$column->name][$i]['text'],$border,0,$column->get('align','L'));
 			}
 			
