@@ -242,7 +242,7 @@ class FormPDF extends GridPDF {
 	            $xmlObj[$tag] = is_float($element) ? (float) $element : (string) $element;
 	        }
 	    }
-	    foreach($xml->attributes() as $key => $value) {
+	    foreach($xml->attributes() as $key => $attr) {
 	    	$xmlObj[$key] = is_float($attr) ? (float) $attr : (string) $attr;
 	    }
 	    return $this->app->data->create($xmlObj);
