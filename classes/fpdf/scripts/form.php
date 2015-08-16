@@ -161,7 +161,7 @@ class FormPDF extends GridPDF {
 			}
 			$available_rows = $field->rows;
 			$rows = $data['total_rows'];
-			for($i = $start $i <= $rows; $i++) {
+			for($i = $start; $i <= $rows; $i++) {
 				switch(true) {
 					case ($i == 0 && $i != $rows): //First row but not last.
 						$b[] = 'T';
