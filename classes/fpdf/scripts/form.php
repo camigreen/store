@@ -25,7 +25,7 @@ class FormPDF extends GridPDF {
 		$this->SetMargins((int)$margins->left,(int)$margins->top, (int) $margins->right);
 		$font = $this->form->font;
 		$this->SetFont($this->getFont('family'),$this->getFont('style'),$this->getFont('size'));
-	    $this->_AddPage(1,'P','Letter');
+	    $this->_AddPage($this->form->startPage,'P','Letter');
 	    
 	    return $this;
 	        
@@ -208,7 +208,8 @@ class FormPDF extends GridPDF {
 			$column->y = $col_y;
 		}
 		if ($overflow) {
-			$this->_AddPage(1);
+			$page = $this->form->pages->get($this->currentPage)->goToPage;
+			$this->_AddPage($page);
 		}
 			
 	}

@@ -28,8 +28,9 @@
 		<format name="item-name" font-style="B" font-size="10" />
 		<format name="item-options" indent="5"/>
 	</formats>
+	<startPage>page1</startPage>
 	<pages>
-		<page name="1">
+		<page name="page1">
 			<fields>
 				<field name="form_title" type="textbox" x="145" y="8" h="10" w="60" font-size="30" font-style="B" all-caps="1" align="R" />
 				<field name="companyname" type="textbox" x="35" y="10" h="5" w="80" font-size="12" font-style="B" />
@@ -86,6 +87,7 @@
 					</columns>
 				</field>
 			</fields>
+			<gotopage>page1</gotopage>
 		</page>
 	</pages>
 </form>
