@@ -33,7 +33,7 @@
 		<page name="page1">
 			<fields>
 				<field name="form_title" type="textbox" x="145" y="8" h="10" w="60" font-size="30" font-style="B" all-caps="1" align="R" />
-				<field name="page_number" type="pageNumbers" x="175" y="25" h="5" w="60" align="L" />
+				<field name="page_number" type="pageNumbers" x="160" y="25" h="5" w="45" align="R" />
 				<field name="companyname" type="textbox" x="35" y="10" h="5" w="80" font-size="12" font-style="B" />
 				<field name="companyaddress" type="textbox" x="35" y="15" h="35" w="80" line-height="4" />
 				<field name="billto" type="textbox" x="10" y="45" h="30" w="75" border="1">
