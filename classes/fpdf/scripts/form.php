@@ -330,18 +330,16 @@ class FormPDF extends GridPDF {
 	    $last_row = 0;
 	    foreach ($data as $item) {
 	    	$starting_row = $last_row;
-	    	foreach($item as $column => $values) {
+	    	foreach($item as $column => $value) {
 	    		$line_number = $starting_row;
-    			foreach($values as $value) {
-    				if($value['text'] == '') 
-    					continue;
-    				$lines = $this->NbLines($columns->$column->w,$value['text']);
-			    	foreach($lines as $line) {
-			    		$table['columns'][$column][$line_number]['text'] = $line;
-			    		$table['columns'][$column][$line_number]['format'] = $value['format'];
-			    		$line_number++;
-			    	}
-    			}
+				if($value['text'] == '') 
+					continue;
+				$lines = $this->NbLines($columns->$column->w,$value['text']);
+		    	foreach($lines as $line) {
+		    		$table['columns'][$column][$line_number]['text'] = $line;
+		    		$table['columns'][$column][$line_number]['format'] = $value['format'];
+		    		$line_number++;
+		    	}
 	    	$last_row = $last_row > $line_number ? $last_row : $line_number;
 	    	}	
 	    }
