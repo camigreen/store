@@ -120,15 +120,9 @@ class FormPDF extends GridPDF {
 
 	protected function format($params) {
 
-		$x = $params->get('y', 0);
-		$y = $params->get('y', 0);
-		$w = $params->get('w', 0);
-		$h = $params->get('h', 0);
-
 		$font = $this->form->font;
 		$this->setFont($params->get('font-family',$font->get('family','Arial')),$params->get('font-style',$font->get('style','')), $params->get('font-size', $font->get('size', 8)));
 
-		return compact('x', 'y', 'w', 'h');
 	}
 
 	public function box($field) {
@@ -166,20 +160,17 @@ class FormPDF extends GridPDF {
 	public function textbox($field) {
 		
 		$params = $field->params;
-		$test = $this->format($params);
-		extract($test);
-		echo $x;
+		$this->format($params);
 		// echo '<pre>';
 		// var_dump($test);
 		// echo '</pre>';
-		$this->SetFont($params->get('font-family',$this->getFont('family')),$params->get('font-style',$this->getFont('style')),$params->get('font-size',$this->getFont('size')));
+		//$this->SetFont($params->get('font-family',$this->getFont('family')),$params->get('font-style',$this->getFont('style')),$params->get('font-size',$this->getFont('size')));
 		$text = isset($this->order_data[$field->name]) ? $this->order_data[$field->name] : '';
 		$text = $params->get('all-caps',0) ? strtoupper($text) : $text;
 		$this->SetXY($params->x, $params->y);
-		$h = $params->get('h',5);
 		if(is_array($text)) {
 			$txt = implode("\n",$text);
-			$this->Cell($params->w,$h,'',$params->get('border', 0));
+			$this->Cell($params->w,$params->get('h', 0),'',$params->get('border', 0));
 			$this->SetXY($params->x, $params->y);
 			$this->MultiCell($params->w, $params->get('line-height',5), $txt, 0, $params->get('align','L'));
 		} else {
