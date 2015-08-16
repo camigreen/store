@@ -150,6 +150,7 @@ class FormPDF extends GridPDF {
 		$col_x = $field->x;
 		$col_y = $field->y;
 		$data = $this->arrangeItems($field, $this->order_data[$field->name]);
+		$start = $data['starting_row'];
 		foreach($field->columns as $column) {
 			$w = $field->w*$column->w;
 			$this->SetXY($col_x,$col_y);
@@ -160,7 +161,7 @@ class FormPDF extends GridPDF {
 			}
 			$available_rows = $field->rows;
 			$rows = $data['total_rows'];
-			for($i = $data['starting_row']; $i <= $rows; $i++) {
+			for($i = $start $i <= $rows; $i++) {
 				switch(true) {
 					case ($i == 0 && $i != $rows): //First row but not last.
 						$b[] = 'T';
