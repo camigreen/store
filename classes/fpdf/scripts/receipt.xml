@@ -47,16 +47,16 @@
 				<field name="order_date" type="textbox" x="175" y="20" h="5" w="30" align="R" >
 					<title align="L" text-align="R" text="Order Date" />
 				</field>
-				<field name="subtotal" type="textbox" x="176" y="240" h="5" w="29" align="C" font-size="10">
+				<field name="subtotal" type="textbox" x="176" y="243" h="5" w="29" align="C" font-size="10">
 					<title align="L" text-align="R" text="Subtotal"  font-size="10"/>
 				</field>
-				<field name="shipping" type="textbox" x="176" y="245" h="5" w="29" align="C" font-size="10">
+				<field name="shipping" type="textbox" x="176" y="248" h="5" w="29" align="C" font-size="10">
 					<title align="L" text-align="R" text="Shipping"  font-size="10"/>
 				</field>
-				<field name="taxes" type="textbox" x="176" y="250" h="5" w="29" align="C" font-size="10">
+				<field name="taxes" type="textbox" x="176" y="253" h="5" w="29" align="C" font-size="10">
 					<title align="L" text-align="R" text="Taxes"  font-size="10"/>
 				</field>
-				<field name="total" type="textbox" x="176" y="255" h="5" w="29" align="C" font-size="10">
+				<field name="total" type="textbox" x="176" y="258" h="5" w="29" align="C" font-size="10">
 					<title align="L" text-align="R" text="Total"  font-size="10"/>
 				</field>
 				<field name="order_details" type="table" x="10" y="80" rows="1" w="195">
