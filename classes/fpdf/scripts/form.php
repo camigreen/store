@@ -341,7 +341,11 @@ class FormPDF extends GridPDF {
 					if($v['text'] == '') 
 						continue;
 					$columns = $field->columns;
-					$lines = $this->NbLines($field->w*$columns->$column->w,$v['text']);
+					if(isset($v['format'])) {
+						$format = $this->form->formats->get($v['format'], $this->app->data->create());
+						$indent = $format->get('indent', 0));
+					}
+					$lines = $this->NbLines(($field->w*$columns->$column->w)-$indent,$v['text']);
 			    	foreach($lines as $line) {
 			    		$table['columns'][$line_number][$column]['text'] = $line;
 			    		$table['columns'][$line_number][$column]['format'] = isset($v['format']) ? $v['format'] : NULL;
