@@ -164,12 +164,12 @@ class FormPDF extends GridPDF {
 		}
 	}
 	public function textbox($field) {
-		// echo '<pre>';
-		// var_dump($field);
-		// echo '</pre>';
+		
 		$params = $field->params;
-		$this->format($params);
-		echo $x;
+		$test = $this->format($params);
+		echo '<pre>';
+		var_dump($test);
+		echo '</pre>';
 		$this->SetFont($params->get('font-family',$this->getFont('family')),$params->get('font-style',$this->getFont('style')),$params->get('font-size',$this->getFont('size')));
 		$text = isset($this->order_data[$field->name]) ? $this->order_data[$field->name] : '';
 		$text = $params->get('all-caps',0) ? strtoupper($text) : $text;
