@@ -150,7 +150,7 @@ class FormPDF extends GridPDF {
 		$col_x = $field->x;
 		$col_y = $field->y;
 		$this->registerTableData($field, $this->order_data[$field->name]);
-		$data = $this->tableData[$field->name];
+		$data = &$this->tableData[$field->name];
 		$start = $data['starting_row'];
 		$overflow = false;
 		foreach($field->columns as $column) {
@@ -164,7 +164,7 @@ class FormPDF extends GridPDF {
 			$rows = $field->rows;
 			if($rows < $data['total_rows']) {
 				$overflow = TRUE;
-				$this->tableData[$field->name]['starting_row'] = $rows + 1;
+				$data['starting_row'] = $rows + 1;
 			}
 			for($i = $start; $i <= $rows; $i++) {
 				switch(true) {
@@ -196,7 +196,7 @@ class FormPDF extends GridPDF {
 		}
 		if ($overflow) {
 			echo 'overflow starting at '.$data['starting_row'];
-			echo $this->tableData[$field->name]['starting_row'];
+			echo $data['starting_row'];
 			//$this->_AddPage(1);
 		}
 			
