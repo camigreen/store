@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<form name="receipt" grid="1">
+<form name="receipt" grid="1" title="Reciept">
 	<margins>
 		<left>0</left>
 		<right>0</right>

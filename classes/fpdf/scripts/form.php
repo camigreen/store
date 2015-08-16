@@ -15,7 +15,7 @@ class FormPDF extends GridPDF {
 	    	    echo '<pre>';
 			var_dump($this->form);
 			echo '</pre>';
-	    $this->grid = (bool) (string) $this->form->grid;
+	    $this->grid = $this->form->get('grid',0);
     	parent::__construct();
 	}
 
