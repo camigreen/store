@@ -358,7 +358,7 @@ class FormPDF extends GridPDF {
 	    	$itemNum = 1;
 	    	$starting_row = $last_row;
 	    	foreach($item as $column => $value) {
-	    		if($columns->get($column)) {
+	    		if($field->columns->get($column)) {
 	    			continue;
 	    		}
 	    		$line_number = $starting_row;
