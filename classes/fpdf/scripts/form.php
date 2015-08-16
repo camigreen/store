@@ -113,7 +113,7 @@ class FormPDF extends GridPDF {
     $data['total'] = '$'.number_format($order->total,2,'.','');
     $items = $this->app->data->create($order->items);
     foreach($items as $item) {
-    	foreach($item as $option) {
+    	foreach($item->options as $option) {
     		var_dump($option);
     		$options[] = $option['name'].': '.$option['value']."\n";
     	}
