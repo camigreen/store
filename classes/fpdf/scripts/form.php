@@ -182,7 +182,7 @@ class FormPDF extends GridPDF {
 					$this->Cell($w,$column->get('line-height',5), $text,$border,1,$column->get('align','L'));
 				$available_rows--;
 				if ($available_rows <= 0)
-					continue;
+					break;
 				$this->SetXY($col_x, $col_y += $column->get('line-height',5));
 			}
 			
