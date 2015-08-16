@@ -243,7 +243,7 @@ class FormPDF extends GridPDF {
 	        }
 	    }
 	    foreach($xml->attributes() as $key => $value) {
-	    	$xmlObj[$key] => $value;
+	    	$xmlObj[$key] = $value;
 	    }
 	    return $this->app->data->create($xmlObj);
 	}
