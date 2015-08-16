@@ -118,8 +118,8 @@ class FormPDF extends GridPDF {
     	}
     	$item_array[] = array(
     		'item_description' => array(
-    			array('format' => 'item-name','data' => $item->name),
-    			array('format' => 'item-options','data' => $options)
+    			array('format' => 'item-name','text' => $item->name),
+    			array('format' => 'item-options','text' => $options)
     		),
     		'qty' => array('format' => '', $item->qty),
     		'price' => array('format' => '', $item->price)
@@ -127,14 +127,11 @@ class FormPDF extends GridPDF {
     	$options = array();
     }
     $data['items'] = $item_array;
-    $data['order_details'] = array(
-    	'total_rows' => 1,
-    	'columns' => array(
-			'salesperson' => array(0 => array('text' => $order->getSalesPerson())),
-    		'order_number' => array(0 => array('text' => $order->id)),
-    		'delivery_method' => array(0 => array('text' => $order->localPickup ? 'Local Pickup' : 'UPS Ground')),
-    		'payment_information' => array(0 => array('text' => $order->creditCard->card_name.' ending in '.substr($order->creditCard->cardNumber, -4)))
-    	)	
+	$data['order_details'] = array(
+			'salesperson' => array('text' => $order->getSalesPerson()),
+    		'order_number' => array('text' => $order->id),
+    		'delivery_method' => array('text' => $order->localPickup ? 'Local Pickup' : 'UPS Ground'),
+    		'payment_information' => array('text' => $order->creditCard->card_name.' ending in '.substr($order->creditCard->cardNumber, -4))
     );
     $data['order_detailsx'] = array(
     	'total_rows' => 1,
@@ -170,7 +167,7 @@ class FormPDF extends GridPDF {
 				$this->Cell($w, 5,$column->header->get('text',$column->header),1,1,'C');
 				$this->SetXY($col_x,$col_y+5);
 			}
-			$data = $this->order_data[$field->name];
+			$data = $this->arrangeItems($column, $this->order_data[$field->name]);
 			$rows = $data['total_rows'];
 			for($i = 0; $i < $rows; $i++) {
 				switch($i) {
@@ -321,55 +318,38 @@ class FormPDF extends GridPDF {
 		//var_dump($data);
 	}
 
-	public function arrangeItems($columns) {
-		$rows = array(
-			'count' => 0,
+	public function arrangeItems($columns, $data) {
+		$table = array(
+			'total_rows' => 0,
 			'columns' => array()
 		);
+		
 
-		foreach($this->items as $item) {
-			$options = '';
-			foreach ($item->options as $option) {
-				$options .= $option['name'].':  '.$option['text']."\n";
-			}
-	    	$data[] = array(
-	    		'name' => array('name' => $item->name,'options' => $options),
-	    		'qty' => $item->qty,
-	    		'price' => $item->price,
-	    	);
-	    }
 	    $last_row = 0;
 	    foreach ($data as $item) {
 	    	$starting_row = $last_row;
-	    	foreach($item as $column => $value) {
+	    	foreach($item as $column => $values) {
 	    		$line_number = $starting_row;
-	    		if(is_array($value)) {
-	    			foreach($value as $k => $v) {
-	    				if($v == '') 
-	    					continue;
-	    				$lines = $this->NbLines(100,$v);
-				    	foreach($lines as $line) {
-				    		$rows['columns'][$column][$line_number][$k] = array();
-				    		$rows['columns'][$column][$line_number][$k] = $line;
-				    		$line_number++;
-				    	}
-	    			}
-
-	    		} else {
-	    			$lines = $this->NbLines(100,$value);
+    			foreach($values as $value) {
+    				if($value['text'] == '') 
+    					continue;
+    				$lines = $this->NbLines($columns->$column->w,$value['text']);
 			    	foreach($lines as $line) {
-			    		$rows['columns'][$column][$line_number] = $line;
+			    		$table['columns'][$column][$line_number]['text'] = $line
+			    		$table['columns'][$column][$line_number]['format'] = $value['format'];
 			    		$line_number++;
 			    	}
-	    		}
+    			}
 	    	$last_row = $last_row > $line_number ? $last_row : $line_number;
 	    	}	
 	    }
-	    $rows['count'] = $last_row;
+	    $table['table_rows'] = $last_row;
 	    
 		echo '<pre>';
-		var_dump($rows);
+		var_dump($table);
 		echo '</pre>';
+
+		return $table;
 
 	}
 
