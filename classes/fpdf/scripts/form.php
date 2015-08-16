@@ -345,7 +345,7 @@ class FormPDF extends GridPDF {
 	    	$last_row = $last_row > $line_number ? $last_row : $line_number;
 	    	}	
 	    }
-	    $table['table_rows'] = $last_row;
+	    $table['total_rows'] = $last_row;
 	    
 		echo '<pre>';
 		var_dump($table);
