@@ -160,8 +160,11 @@ class FormPDF extends GridPDF {
 				$this->Cell($w, 5,$column->header->get('text',$column->header),1,1,'C');
 				$this->SetXY($col_x,$col_y += 5);
 			}
-			$available_rows = $field->rows;
-			$rows = $data['total_rows'];
+			$rows = $field->rows;
+			if($rows < $data['total_rows']) {
+				$overflow = TRUE;
+				$data['starting_row'] = ($data['total_rows'] - $rows);
+			}
 			for($i = $start; $i <= $rows; $i++) {
 				switch(true) {
 					case ($i == 0 && $i != $rows): //First row but not last.
@@ -182,14 +185,6 @@ class FormPDF extends GridPDF {
 				$this->format($column);
 				$text = isset($data['columns'][$i][$column->name]['text']) ? $data['columns'][$i][$column->name]['text'] : '';
 					$this->Cell($w,$column->get('line-height',5), $text,$border,1,$column->get('align','L'));
-				$available_rows--;
-				if ($available_rows <= 0 && $i < $rows) {
-					echo 'Out of Rows';
-					$data['starting_row'] = $i;
-					$overflow = true;
-				}
-				echo $overflow ? 'True' : 'False';
-				if($overflow) break;	
 				$this->SetXY($col_x, $col_y += $column->get('line-height',5));
 			}
 			
@@ -199,8 +194,7 @@ class FormPDF extends GridPDF {
 			$column->y = $col_y;
 		}
 		if ($overflow) {
-			echo 'overflow';
-			//$this->_AddPage(1);
+			$this->_AddPage(1);
 		}
 			
 	}
