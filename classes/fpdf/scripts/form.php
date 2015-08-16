@@ -192,8 +192,10 @@ class FormPDF extends GridPDF {
 			$column->x = $col_x;
 			$column->y = $col_y;
 		}
-		if ($data['starting_row'] != 0)
+		if ($data['starting_row'] != 0) {
 			$this->_AddPage(1);
+		}
+			
 	}
 	public function textbox($field) {
 		
