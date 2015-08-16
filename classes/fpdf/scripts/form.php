@@ -144,6 +144,7 @@ class FormPDF extends GridPDF {
 		$col_x = $params->x;
 		$col_y = $params->y;
 		foreach($field->columns as $column) {
+			$this->format($column->params);
 			$col_w = (float) $column->params->w;
 			$w = $params->w*$col_w;
 			$h = $params->rows*5;
