@@ -155,7 +155,7 @@ class FormPDF extends GridPDF {
 		$this->setFont($params->get('font-family',$font->get('family','Arial')),$params->get('font-style',$font->get('style','')), $params->get('font-size', $font->get('size', 8)));
 
 	}
-	public function table($field) {
+	public function table($field, $starting_row = 0) {
 		$this->SetXY($field->x,$field->y);
 		$col_x = $field->x;
 		$col_y = $field->y;
@@ -339,7 +339,7 @@ class FormPDF extends GridPDF {
 				$lines = $this->NbLines($field->w*$columns->$column->w,$value['text']);
 		    	foreach($lines as $line) {
 		    		$table['columns'][$column][$line_number]['text'] = $line;
-		    		$table['columns'][$column][$line_number]['format'] = $value['format'];
+		    		$table['columns'][$column][$line_number]['format'] = isset($value['format']) ? $value['format'] : NULL;
 		    		$line_number++;
 		    	}
 	    	$last_row = $last_row > $line_number ? $last_row : $line_number;
