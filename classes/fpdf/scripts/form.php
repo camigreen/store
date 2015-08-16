@@ -216,7 +216,7 @@ class FormPDF extends GridPDF {
 	public function textbox($field) {
 		
 		$this->format($field);
-		$text = isset($this->order_data[$field->name]) ? $this->order_data[$field->name] : '';
+		$text = isset($this->order_data[$field->name]) ? $this->order_data[$field->name] : $field->get('text','');
 		$text = $field->get('all-caps',0) ? strtoupper($text) : $text;
 		$this->SetXY($field->x, $field->y);
 		if(is_array($text)) {
