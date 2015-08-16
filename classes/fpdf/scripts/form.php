@@ -173,7 +173,7 @@ class FormPDF extends GridPDF {
 				$overflow = TRUE;
 				$data['starting_row'] = $start + $rows + 1;
 			}
-			$i = $start
+			$i = $start;
 			for($rows_used = 1; $rows_used <= $rows; $rows_used++) {
 				switch(true) {
 					case ($rows_used == 1 && $rows_used < $rows): //First row but not last.
