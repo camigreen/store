@@ -248,7 +248,7 @@ class FormPDF extends GridPDF {
 	        if (!empty($e))
 	        {
 	        	$elem = $element instanceof SimpleXMLElement ? $this->xml2obj($element) : $e;
-	        	$name = !isset($elem->name) ? $elem->name : $tag;
+	        	$name = $elem->get('name',$tag);
 	        	$arr[$name] = $elem;
 	        }
 	        else
