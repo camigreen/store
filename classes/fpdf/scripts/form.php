@@ -135,6 +135,10 @@ class FormPDF extends GridPDF {
 		$font = $this->form->font;
 		$this->setFont($params->get('font-family',$font->get('family','Arial')),$params->get('font-style',$font->get('style','')), $params->get('font-size', $font->get('size', 8)));
 
+		if($indent = $params->get('indent')) {
+			$this->SetX($this->GetX()+$indent);
+		}
+
 	}
 	public function table($field) {
 

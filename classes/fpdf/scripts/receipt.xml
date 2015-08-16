@@ -25,7 +25,7 @@
 		<logoPath>images/logos/ttop/TTop_100x100.png</logoPath>
 	</company>
 	<formats>
-		<format name="item-name" font-style="B" font-size="10"/>
+		<format name="item-name" font-style="B" font-size="10" indent="5"/>
 	</formats>
 	<pages>
 		<page name="1">
