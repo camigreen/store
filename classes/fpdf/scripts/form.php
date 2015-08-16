@@ -179,11 +179,11 @@ class FormPDF extends GridPDF {
 					case ($rows_used == 1 && $rows_used < $rows): //First row but not last.
 						$b[] = 'T';
 						break;
-					case ($rows_used == 1 && $rows_used = $rows): //First Row and last row.
+					case ($rows_used == 1 && $rows_used == $rows): //First Row and last row.
 						$b[] = 'T';
 						$b[] = 'B';
 						break;
-					case ($rows_used > 1 && $rows_used = $rows): //Last row but not first
+					case ($rows_used > 1 && $rows_used == $rows): //Last row but not first
 						$b[] = 'B';
 						break;
 				}
