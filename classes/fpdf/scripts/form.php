@@ -124,7 +124,7 @@ class FormPDF extends GridPDF {
     return $this;
 	}
 	public function pageNumbers($field) {
-		$field->text = "Page $this->PageNo() of {nb}";
+		$field->text = "Page {$this->PageNo()} of {nb}";
 		$this->textbox($field);
 	}
 	protected function format($format, $text = null) {
