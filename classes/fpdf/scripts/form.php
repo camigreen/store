@@ -12,6 +12,9 @@ class FormPDF extends GridPDF {
 		$this->type = $type;
 		$path = $this->app->path->path('classes:fpdf/scripts/'.$type.'.xml');
 	    $this->form = $this->xml2obj(simplexml_load_file($path));
+	    	    echo '<pre>';
+			var_dump($this->form);
+			echo '</pre>';
 	    $this->grid = (bool) (string) $this->form->grid;
     	parent::__construct();
 	}
@@ -256,9 +259,6 @@ class FormPDF extends GridPDF {
 	            $arr[$tag] = trim($element);
 	        }
 	    }
-	    echo '<pre>';
-			var_dump($this->app->data->create($arr));
-			echo '</pre>';
 	    
 	    return $this->app->data->create($arr);
 	}
