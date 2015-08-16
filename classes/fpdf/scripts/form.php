@@ -438,7 +438,7 @@ class FormPDF extends GridPDF {
 class FormTablePDF {
 
 	public function __construct($pdf) {
-		$this->$pdf = $pdf;
+		$this->pdf = $pdf;
 	}
 
 	public function test() {
