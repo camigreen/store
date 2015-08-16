@@ -28,6 +28,8 @@ class FormPDF extends GridPDF {
 		$font = $this->form->font;
 		$this->SetFont($this->getFont('family'),$this->getFont('style'),$this->getFont('size'));
 	    $this->_AddPage(1,'P','Letter');
+	    $test = new FormTablePDF($this);
+	    $test->test();
 	    //$this->arrangeItems();
 	    
 	    // foreach($this->items as $item) {
@@ -182,7 +184,7 @@ class FormPDF extends GridPDF {
 				if($available_rows <= 0) {
 					$data['starting_row'] = $i;
 					$this->_AddPage(1);
-					return;
+					
 				}
 				$this->SetXY($col_x, $col_y += $column->get('line-height',5));
 			}
@@ -442,19 +444,12 @@ class FormPDF extends GridPDF {
 
 class FormTablePDF {
 
-	public $columns;
-	public $height;
-	public $width;
-	public $x;
-	public $y;
-	public $header;
+	public function __construct($pdf) {
+		$this->$pdf = $pdf;
+	}
 
-	public function addColumns($data = array()) {
-		foreach($data as $column) {
-			$this->column[$column['header']] = array(
-				'w' => $column['w']
-			);
-		}
+	public function test() {
+		$this->pdf->Cell(10,10,'This is a test!!.');
 	}
 
 
