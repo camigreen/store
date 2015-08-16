@@ -152,7 +152,7 @@ class FormPDF extends GridPDF {
 			echo '<pre>';
 			var_dump($column->header->text);
 			echo '</pre>';
-			$this->Cell($w, 5,$column->header,1,1,'C');
+			$this->Cell($w, 5,$column->header->get('text',$column->header),1,1,'C');
 			$this->SetXY($col_x,$col_y+5);
 			$this->Cell($w,$h,'',1,0,'C');
 			$col_y = $params->y;
