@@ -248,10 +248,12 @@ class FormPDF extends GridPDF {
 	    	$attrs = $element->attributes();
 	        $tag = $element->getName();
 	        $e = get_object_vars($element);
-	        var_dump($e);
 	        if (!empty($e))
 	        {
 	        	$elem = $element instanceof SimpleXMLElement ? $this->xml2obj($element) : $e;
+	        		    	    echo '<pre>';
+			var_dump($elem);
+			echo '</pre>';
 	        	$name = $elem->get('name',$tag);
 	        	if($attrs) {
 		        	foreach($attrs as $key =>$attr) {
