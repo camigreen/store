@@ -149,7 +149,8 @@ class FormPDF extends GridPDF {
 		$this->SetXY($field->x,$field->y);
 		$col_x = $field->x;
 		$col_y = $field->y;
-		$data = $this->arrangeItems($field, $this->order_data[$field->name]);
+		$this->registerTableData($field, $this->order_data[$field->name]);
+		$data = $this->tableData[$field->name];
 		$start = $data['starting_row'];
 		$overflow = false;
 		foreach($field->columns as $column) {
@@ -327,7 +328,10 @@ class FormPDF extends GridPDF {
 		//var_dump($data);
 	}
 
-	public function arrangeItems($field, $data) {
+	public function registerTableData($field, $data) {
+		if(isset($this->tableData[$field->name])) {
+			return;
+		}
 		$table = array(
 			'total_rows' => 0,
 			'starting_row' => 0,
@@ -362,7 +366,7 @@ class FormPDF extends GridPDF {
 		// echo '<pre>';
 		// var_dump($table);
 		// echo '</pre>';
-
+	    $this->tableData[$field->name] = $table;
 		return $table;
 
 	}
