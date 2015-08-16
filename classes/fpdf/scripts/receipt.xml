@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<form>
-	<name>receipt</name>
-	<title>Receipt</title>
-	<grid>1</grid>
+<form name="receipt" grid="1">
 	<margins>
 		<left>0</left>
 		<right>0</right>
