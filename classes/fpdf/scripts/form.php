@@ -132,16 +132,13 @@ class FormPDF extends GridPDF {
 		$col_x = $field->x;
 		$col_y = $field->y;
 		foreach($field->columns as $column) {
-			$this->format($column);
-			$col_w = (float) $column->w;
-			$w = $field->w*$col_w;
+			$w = $field->w*$column->w;
 			$h = $field->rows*5;
 			$this->SetXY($col_x,$col_y);
-			// echo '<pre>';
-			// var_dump($column->header->text);
-			// echo '</pre>';
-			$this->Cell($w, 5,$column->header->get('text',$column->header),1,1,'C');
-			$this->SetXY($col_x,$col_y+5);
+			if($header = $column->get('header')) {
+				$this->Cell($w, 5,$column->header->get('text',$column->header),1,1,'C');
+				$this->SetXY($col_x,$col_y+5);
+			}
 			$this->Cell($w,$h,'',1,0,'C');
 			$col_y = $field->y;
 			$col_x += $w;
