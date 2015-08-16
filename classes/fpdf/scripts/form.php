@@ -188,7 +188,7 @@ class FormPDF extends GridPDF {
 					$overflow = true;
 					break;
 				}
-					
+				echo $overflow ? 'True' : 'False';	
 				$this->SetXY($col_x, $col_y += $column->get('line-height',5));
 			}
 			
