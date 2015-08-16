@@ -162,16 +162,14 @@ class FormPDF extends GridPDF {
 				echo $i.':'.$rows.'</br>';
 				switch(true) {
 					case ($i == 0): //First Row
-						$b[] = 'T';
+						$border = 'T,L,R';
+						break;
 					case ($i == $rows): //Last Row
-						$b[] = 'B';
+						$border = 'B,L,R';
+						break;
 					default:
-						$b[] = 'L';
-						$b[] = 'R';
+						$border = 'L,R';
 				}
-				$border = implode(',',$b);
-				$b = array();
-				
 				echo $border.'</br>';
 				$this->format($column);
 				$text = isset($data['columns'][$i][$column->name]['text']) ? $data['columns'][$i][$column->name]['text'] : '';
