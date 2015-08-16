@@ -437,14 +437,14 @@ class FormPDF extends GridPDF {
 	}
 }
 
-class FormTablePDF {
+class FormTable extends GridPDF {
 
 	public function __construct($pdf) {
 		$this->pdf = $pdf;
 	}
 
 	public function test() {
-		$this->pdf->Cell(10,10,'This is a test!!.');
+		$this->Cell(10,10,'This is a test!!.');
 	}
 
 
