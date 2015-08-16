@@ -162,7 +162,7 @@ class FormPDF extends GridPDF {
 				switch(true) {
 					case ($i == 0): //First Row
 						$b[] = 'T';
-					case (($rows - 1) == $i): //Last Row
+					case $i == $row: //Last Row
 						$b[] = 'B';
 					default:
 						$b[] = 'L';
@@ -341,7 +341,7 @@ class FormPDF extends GridPDF {
 	    	$last_row = $last_row > $line_number ? $last_row : $line_number;
 	    	}	
 	    }
-	    $table['total_rows'] = $last_row;
+	    $table['total_rows'] = $last_row - 1;
 	    
 		// echo '<pre>';
 		// var_dump($table);
