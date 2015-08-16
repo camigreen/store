@@ -320,7 +320,8 @@ class FormPDF extends GridPDF {
 	    	$starting_row = $last_row;
 	    	foreach($item as $column => $value) {
 	    		$line_number = $starting_row;
-	    		$value = array($value);
+	    		if(isset($value['text']))
+	    			$value = array($value);
 	    		foreach($value as $v) {
 					if($v['text'] == '') 
 						continue;
