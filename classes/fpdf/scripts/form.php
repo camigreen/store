@@ -25,7 +25,7 @@ class FormPDF extends GridPDF {
 		$this->AliasNbPages();
 		$font = $this->form->font;
 		$this->SetFont($this->getFont('family'),$this->getFont('style'),$this->getFont('size'));
-	    $this->_AddPage($this->form->startPage,'P','Letter');
+	    $this->_AddPage($this->form->startPage);
 	    
 	    return $this;
 	        
@@ -48,9 +48,10 @@ class FormPDF extends GridPDF {
 		}
 	}
 
-	public function _AddPage($page, $orientation='P', $size='letter') {
+	public function _AddPage($page) {
 
-		$this->AddPage($orientation, $size);
+		$page = $this->form->pages->$page;
+		$this->AddPage($page->get('orientation', 'P'), $page->get('size', 'Letter'));
 		$this->SetAutoPageBreak(false);
 
 	    $this->currentPage = $page;
