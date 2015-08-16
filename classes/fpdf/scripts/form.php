@@ -147,12 +147,12 @@ class FormPDF extends GridPDF {
 
 	}
 	public function table($field) {
-		if($this->overflow) {
-			echo '<pre>';
-			var_dump($this->tableData[$field->name]);
-			echo '</pre>';
-			return;
-		}
+		// if($this->overflow) {
+		// 	echo '<pre>';
+		// 	var_dump($this->tableData[$field->name]);
+		// 	echo '</pre>';
+		// 	return;
+		// }
 		$this->SetXY($field->x,$field->y);
 		$col_x = $field->x;
 		$col_y = $field->y;
