@@ -110,7 +110,7 @@
 				<field name="total" type="textbox" x="185" y="260" h="5" w="20">
 					<title align="L" text-align="R" text="Total" />
 				</field>
-				<field name="order_details" type="table" x="10" y="80" rows="1" w="195">
+				<field name="order_details" type="table" x="10" y="40" rows="1" w="195">
 					<columns>
 						<column name="salesperson" w=".25" align="C">
 							<header font-style="B" text="Salesperson" />
@@ -126,7 +126,7 @@
 						</column>
 					</columns>
 				</field>
-				<field name="items" type="table" x="10" y="95" rows="28" w="195">
+				<field name="items" type="table" x="10" y="55" rows="37" w="195">
 					<columns>
 						<column name="item_description" w=".75">
 							<header text="Item Description" />
