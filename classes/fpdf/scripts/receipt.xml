@@ -80,7 +80,7 @@
 						<column name="qty" w=".10" align="C">
 							<header text="Qty" />
 						</column>
-						<column name="price" w=".15" align="C">
+						<column name="price" w=".15" align="C" mask="currency">
 							<header text="Unit Price" />
 						</column>
 					</columns>
