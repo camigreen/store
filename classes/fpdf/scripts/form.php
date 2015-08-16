@@ -160,15 +160,26 @@ class FormPDF extends GridPDF {
 			$rows = $data['total_rows'];
 			for($i = 0; $i <= $rows; $i++) {
 				echo $i.':'.$rows.'</br>';
+				// switch(true) {
+				// 	case ($i == 0): //First Row
+				// 		$border = 'T,L,R';
+				// 		break;
+				// 	case ($i == $rows): //Last Row
+				// 		$border = 'B,L,R';
+				// 		break;
+				// 	default:
+				// 		$border = 'L,R';
+				// }
 				switch(true) {
-					case ($i == 0): //First Row
-						$border = 'T,L,R';
+					case true: //First Row
+						echo 'foo';
 						break;
-					case ($i == $rows): //Last Row
-						$border = 'B,L,R';
+					case true: //Last Row
+						echo 'bar';
 						break;
 					default:
-						$border = 'L,R';
+						echo 'fail';
+						break;
 				}
 				echo $border.'</br>';
 				$this->format($column);
