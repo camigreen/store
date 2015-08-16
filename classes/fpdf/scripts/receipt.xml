@@ -82,7 +82,7 @@
 					<type>textbox</type>
 					<title align="L" text-align="R">Total</title>
 				</field>
-				<field x="10" y="84" rows="1" w="195">
+				<field x="10" y="80" rows="1" w="195">
 					<name>order_details</name>
 					<type>table</type>
 					<title>Order Details</title>
@@ -105,7 +105,7 @@
 						</column>
 					</columns>
 				</field>
-				<field x="10" y="95" rows="28" w="195">
+				<field x="10" y="90" rows="30" w="195">
 					<name>items</name>
 					<type>table</type>
 					<title>Items</title>
