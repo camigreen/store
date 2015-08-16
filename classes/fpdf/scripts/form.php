@@ -111,7 +111,7 @@ class FormPDF extends GridPDF {
     $data['shipping'] = '$'.number_format($order->ship_total,2,'.','');
     $data['taxes'] = '$'.number_format($order->tax_total,2,'.','');
     $data['total'] = '$'.number_format($order->total,2,'.','');
-    $data['items'] = array();
+    $data['items'] = $this->app->data->create($order->items);
     $data['order_details'] = array(
     	'total_rows' => 1,
     	'columns' => array(
@@ -121,8 +121,10 @@ class FormPDF extends GridPDF {
     		'payment_information' => array(0 => array('text' => $order->creditCard->card_name.' ending in '.substr($order->creditCard->cardNumber, -4)))
     	)	
     );
+	echo '<pre>';
+	var_dump($data['items']);
+	echo '</pre>';
     $this->order_data = $data;
-    $this->items = $this->app->data->create($order->items);
     return $this;
 	}
 
