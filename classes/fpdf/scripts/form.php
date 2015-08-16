@@ -114,7 +114,6 @@ class FormPDF extends GridPDF {
     $items = $this->app->data->create($order->items);
     foreach($items as $item) {
     	foreach($item->options as $option) {
-    		var_dump($option);
     		$options[] = $option['name'].': '.$option['text']."\n";
     	}
     	$item_array[] = array(
@@ -146,9 +145,9 @@ class FormPDF extends GridPDF {
     		'payment_information' => array(0 => array('text' => $order->creditCard->card_name.' ending in '.substr($order->creditCard->cardNumber, -4)))
     	)	
     );
-	echo '<pre>';
-	var_dump($data['items']);
-	echo '</pre>';
+	// echo '<pre>';
+	// var_dump($data['items']);
+	// echo '</pre>';
     $this->order_data = $data;
     return $this;
 	}
