@@ -140,6 +140,7 @@ class FormPDF extends GridPDF {
 			$w = $field->w*$column->w;
 			$this->SetXY($col_x,$col_y);
 			if($header = $column->get('header')) {
+				$this->format($header);
 				$this->Cell($w, 5,$column->header->get('text',$column->header),1,1,'C');
 				$this->SetXY($col_x,$col_y+5);
 			}
@@ -156,6 +157,7 @@ class FormPDF extends GridPDF {
 						$b[] = 'R';
 				}
 				$border = implode(',',$b);
+				$this->format($column);
 				$this->Cell($w,$column->get('line-height',5), $data['columns'][$column->name][$i]['text'],$border,0,$column->get('align','L'));
 			}
 			
