@@ -444,7 +444,7 @@ class FormTable extends GridPDF {
 	}
 
 	public function test() {
-		$this->Cell(10,10,'This is a test!!.');
+		$this->pdf->Cell(10,10,'This is a test!!.');
 	}
 
 
