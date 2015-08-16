@@ -69,8 +69,6 @@ class FormPDF extends GridPDF {
 		$this->SetAutoPageBreak(false);
 
 	    $this->currentPage = $page;
-	    $test = new FormTable($this);
-	    $test->test();
 	    $pages = $this->form->pages;
 	    foreach($pages->$page->fields as $field) {
 	    	$this->{$field->type}($field);
@@ -160,6 +158,7 @@ class FormPDF extends GridPDF {
 				$this->Cell($w, 5,$column->header->get('text',$column->header),1,1,'C');
 				$this->SetXY($col_x,$col_y += 5);
 			}
+			$available_rows = $field->rows;
 			$rows = $data['total_rows'];
 			for($i = 0; $i <= $rows; $i++) {
 				switch(true) {
@@ -181,6 +180,9 @@ class FormPDF extends GridPDF {
 				$this->format($column);
 				$text = isset($data['columns'][$i][$column->name]['text']) ? $data['columns'][$i][$column->name]['text'] : '';
 					$this->Cell($w,$column->get('line-height',5), $text,$border,1,$column->get('align','L'));
+				$available_rows--;
+				if ($available_rows <= 0)
+					continue;
 				$this->SetXY($col_x, $col_y += $column->get('line-height',5));
 			}
 			
@@ -439,8 +441,11 @@ class FormPDF extends GridPDF {
 
 class FormTable extends GridPDF {
 
-	public function __construct($pdf) {
+	public function __construct($pdf, $params) {
 		$this->pdf = $pdf;
+		foreach($params as $key => $param) {
+			$this->$key = $param;
+		}
 	}
 
 	public function test() {
