@@ -50,7 +50,7 @@ class FormPDF extends GridPDF {
 	public function _AddPage($page) {
 
 		$page = $this->form->pages->$page;
-		$this->AddPage($page->get('orientation', 'P'), $page->get('size', 'Letter'));
+		$this->AddPage($page->get('orientation', 'L'), $page->get('size', 'Letter'));
 		$this->SetAutoPageBreak(false);
 
 	    $this->currentPage = $page->name;
