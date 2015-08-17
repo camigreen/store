@@ -229,7 +229,6 @@ class StoreController extends AppController {
         if (!$this->app->path->path('classes:fpdf/scripts/'.$type.'.xml')) {
             return $this->app->error->raiseError(500, JText::_('PDF template does not exist'));
         }
-        echo $this->app->path->path('assets:pdfs/');
         $this->app->document->setMimeEncoding('application/pdf');
 
         $pdf = $this->app->pdf->$type;

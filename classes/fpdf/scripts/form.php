@@ -276,7 +276,7 @@ class FormPDF extends GridPDF {
 	public function toFile() {
 	    $name = $this->app->utility->generateUUID().'.pdf';
 	    $path = $this->app->path->path('assets:pdfs/');
-	    $this->Output($path.$name,'F');
+	    $this->Output($path.'/'.$name,'F');
 	    return $name;
 	}
 
