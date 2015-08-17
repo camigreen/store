@@ -6,7 +6,6 @@ class FormPDF extends GridPDF {
 	public $_pages;
 	public $type;
 	public $table_x = 0;
-	public $overflow = false;
 
 	public function __construct($app, $type) {
 		$this->app = $app;
