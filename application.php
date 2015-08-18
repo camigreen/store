@@ -46,11 +46,11 @@ class StoreApplication extends Application {
     
     public function dispatch() {
         $view = $this->app->request->get('view','word');
-        if ($view == 'store') {
+        // if ($view == 'store') {
             $this->app->dispatch($view);
-        } else {
-            $this->app->dispatch('default');
-        }
+        // } else {
+        //     $this->app->dispatch('default');
+        // }
         
     }
 }
