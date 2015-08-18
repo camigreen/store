@@ -191,7 +191,7 @@ class StoreController extends AppController {
             $conditions = is_null($conditions) ? $filters[$filter] : "$conditions AND {$filters[$filter]}";
         }
         //$conditions = is_null($conditions) ? "orderDate BETWEEN '2015-06-01' AND '2015-06-30'" : "$conditions AND orderDate BETWEEN '2015-06-01' AND '2015-06-30'";
-        $this->orders = $this->app->table->order->all(array('conditions' => $conditions, 'order' => 'id DESC'));
+        $this->orders = $this->app->table->order->all(array('conditions' => $conditions, 'order' => 'id DESC', 'limit' => 10));
         $this->record_count = count($this->orders);
         $layout = 'orders';
         // Page Title
