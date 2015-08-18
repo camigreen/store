@@ -7,31 +7,28 @@
 */
 
 /*
-    Class: DefaultController
-        Site controller class
+	Class: DefaultController
+		Site controller class
 */
 class StoreController extends AppController {
-
-    public $version = '1.0.0';
-    public $branch = 'PDF';
     
     public function __construct($default = array()) {
         parent::__construct($default);
 
-        // get application
-        $this->application = $this->app->zoo->getApplication();
+		// get application
+		$this->application = $this->app->zoo->getApplication();
 
-        // get Joomla application
-        $this->joomla = $this->app->system->application;
+		// get Joomla application
+		$this->joomla = $this->app->system->application;
 
-        // get params
-        $this->params = $this->joomla->getParams();
+		// get params
+		$this->params = $this->joomla->getParams();
 
-        // get pathway
-        $this->pathway = $this->joomla->getPathway();
+		// get pathway
+		$this->pathway = $this->joomla->getPathway();
 
-        // registers tasks
-//      $this->registerTask('checkout', 'checkout');
+		// registers tasks
+//		$this->registerTask('checkout', 'checkout');
 //                $this->registerTask('products', 'product');
     }
     
@@ -50,21 +47,9 @@ class StoreController extends AppController {
             $task = $this->params->get('page');
             $this->execute($task);
     }
-
-    public function version () {
-        if (!$this->template = $this->application->getTemplate()) {
-            return $this->app->error->raiseError(500, JText::_('No template selected'));
-        }
-
-        echo '<p>Store App</p>';
-        echo "<p>Version: $this->version</p>";
-        echo "<p>Branch: $this->branch</p>";
-        echo "<p>Version Date: 08/11/2015 1:08 PM</p>";
-        echo '<p>Author: Shawn Gibbons</p>';
-    }
  
     
-    public function testship() {
+    public function test() {
         print_r(get_declared_classes());
         try {
             //set shipper
@@ -149,64 +134,13 @@ class StoreController extends AppController {
     }
 
     public function order() {
-        if (!$this->template = $this->application->getTemplate()) {
-            return $this->app->error->raiseError(500, JText::_('No template selected'));
-        }
-        // Get the order id from the URL
-        $id = $this->app->request->get('id','int');
+        $id = $this->app->request->get('id','int',0);
 
-        // Initialize the order object
-        $this->order = $this->app->order->create($id);
-
-        // Check ACL
-        //if(!$this->order->canAccess()) {
-        //    return $this->app->error->raiseError(500, JText::_('You do not have access to view this content.'));
-        //}
-
-        // Page Title
-        $this->app->document->setTitle($this->app->zoo->buildPageTitle('Order Details'));
-        
-
-        $layout = 'order';
-        // display view
-        $this->getView()->addTemplatePath($this->template->getPath())->setLayout($layout)->display();
-        
-
+        $order = $this->app->order->create($id);
+        $filename = $this->app->pdf->order->setData($order)->generate();
+        $path = $this->app->path->url('assets:pdfs/'.$filename);
+        echo '<a href="'.$path.'" class="uk-button uk-button-primary" target="_blank">View Order</a>';
     }
-
-    public function orders() {
-        if (!$this->template = $this->application->getTemplate()) {
-            return $this->app->error->raiseError(500, JText::_('No template selected'));
-        }
-        $filters = array(
-            'active' => 'status IN (0,1,2,3)',
-            'closed' => 'status = 4'
-        );
-        $conditions = null;
-        if($order_number = $this->app->request->get('order_number','int')) {
-            $conditions = "id = $order_number";
-        }
-        $filter = $this->app->request->get('filter','word') ? $this->app->request->get('filter','word') : $this->params->get('filter');
-        if ($filter && isset($filters[$filter])) {
-            $conditions = is_null($conditions) ? $filters[$filter] : "$conditions AND {$filters[$filter]}";
-        }
-        //$conditions = is_null($conditions) ? "orderDate BETWEEN '2015-06-01' AND '2015-06-30'" : "$conditions AND orderDate BETWEEN '2015-06-01' AND '2015-06-30'";
-        $this->orders = $this->app->table->order->all(array('conditions' => $conditions, 'order' => 'id DESC'));
-        $this->record_count = count($this->orders);
-        $layout = 'orders';
-        // Page Title
-        $this->title = ucfirst($filter).' Orders';
-        $this->app->document->setTitle($this->app->zoo->buildPageTitle($this->title));
-
-        // display view
-        $this->getView()->addTemplatePath($this->template->getPath())->setLayout($layout)->display();
-
-    }
-
-    public function test() {
-        echo 'test';
-    }
-
     public function receipt() {
         // set template and params
         if (!$this->template = $this->application->getTemplate()) {
@@ -222,34 +156,6 @@ class StoreController extends AppController {
         $data = array('url' => $this->app->path->url('assets:pdfs/'.$url_receipt));
         $this->app->document->setMimeEncoding('application/json');
         echo json_encode($data);
-
-    }
-    public function getOrder() {
-        // set template and params
-        if (!$this->template = $this->application->getTemplate()) {
-                return $this->app->error->raiseError(500, JText::_('No template selected'));
-        }
-        $this->app->document->setMimeEncoding('application/pdf');
-
-        $pdf_order = $this->app->pdf->order;
-        $id = $this->app->request->get('id','int');
-        $order = $this->app->order->create($id);
-
-        $pdf_order->setData($order)->generate('I');
-
-    }
-    public function getReceipt() {
-        // set template and params
-        if (!$this->template = $this->application->getTemplate()) {
-                return $this->app->error->raiseError(500, JText::_('No template selected'));
-        }
-        $this->app->document->setMimeEncoding('application/pdf');
-
-        $pdf = $this->app->pdf->receipt;
-        $id = $this->app->request->get('id','int');
-        $order = $this->app->order->create($id);
-
-        $pdf->setData($order)->generate('I');
 
     }
     
@@ -337,7 +243,7 @@ class StoreController extends AppController {
 
     public function product() {
         // get request vars
-        $page        = $this->app->request->getInt('page', 1);
+		$page        = $this->app->request->getInt('page', 1);
             $category_id = (int) $this->app->request->getInt('category_id', $this->params->get('category'));
             $this->products = $this->app->table->application->all();
 
@@ -355,14 +261,14 @@ class StoreController extends AppController {
             }
 
             $this->category   = $this->categories[$category_id];
-            $params           = $category_id ? $this->category->getParams('site') : $this->application->getParams('frontpage');
+            $params	          = $category_id ? $this->category->getParams('site') : $this->application->getParams('frontpage');
             $this->item_order = $params->get('config.item_order');
             $layout           = 'product_frontpage';
             $items_per_page   = $params->get('config.items_per_page', 15);
-            $offset           = max(($page - 1) * $items_per_page, 0);
+            $offset			  = max(($page - 1) * $items_per_page, 0);
             // get categories and items
             $this->items      = $this->app->table->item->getByCategory($this->application->id, $category_id, true, null, $this->item_order, $offset, $items_per_page);
-            $item_count       = $this->category->id == 0 ? $this->app->table->item->getItemCountFromCategory($this->application->id, $category_id, true) : $this->category->itemCount();
+            $item_count		  = $this->category->id == 0 ? $this->app->table->item->getItemCountFromCategory($this->application->id, $category_id, true) : $this->category->itemCount();
 
             // set categories to display
             $this->selected_categories = $this->category->getChildren();
@@ -385,7 +291,7 @@ class StoreController extends AppController {
             }
 
             // get metadata
-            $title       = $params->get('metadata.title') ? $params->get('metadata.title') : ($category_id ? $this->category->name : '');
+            $title		 = $params->get('metadata.title') ? $params->get('metadata.title') : ($category_id ? $this->category->name : '');
             $description = $params->get('metadata.description');
             $keywords    = $params->get('metadata.keywords');
 
@@ -607,6 +513,6 @@ class StoreController extends AppController {
 }
 
 /*
-    Class: DefaultControllerException
+	Class: DefaultControllerException
 */
 class ProductsControllerException extends AppException {}

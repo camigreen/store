@@ -92,24 +92,22 @@ class CashRegister {
         $email = $this->app->mail->create();
         $CR = $this;  
            if ($for == 'payment') {
-                $filename = $this->app->pdf->workorder->setData($order)->generate()->toFile();
+                $filename = $this->app->pdf->order->setData($order)->generate();
                 $path = $this->app->path->path('assets:pdfs/'.$filename);
                 $email->setSubject("T-Top Boat Cover Online Order Notification");
                 $email->setBodyFromTemplate($this->application->getTemplate()->resource.'mail.checkout.order.php');
                 $email->addRecipient($this->notification_emails);
                 $email->addAttachment($path,'Order-'.$this->order->id.'.pdf');
                 $email->Send();
-                unlink($path);
             } 
             if($for == 'receipt') {
-                $filename = $this->app->pdf->receipt->setData($order)->generate()->toFile();
+                $filename = $this->app->pdf->receipt->setData($order)->generate();
                 $path = $this->app->path->path('assets:pdfs/'.$filename);
                 $email->setSubject("Thank you for your order.");
                 $email->setBodyFromTemplate($this->application->getTemplate()->resource.'mail.checkout.receipt.php');
                 $email->addRecipient($order->billing->get('email'));
                 $email->addAttachment($path,'Receipt'.$this->order->id.'.pdf');
                 $email->Send();
-                unlink($path);
             } 
             if($for == 'error') {
                 $email->setSubject("Error Notification");

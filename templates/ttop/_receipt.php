@@ -14,7 +14,7 @@ $items = $order->items;
 ?>
 <div class='ttop-receipt'>
     <div class="uk-width-1-1 uk-container-center uk-text-right uk-margin-bottom">
-        <a href="/store/checkout?task=getPDF&type=receipt&id=<?php echo $order->id; ?>" class="uk-button uk-button-primary" target="_blank"><i class="uk-icon-print"></i> Print Receipt</a>
+        <a href="/store/checkout?task=getReceipt&id=<?php echo $order->id; ?>" class="uk-button uk-button-primary" target="_blank"><i class="uk-icon-print"></i> Print Receipt</a>
     </div>
     <div class="uk-width-1-1 uk-container-center">
         <table class="uk-table uk-table-condensed">

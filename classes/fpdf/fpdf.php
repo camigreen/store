@@ -74,7 +74,8 @@ var $PDFVersion;         // PDF version number
 *                                                                              *
 *******************************************************************************/
 
-public function __construct($orientation='P', $unit='mm', $size='A4') {
+public function __construct($app, $orientation='P', $unit='mm', $size='A4') {
+    $this->app = $app;
     $this->FPDF($orientation, $unit, $size);
 }
 

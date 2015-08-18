@@ -20,25 +20,24 @@ class PDFHelper extends AppHelper {
         // load class
         $this->app->loader->register('FPDF', 'classes:fpdf/fpdf.php');
         $this->app->loader->register('GridPDF', 'classes:fpdf/scripts/grid.php');
-        $this->app->loader->register('FormPDF', 'classes:fpdf/scripts/form.php');
                 
     }
 
-    public function create($type) {
-        
-        if (file_exists($this->app->path->path('classes:fpdf/scripts/'.$type.'.xml'))) {
-            $class = 'FormPDF';
+    public function get($name) {
+        $class = $name.'PDF';
+        if (file_exists($this->app->path->path('classes:fpdf/scripts/'.basename($class,'PDF').'.php'))) {
+            $this->app->loader->register($class, 'classes:fpdf/scripts/'.basename($class,'PDF').'.php');
         } else {
-            $class = 'FPDF';
+            $class = 'FDPF';
         }
         
-        $object = new $class($this->app, $type);
+        $object = new $class($this->app);
         
         return $object;
     }
     
     public function __get($name) {
-        return $this->create($name);
+        return $this->get($name);
     }
         
         
