@@ -57,6 +57,12 @@ $order_number = $this->app->request->get('order_number','string',null);
 			</tr>
 		</tfoot>
 	</table>
+	<ul class="uk-pagination">
+	    <li><a href="">...</a></li>
+	    <li class="uk-active"><span>...</span></li>
+	    <li class="uk-disabled"><span>...</span></li>
+    <li><span>...</span></li>
+</ul>
 </div>
 
 <script>
