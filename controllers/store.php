@@ -190,8 +190,10 @@ class StoreController extends AppController {
         if ($filter && isset($filters[$filter])) {
             $conditions = is_null($conditions) ? $filters[$filter] : "$conditions AND {$filters[$filter]}";
         }
+        $offset = $this->app->request->get('offset','int',0);
+        $limit = $this->app->request->get('limit', 'int',10);
         //$conditions = is_null($conditions) ? "orderDate BETWEEN '2015-06-01' AND '2015-06-30'" : "$conditions AND orderDate BETWEEN '2015-06-01' AND '2015-06-30'";
-        $this->orders = $this->app->table->order->all(array('conditions' => $conditions, 'order' => 'id DESC', 'limit' => "10, 10"));
+        $this->orders = $this->app->table->order->all(array('conditions' => $conditions, 'order' => 'id DESC', 'limit' => "$offset, $limit"));
         $this->record_count = count($this->orders);
         $layout = 'orders';
         // Page Title
