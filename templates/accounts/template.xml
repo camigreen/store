@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <template>
-	<name>T-Top</name>
+	<name>Accounts</name>
 	<version>1.0</version>
 	<creationDate>August 2014</creationDate>
 	<author>Shawn Gibbons</author>
@@ -8,7 +8,7 @@
 	<authorUrl>http://www.palmettoimages.com</authorUrl>
     <copyright>Copyright (C) PalmettoImages</copyright>
     <license></license>
-	<description>Laportes T-Top Template</description>
+	<description>Store Accounts</description>
 	<params group="category">
 		<param name="show_alpha_index" type="list" default="1" label="Alpha Index" description="Show/Hide alpha index">
 			<option value="0">Hide</option>

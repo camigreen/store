@@ -10,10 +10,10 @@
 	Class: ItemTable
 		The table class for items.
 */
-class OrderTable extends AppTable {
+class AccountsTable extends AppTable {
 
 	public function __construct($app) {
-		parent::__construct($app, '#_zoo_order');
+		parent::__construct($app, '#_zoo_accounts');
 	}
 
 	protected function _initObject($object) {
