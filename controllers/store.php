@@ -195,7 +195,7 @@ class StoreController extends AppController {
         echo $limit.'</br>';
         echo $offset.'</br>';
         //$conditions = is_null($conditions) ? "orderDate BETWEEN '2015-06-01' AND '2015-06-30'" : "$conditions AND orderDate BETWEEN '2015-06-01' AND '2015-06-30'";
-        $this->orders = $this->app->table->order->all(array('conditions' => $conditions, 'order' => 'id DESC', 'limit' => $limit));
+        $this->orders = $this->app->table->order->all(array('conditions' => $conditions, 'order' => 'id DESC', 'limit' => $limit, 'offset' => $offset));
         $this->record_count = count($this->orders);
         $layout = 'orders';
         // Page Title
