@@ -3,54 +3,29 @@
 class FormPDF extends GridPDF {
 	public $form;
 	public $app;
-	public $_fields;
+	public $_pages;
+	public $type;
 	public $table_x = 0;
 
-	public function __construct($app) {
+	public function __construct($app, $type) {
 		$this->app = $app;
-		$path = $this->app->path->path('classes:fpdf/scripts/'.$this->type.'.xml');
-	    $this->form = simplexml_load_file($path);
-	    $this->grid = (bool) (string) $this->form->grid;
+		$this->type = $type;
+		$path = $this->app->path->path('classes:fpdf/scripts/'.$type.'.xml');
+	    $this->form = $this->xml2obj(simplexml_load_file($path));
+	  //   	    echo '<pre>';
+			// var_dump($this->form);
+			// echo '</pre>';
+	    $this->grid = (bool) $this->form->get('grid',0);
     	parent::__construct();
 	}
 
 	public function generate() {
 		$margins = $this->form->margins;
-		$this->SetMargins((int)$margins->left,(int)$margins->top, (int) $margins->right);
-	    $this->AddPage('P','Letter');
-	    $this->SetAutoPageBreak(false);
-	    $this->getFields();
-	    foreach($this->_fields as $field) {
-	    	if($field->type != 'table') {
-	    		$this->{$field->type}($field);
-	    	}
-	    }
-	    $this->formTitle();
-	    //$this->OrderData();
-	    $this->ShipTo();
-	    //$this->BillTo();
+		$this->AliasNbPages();
+		$font = $this->form->font;
+		$this->SetFont($this->getFont('family'),$this->getFont('style'),$this->getFont('size'));
+	    $this->_AddPage($this->form->startPage);
 	    
-	    //foreach($this->order_data as $field => $value) {
-	    //     if(isset($this->_fields[$field])) {
-	    //         $f = $this->_fields[$field];
-	    //         $this->addData($f['x'], $f['y'], $f['w'], $f['h'], $value, (isset($f['align']) ? $f['align'] : 'C'), (isset($f['fontSize']) ? $f['fontSize'] : 8));
-	    //     } 
-	    // }
-	    $this->populate($this->order_data);
-	    foreach($this->items as $item) {
-	    	$data[] = array(
-	    		'name' => $item->name,
-	    		'qty' => $item->qty,
-	    		'price' => $item->price
-	    	);
-	    }
-	    foreach($data as $item) {
-	    	$this->populateTable($item);
-	    }
-	    
-		
-		//$this->table($this->items);
-		//$this->totals();
 	    return $this;
 	        
 	}
@@ -87,6 +62,16 @@ class FormPDF extends GridPDF {
 	public function setData($order) {
     $billing = $order->billing;
     $shipping = $order->shipping;
+    $company = $this->form->company;
+    $data['form_title'] = $this->form->title;
+    $data['companyname'] = $company->companyname;
+    $data['companyaddress'] = array(
+    	$company->address->street,
+    	$company->address->city.', '.$company->address->state.'  '.$company->address->zip,
+    	$company->phone,
+    	$company->website,
+    	$company->email
+    );
     $data['billto'] = array(
                 $billing->firstname.' '.$billing->lastname,
                 $billing->address,
@@ -105,108 +90,193 @@ class FormPDF extends GridPDF {
         );
     }
     $data['order_date'] = $order->getOrderDate();
-    $data['salesperson'] = $order->getSalesPerson();
-    $data['order_number'] = $order->id;
-    $data['delivery_method'] = $order->localPickup ? 'Local Pickup' : 'UPS Ground';
-    $data['payment_information'] = $order->creditCard->card_name.' ending in '.substr($order->creditCard->cardNumber, -4);
     $data['subtotal'] = '$'.number_format($order->subtotal,2,'.','');
     $data['shipping'] = '$'.number_format($order->ship_total,2,'.','');
     $data['taxes'] = '$'.number_format($order->tax_total,2,'.','');
     $data['total'] = '$'.number_format($order->total,2,'.','');
+    $items = $this->app->data->create($order->items);
+    foreach($items as $item) {
+    	$options = array();
+    	foreach($item->options as $option) {
+    		$options[] = $option['name'].': '.$option['text'];
+    	}
+    	$item_array[] = array(
+    		'item_description' => array(
+    			array('format' => 'item-name','text' => $item->name),
+    			array('format' => 'item-options','text' => implode("\n",$options))
+    		),
+    		'qty' => array('text' => $item->qty),
+    		'price' => array('text' => $item->price)
+    	);
+    	$options = array();
+    }
+    $data['items'] = $item_array;
+	$data['order_details'] = array(array(
+			'salesperson' => array('text' => $order->getSalesPerson()),
+    		'order_number' => array('text' => $order->id),
+    		'delivery_method' => array('text' => $order->localPickup ? 'Local Pickup' : 'UPS Ground'),
+    		'payment_information' => array('text' => $order->creditCard->card_name.' ending in '.substr($order->creditCard->cardNumber, -4)),
+    		'transaction_id' => array('text' => $order->transaction_id)
+    ));
+	// echo '<pre>';
+	// var_dump($data['items']);
+	// echo '</pre>';
     $this->order_data = $data;
-    $this->items = $this->app->data->create($order->items);
     return $this;
 	}
-
-	// Company
-	function company($field) {
-		$x = $field->params->get('x');
-		$y = $field->params->get('y');
-		$w = $field->params->get('w');
-		$h = $field->params->get('h');
-		$title = $field->params->get('title');
-		$border = $field->params->get('border');
-
-	    $company = $this->form->data->company;
-	    $name = $company->name;
-	    $address = array(
-	        (string) $company->address->street,
-	        (string) $company->address->city.', '.(string) $company->address->state.'  '.(string) $company->address->zip,
-	        (string) $company->phone,
-	        (string) $company->website,
-	        (string) $company->email
-	    );
-	    $this->SetXY($x, $y);
-	    $this->SetFont('Arial','B',12);
-	    $this->Cell( $w, 7, $name, $border, 1);
-	    $this->SetFont('Arial','',10);
-	    foreach($address as $line) {
-	    	$this->SetX($x);
-	    	$this->Cell( $w, 4, $line, $border, 1);
-	    }
+	public function pageNumbers($field) {
+		$field->text = "Page {$this->PageNo()} of {nb}";
+		$this->textbox($field);
 	}
+	protected function format($format, $text = null) {
 
-	public function box($field) {
-
-		$params = $field->params;
-		$this->SetXY($params->x, $params->y);
-
-		$this->Cell($params->w, $params->h, '', 1);
-
-		if ($title = $field->get('title')) {
-			$this->SetXY($params->x, $params->y-4);
-			$this->SetFont('Arial','B',8);
-			$this->Cell($params->w, 4, $title, 'R,L,T',0,'C');
+		if(is_string($format)) {
+			$params = $this->form->formats->get($format,$this->app->data->create());
+		} else {
+			$params = $format;
 		}
 
+		$font = $this->form->font;
+		$this->setFont($params->get('font-family',$font->get('family','Arial')),$params->get('font-style',$font->get('style','')), $params->get('font-size', $font->get('size', 8)));
+
+		if($indent = $params->get('indent')) {
+			$this->SetX($this->GetX()+$indent);
+		}
+
+		if($mask = $params->get('mask') && !is_null($text) && $text != '') {
+			switch($mask) {
+				case 'currency':
+					$text = $this->app->number->currency($text,array('currency' => 'USD'));
+					break;
+			}
+		}
+
+		return $text;
 
 	}
-	public function textbox($field) {
-		$params = $field->params;
-		$this->SetXY($params->x, $params->y);
-		//var_dump($params);
-		$this->Cell($params->w, $params->h, '', $params->get('border'), 0);
-		if ($title = $field->get('title')) {
-			//var_dump($title);
-			if(is_object($title)) {
-				var_dump($title);
-				$params = $title->get('params');
-				switch($params->get('align')) {
-					case 'L':
-						$this->SetXY($params->x-20, $params->y);
-						$this->SetFont('Arial','B',8);
-						$this->Cell(20, $params->h, $title->text, '',0, $params->get('title_align'));
+	public function table($field) {
+
+		$this->SetXY($field->x,$field->y);
+		$col_x = $field->x;
+		$col_y = $field->y;
+		$this->registerTableData($field, $this->order_data[$field->name]);
+		$data = &$this->tableData[$field->name];
+		$start = $data['starting_row'];
+		$overflow = false;
+		foreach($field->columns as $column) {
+			$w = $field->w*$column->w;
+			$this->SetXY($col_x,$col_y);
+			if($header = $column->get('header')) {
+				$this->format($header);
+				$this->Cell($w, 5,$column->header->get('text',$column->header),1,1,'C');
+				$this->SetXY($col_x,$col_y += 5);
+			}
+			$rows = $field->rows;
+			if($rows < ($data['total_rows'] - $start)) {
+				$overflow = TRUE;
+				$data['starting_row'] = $start + $rows;
+			}
+			$i = $start;
+			for($rows_used = 1; $rows_used <= $rows; $rows_used++) {
+				switch(true) {
+					case ($rows_used == 1 && $rows_used < $rows): //First row but not last.
+						$b[] = 'T';
+						break;
+					case ($rows_used == 1 && $rows_used == $rows): //First Row and last row.
+						$b[] = 'T';
+						$b[] = 'B';
+						break;
+					case ($rows_used > 1 && $rows_used == $rows): //Last row but not first
+						$b[] = 'B';
 						break;
 				}
+				$b[] = 'R';
+				$b[] = 'L';
+				$border = implode(',',$b);
+				$b=array();
+				$text = isset($data['columns'][$i][$column->name]['text']) ? $data['columns'][$i][$column->name]['text'] : '';
+					$this->Cell($w,$column->get('line-height',5), '',$border);
+					$this->SetXY($col_x, $col_y);
+					$text = $this->format($column, $text);
+					if(isset($data['columns'][$i][$column->name]['format'])) {
+						$text = $this->format($data['columns'][$i][$column->name]['format'], $text);
+					}
+					$this->Cell($w,$column->get('line-height',5), $text,0,1,$column->get('align','L'));
+				$this->SetXY($col_x, $col_y += $column->get('line-height',5));
+				$i++;
 			}
-			// 
-			// 
-			// 
+			
+			$col_y = $field->y;
+			$col_x += $w;
+			$column->x = $col_x;
+			$column->y = $col_y;
+		}
+		if ($overflow) {
+			$page = $this->form->pages->get($this->currentPage)->gotopage;
+			$this->_AddPage($page);
+		}
+			
+	}
+	public function textbox($field) {
+		
+		$this->format($field);
+		$text = isset($this->order_data[$field->name]) ? $this->order_data[$field->name] : $field->get('text','');
+		$text = $field->get('all-caps',0) ? strtoupper($text) : $text;
+		$this->SetXY($field->x, $field->y);
+		if(is_array($text)) {
+			$txt = implode("\n",$text);
+			$this->Cell($field->w,$field->get('h', 0),'',$field->get('border', 0));
+			$this->SetXY($field->x, $field->y);
+			$this->MultiCell($field->w, $field->get('line-height',5), $txt, 0, $field->get('align','L'));
+		} else {
+			$this->Cell($field->w, $field->get('h', 0), $text, $field->get('border', 0), 0, $field->get('align','L'));
+		}
+		
+		if ($title = $field->get('title')) {
+			if(is_object($title)) {
+				$align = $title->get('align','L');
+				$this->format($title);
+				$w = $field->w;
+				$h = 5;
+				switch($align) {
+					case 'R':
+						$w = $this->GetStringWidth($title->get('text',''))+5;
+						$this->SetXY($field->x+$title->get('w',$w), $field->y);
+						break;
+					case 'L':
+						$w = $this->GetStringWidth($title->get('text',''))+5;
+						$this->SetXY($field->x-$title->get('w',$w), $field->y);
+						break;
+					case 'T':
+						$w = $field->w;
+						$this->SetXY($field->x,$field->y-$title->get('h',$h));
+						break;
+					case 'B':
+						$w = $field->w;
+						$this->SetXY($field->x,$field->y+$title->get('h',$h));
+						break;
+					default:
+						$this->SetXY($field->x-$title->get('w',$w), $field->y);
+				}
+				$this->Cell($title->get('w',$w), $title->get('h',$h), $title->get('text',''), $title->get('border',0),0, $title->get('text-align','L'));
+			}
 		}
 	}
 
 	public function logo($field) {
-		$x = $field->params->get('x');
-		$y = $field->params->get('y');
-		$w = $field->params->get('w');
-		$h = $field->params->get('h');
-		$border = $field->params->get('border');
-		$path = (string) $this->form->data->company->logoPath;
+		$x = $field->get('x');
+		$y = $field->get('y');
+		$w = $field->get('w');
+		$h = $field->get('h');
+		$border = $field->get('border');
+		$path = $this->form->company->logoPath;
 		$this->Image($path,$x,$y,$w,$h);
-	}
-
-	public function formTitle() {
-		$this->SetXY(145,8);
-		$this->SetFont( "Arial", "B", 30);
-		$text  = strtoupper((string) $this->form->name);
-		$this->Cell(60,10, $text, 0, 0, "R" );
-    
 	}
 
 	public function toFile() {
 	    $name = $this->app->utility->generateUUID().'.pdf';
 	    $path = $this->app->path->path('assets:pdfs/');
-	    $this->Output($path.$name,'F');
+	    $this->Output($path.'/'.$name,'F');
 	    return $name;
 	}
 
@@ -224,42 +294,38 @@ class FormPDF extends GridPDF {
 	        $e = get_object_vars($element);
 	        if (!empty($e))
 	        {
-	        	$test = $element instanceof SimpleXMLElement ? $this->xml2obj($element) : $e;
-	        	if(!isset($test->name)) {
-	        		$arr[$tag] = $test;
-	        	} else {
-	        		if($attrs) {
-			        	foreach($attrs as $key =>$attr) {
-			        		$params[$key] = (string) $attr;
-			        	}
-			        	$test->params = $this->app->data->create($params);
-		        	}
-	        		$arr[$test->name] = $test;
+	        	$elem = $element instanceof SimpleXMLElement ? $this->xml2obj($element) : $e;
+	        	foreach($attrs as $key =>$attr) {
+	        		$elem->$key = is_float($attr) ? (float) $attr : (string) $attr;
 	        	}
+	        	$name = $elem->get('name',$tag);
+	        	$xmlObj[$name] = $elem;
 	        }
 	        else
 	        {
-	            $arr[$tag] = trim($element);
+	            $xmlObj[$tag] = is_float($element) ? (float) $element : (string) $element;
 	        }
 	    }
-	    return $this->app->data->create($arr);
+	    foreach($xml->attributes() as $key => $attr) {
+	    	$xmlObj[$key] = is_float($attr) ? (float) $attr : (string) $attr;
+	    }
+	    return $this->app->data->create($xmlObj);
 	}
 
-	public function getFields() {
+	public function loadPages() {
 
-		$fields = $this->form->fields->field;
+		$pages = $this->form->pages->page;
 		
-			$obj = $this->xml2obj($fields);
-			var_dump($obj);
-			$this->_fields = $obj;
-		//return $this->_fields;
+			$obj = $this->xml2obj($pages);
+			$this->_pages = $obj;
 	}
 
 	public function populate($data) {
 		$this->SetFont('Arial','',8);
+		$fields = $this->_pages->fields;
 		foreach($data as $key => $value) {
-			if(isset($this->_fields[$key])) {
-				$field = $this->_fields[$key];
+			if(isset($fields->$key)) {
+				$field = $fields->$key;
 				if(is_string($value)) {
 					$this->SetXY($field->params->x, $field->params->y);
 					$this->Cell($field->params->w, $field->params->h, $value, 0, 0, $field->params->get('align'));
@@ -273,33 +339,70 @@ class FormPDF extends GridPDF {
 		}
 
 		//var_dump($data);
+	}
+
+	public function registerTableData($field, $data) {
+		if(isset($this->tableData[$field->name])) {
+			return;
+		}
+		$table = array(
+			'total_rows' => 0,
+			'starting_row' => 0,
+			'columns' => array()
+		);
+	    $last_row = 0;
+	 //    echo '<pre>';
+		// var_dump($data);
+		// echo '</pre>';
+	    foreach ($data as $item) {
+	    	$itemNum = 1;
+	    	$starting_row = $last_row;
+	    	foreach($item as $column => $value) {
+	    		$line_number = $starting_row;
+	    		if(isset($value['text']))
+	    			$value = array($value);
+	    		foreach($value as $v) {
+					if($v['text'] == '') 
+						continue;
+					$column_params = $field->columns->get($column,$this->app->data->create());
+					if(isset($v['format'])) {
+						$format = $this->form->formats->get($v['format'], $this->app->data->create());
+						$indent = $format->get('indent', 0);
+					} else {
+						$indent = 0;
+					}
+					$lines = $this->NbLines(($field->w*$column_params->get('w',0))-$indent,$v['text']);
+			    	foreach($lines as $line) {
+			    		$table['columns'][$line_number][$column]['text'] = $line;
+			    		$table['columns'][$line_number][$column]['format'] = isset($v['format']) ? $v['format'] : NULL;
+			    		$line_number++;
+			    	}
+			    }
+			    if(count($data) > 1 && $itemNum != count($data)) {
+		    		$table['columns'][$line_number][$column]['text'] = '';
+		    		$line_number++;
+			    }
+			    $itemNum++;
+	    	$last_row = $last_row > $line_number ? $last_row : $line_number;
+	    	}	
+	    }
+	    $table['total_rows'] = $last_row - 1;
+	    
+		// echo '<pre>';
+		// var_dump($table);
+		// echo '</pre>';
+	    $this->tableData[$field->name] = $table;
+		return $table;
 
 	}
 
 	public function populateTable($data) {
-		$field = $this->_fields['name'];
-		$hgt = 0;
-		foreach($data as $key => $value) {
-			if(isset($this->_fields[$key])) {
-				$field = $this->_fields[$key];
-				$this->SetFont('Arial','',$field->params->get('fontsize',8));
-				if(!is_array($value)) {
-					if($field->params->get('format') == 'currency') {
-						$value = $this->app->number->currency($value,array('currency' => 'USD'));
-					}
-					$this->SetXY($field->params->x, $field->params->y + $this->table_x);
-					$this->Cell($field->params->w, 5, $value, 0, 0, $field->params->get('align'));
-					
-				} else {
-					$this->SetXY($field->params->x+$field->params->get('data-padding'), $field->params->y);
-					$txt = implode("\n",$value);
-					$this->Multicell($field->params->w,$this->table_LH, $txt);
-				}
+		$page = $this->currentPage;
+		foreach($this->_pages->$page->fields as $field) {
+			if ($field->type == 'table') {
+				$table = $field;
 			}
-			
 		}
-		$hgt += 5;
-		$this->table_x += $hgt;
 	}
 
 	function NbLines($w,$txt) {
@@ -312,62 +415,77 @@ class FormPDF extends GridPDF {
 	    $nb=strlen($s);
 	    if($nb>0 and $s[$nb-1]=="\n")
 	        $nb--;
-	    $sep=-1;
 	    $i=0;
-	    $j=0;
-	    $l=0;
-	    $nl=1;
+	    $ll=0;
+	    $wl=0;
+	    $arr = array();
+	    $text = '';
+	    $word = '';
 	    while($i<$nb)
 	    {
 	        $c=$s[$i];
+	        // Check if the character is a newline
 	        if($c=="\n")
 	        {
 	            $i++;
-	            $sep=-1;
-	            $j=$i;
-	            $l=0;
-	            $nl++;
+	            $ll=0;
+	            $wl=0;
+	            $text .= $word;
+	            $arr[] = $text;
+	            $text = '';
+	            $word = '';
 	            continue;
 	        }
-	        if($c==' ')
-	            $sep=$i;
-	        $l+=$cw[$c];
-	        if($l>$wmax)
-	        {
-	            if($sep==-1)
-	            {
-	                if($i==$j)
-	                    $i++;
-	            }
-	            else
-	                $i=$sep+1;
-	            $sep=-1;
-	            $j=$i;
-	            $l=0;
-	            $nl++;
+	        // Check if the character is a space
+	        if($c==' ') {
+	        	if (($ll + $wl) > $wmax) { // if the line length + word length is greater than the length allowed.
+	        		$arr[] = trim($text);
+	        		$word .= $c;
+	        		$wl += $cw[$c];
+	        		$text = $word;
+	        		$ll = $wl;
+	        		$word = '';
+	        		$wl=0;
+	        		$i++;
+
+	        	} else {
+	        		$word .= $c;
+	        		$wl += $cw[$c];
+	        		$text .= $word;
+	        		$ll += $wl;
+	        		$word = '';
+	        		$wl=0;
+	        		$i++;
+	        	}
+	        	continue;
 	        }
-	        else
-	            $i++;
+	        $word .= $c;
+	        $wl += $cw[$c];
+	        $i++;
+
 	    }
-	    return $nl;
+	    if(($ll + $wl) > $wmax) {
+	    	$arr[] = trim($text);
+	    	$arr[] = trim($word);
+	    } else {
+	    	$text .= $word;
+	    	$arr[] = $text;
+	    }
+	    return $arr;
 	}
 }
 
-class FormTablePDF {
+class FormTable extends GridPDF {
 
-	public $columns;
-	public $height;
-	public $width;
-	public $x;
-	public $y;
-	public $header;
-
-	public function addColumns($data = array()) {
-		foreach($data as $column) {
-			$this->column[$column['header']] = array(
-				'w' => $column['w']
-			);
+	public function __construct($pdf, $params) {
+		$this->pdf = $pdf;
+		foreach($params as $key => $param) {
+			$this->$key = $param;
 		}
+	}
+
+	public function test() {
+		$this->pdf->Cell(10,10,'This is a test!!.');
 	}
 
 
