@@ -61,7 +61,7 @@ $order_number = $this->app->request->get('order_number','string',null);
 	    <li><a href=""><i class="uk-icon-angle-double-left"></i></a></li>
 	    <li class="uk-active"><span>1</span></li>
 	    <li class="uk-disabled"><span>2</span></li>
-    	<li><a href=""><i class="uk-icon-angle-double-left"></i></a></li>
+    	<li><a href=""><i class="uk-icon-angle-double-right"></i></a></li>
 	</ul>
 </div>
 
