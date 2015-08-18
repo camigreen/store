@@ -55,6 +55,35 @@ class FormPDF extends GridPDF {
 	        
 	}
 
+	public function getFont($attribute) {
+		$font = $this->form->font;
+		switch ($attribute) {
+			case 'family':
+				return $font->get('family','arial');
+				break;
+			case 'style':
+				return $font->get('style','');
+				break;
+			case 'size':
+				return $font->get('size',8);
+				break;
+			default: 
+				return '';
+		}
+	}
+
+	public function _AddPage($page) {
+
+		$page = $this->form->pages->$page;
+		$this->AddPage($page->get('orientation', 'L'), $page->get('size', 'Letter'));
+		$this->SetAutoPageBreak(false);
+
+	    $this->currentPage = $page->name;
+	    foreach($page->fields as $field) {
+	    	$this->{$field->type}($field);
+	    }
+	}
+
 	public function setData($order) {
     $billing = $order->billing;
     $shipping = $order->shipping;
