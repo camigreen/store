@@ -55,6 +55,7 @@ class AccountsController extends AppController {
         var_dump($user);
         $user->setParam('type', 'dealer');
         var_dump($user->getParam('type'));
+        $user->save();
         echo '</pre>';
     }
 }
