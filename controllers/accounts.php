@@ -50,5 +50,9 @@ class AccountsController extends AppController {
 
     public function accounts() {
         echo 'Accounts';
+        $user = $this->app->user->get();
+        echo '<pre>';
+        var_dump($user);
+        echo '</pre>';
     }
 }
