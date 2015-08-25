@@ -17,7 +17,6 @@ class StoreApplication extends Application {
         $path = dirname(__FILE__);
         $zoo->path->register($path.'/elements', 'elements');
         $zoo->path->register($path.'/assets', 'assets');
-        $zoo->path->register($path.'/templates/store/assets', 'assets');
         $zoo->path->register($path.'/controllers', 'controllers');
         $zoo->path->register($path.'/prices', 'prices');
         $zoo->path->register($path.'/classes', 'classes');
@@ -41,16 +40,6 @@ class StoreApplication extends Application {
         $zoo->document->addScript('elements:cart/assets/js/storeitem.js');
         
         // test
-        
-    }
-    
-    public function dispatch() {
-        $view = $this->app->request->get('view','word');
-        // if ($view == 'store') {
-            $this->app->dispatch($view);
-        // } else {
-        //     $this->app->dispatch('default');
-        // }
         
     }
 }

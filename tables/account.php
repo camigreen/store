@@ -10,10 +10,10 @@
 	Class: ItemTable
 		The table class for items.
 */
-class AccountsTable extends AppTable {
+class AccountTable extends AppTable {
 
 	public function __construct($app) {
-		parent::__construct($app, '#_zoo_accounts');
+		parent::__construct($app, '#__zoo_account');
 	}
 
 	protected function _initObject($object) {
@@ -34,7 +34,7 @@ class AccountsTable extends AppTable {
 		}
 
 		// trigger init event
-		$this->app->event->dispatcher->notify($this->app->event->create($object, 'item:init'));
+		$this->app->event->dispatcher->notify($this->app->event->create($object, 'account:init'));
 
 		return $object;
 	}
@@ -48,10 +48,6 @@ class AccountsTable extends AppTable {
 	*/
 	public function save($object) {
 
-		if (!($application = $object->getApplication())) {
-			throw new ItemTableException('Invalid application id');
-		}
-
 		$new = !(bool) $object->id;
 
 		// first save to get id
@@ -60,6 +56,9 @@ class AccountsTable extends AppTable {
 		}
 
 		$result = parent::save($object);
+
+		// trigger save event
+		$this->app->event->dispatcher->notify($this->app->event->create($object, 'account:saved', compact('new')));
 
 		return $result;
 	}
