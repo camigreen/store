@@ -92,6 +92,11 @@ class AccountController extends AppController {
         var_dump($post);
         self::bind($account, $post['account']);
         $params = $this->app->parameter->create();
+
+        $account->created = $this->app->date->create($post['account']['created']);
+        $account->modified = $now->toSQL();
+        $account->modified_by = $user;
+        
         foreach($post['account']['params'] as $k => $v) {
             $params->set($k, $v);
         }
