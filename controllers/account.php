@@ -83,6 +83,7 @@ class AccountController extends AppController {
         $user = $this->app->user->get()->id;
         $aid = $this->app->request->get('aid', 'int');
         $post = $this->app->request->get('post:', 'array', array());
+        $tzoffset   = $this->app->date->getOffset();
 
         if($aid) {
             $account = $this->table->get($aid);
@@ -93,7 +94,7 @@ class AccountController extends AppController {
         self::bind($account, $post['account']);
         $params = $this->app->parameter->create();
 
-        $account->created = $this->app->date->create($post['account']['created']);
+        $account->created = $this->app->date->create($account->created)->toSQL();
         $account->modified = $now->toSQL();
         $account->modified_by = $user;
         
