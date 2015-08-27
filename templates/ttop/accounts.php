@@ -12,6 +12,9 @@ $tzoffset   = $this->app->date->getOffset();
 
 $created = $this->app->date->create($this->account->created)->format('m/d/Y g:i a');
 $modified = $this->app->date->create($this->account->modified)->format('m/d/Y g:i a');
+echo $this->app->date->create($tzoffset);
+echo $tzoffset;
+
 
 ?>
 
