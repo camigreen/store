@@ -8,12 +8,6 @@ var_dump($this->user);
 echo 'Account';
 var_dump($this->account);
 
-$tzoffset   = $this->app->date->getOffset();
-
-$created = $this->app->date->create($this->account->created)->format('m/d/Y g:i a');
-$modified = $this->app->date->create($this->account->modified)->format('m/d/Y g:i a');
-echo $this->app->date->create($tzoffset);
-echo $tzoffset;
 
 
 ?>
@@ -23,10 +17,10 @@ echo $tzoffset;
 		<input type="text" name="account[name]" value="<?php echo $this->account->name; ?>" />
 		<input type="text" name="account[number]" value="<?php echo $this->account->number; ?>" />
 		<input type="text" name="account[type]" value="<?php echo $this->account->type; ?>" />
-		<input type="date" name="account[created]" value="<?php echo $created; ?>" />
+		<?php echo $this->app->html->_('date', $this->account->created, JText::_('DATE_FORMAT_LC2'), $this->app->date->getOffset()); ?>
 		<input type="text" name="created_by_name" value="<?php echo $this->app->user->get($this->account->created_by)->name; ?>" />
 		<input type="hidden" name="account[created_by]" value="<?php echo $this->account->created_by; ?>" />
-		<input type="date" name="account[modified]" value="<?php echo $modified; ?>" />
+		<?php echo $this->app->html->_('date', $this->account->modified, JText::_('DATE_FORMAT_LC2'), $this->app->date->getOffset()); ?>
 		<input type="text" name="account[modified_by]" value="<?php echo $this->app->user->get($this->account->modified_by)->name; ?>" />
 		<input type="hidden" name="modified_by_name" value="<?php echo $this->account->modified_by; ?>" />
 		<input type="text" name="account[params][terms]" value="<?php echo $this->account->params->get('terms', ''); ?>" />
