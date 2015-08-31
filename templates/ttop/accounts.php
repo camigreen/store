@@ -8,7 +8,12 @@ var_dump($this->user);
 echo 'Account';
 var_dump($this->account);
 
-
+echo 'Can Create Orders: ';
+echo $this->app->userprofile->canCreateOrders($this->user) ? 'True' : 'False';
+echo '</br>Can Edit Orders: ';
+echo $this->app->userprofile->canEditOrders($this->user) ? 'True' : 'False';
+echo '</br>Can Delete Orders: ';
+echo $this->app->userprofile->canDeleteOrders($this->user) ? 'True' : 'False';
 
 ?>
 

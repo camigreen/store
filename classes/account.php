@@ -19,7 +19,7 @@ class Account {
 
     public $number;
 
-    public $type;
+    public $type = 'default';
 
     public $created;
 
@@ -31,6 +31,10 @@ class Account {
 
     public $params;
 
+    public $access = 1;
+
+    public $app;
+
     public function __construct() {
 
         // get app instance
@@ -38,5 +42,31 @@ class Account {
 
         // decorate data as object
         $this->params = $app->parameter->create($this->params);
+    }
+
+    /**
+     * Check if the given usen can access this item
+     *
+     * @param  JUser $user The user to check
+     *
+     * @return boolean       If the user can access the item
+     *
+     * @since 2.0
+     */
+    public function canAccess($user = null) {
+        return $this->app->userprofile->canAccess($user, $this->access);
+    }
+
+    /**
+     * Check if the given usen can access this item
+     *
+     * @param  JUser $user The user to check
+     *
+     * @return boolean       If the user can access the item
+     *
+     * @since 2.0
+     */
+    public function getType() {
+        return $this->type;
     }
 }

@@ -49,14 +49,20 @@ class AccountController extends AppController {
         if (!$this->template = $this->application->getTemplate()) {
             return $this->app->error->raiseError(500, JText::_('No template selected'));
         }
+        $this->user = $this->app->user->get();
+        $acc = $this->user->setParam('account',1);
+        $this->account = $this->table->get($acc);
+        echo $this->account->getType();
+        // Check ACL
+        if (!$this->account->canAccess($this->user)) {
+            return $this->app->error->raiseError(403, JText::_('Unable to access this account'));
+        }
 
         // execute task
         $this->taskMap['display'] = null;
         $this->taskMap['__default'] = null;
-        //$this->execute($this->request->get('view','word'));
         $layout = 'accounts';
-        $this->user = $this->app->user->get();
-        $this->account = $this->table->get(1);
+        
 
         $this->getView()->addTemplatePath($this->template->getPath())->setLayout($layout)->display();
     }
