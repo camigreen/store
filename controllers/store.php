@@ -12,8 +12,7 @@
 */
 class StoreController extends AppController {
 
-    public $version = '1.0.0';
-    public $branch = 'PDF';
+    public $version = '1.0.1';
     
     public function __construct($default = array()) {
         parent::__construct($default);
@@ -58,7 +57,6 @@ class StoreController extends AppController {
 
         echo '<p>Store App</p>';
         echo "<p>Version: $this->version</p>";
-        echo "<p>Branch: $this->branch</p>";
         echo "<p>Version Date: 08/11/2015 1:08 PM</p>";
         echo '<p>Author: Shawn Gibbons</p>';
     }
