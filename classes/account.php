@@ -42,6 +42,7 @@ class Account {
 
         // decorate data as object
         $this->params = $app->parameter->create($this->params);
+
     }
 
     /**
@@ -68,5 +69,63 @@ class Account {
      */
     public function getType() {
         return $this->type;
+    }
+
+    /**
+     * Get the given parameter for the account object
+     *
+     * @param  string $name The parameter to retrieve
+     *
+     * @return mixed  The value of the parameter. Returns null if parameter does not exist
+     *
+     * @since 1.0
+     */
+    public function getParam($name) {
+        return $this->params->get($name);
+    }
+
+    /**
+     * Set the given parameter for the account object
+     *
+     * @param  string $name The parameter to set
+     *
+     * @param  mixed  $value The value of the parameter
+     *
+     * @return mixed  The value of the parameter.
+     *
+     * @since 1.0
+     */
+    public function setParam($name, $value) {
+        return $this->params->set($name, $value);
+    }
+
+    /**
+     * Get the sub-account for the account
+     *
+     * @param  int $id The id of the subaccount to retrieve. Default is NULL
+     *
+     * @return mixed  Account Object or array of Account Objects
+     *
+     * @since 1.0
+     */
+    public function getSubAccount($id) {
+        $subs = $this->params->get('subaccounts');
+        if (!array_key_exists($id, $subs)) {
+            return $this->app->error->raiseError(403, JText::_('Unable to access this sub-account'));
+        }
+        if (!array_key_exists($id, $this->subaccounts)) {
+            $table = $this->app->table->account;
+            $this->subaccounts[$id] = $table->get($id);
+        }
+        return $this->subaccounts[$id];
+    }
+
+    public function initParams() {
+        require $this->app->path->path('classes:/accounts/config.php');
+        foreach ($params[$this->type] as $key => $value) {
+            if(!$this->params->get($key)) {
+                $this->params->set($key, $value);
+            }
+        }
     }
 }

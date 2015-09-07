@@ -3,17 +3,20 @@
 echo '<h3>Account Page</h3>';
 
 echo 'User';
-var_dump($this->user);
+var_dump($this->userprofile);
 
 echo 'Account';
 var_dump($this->account);
 
+// echo 'OEMs';
+// var_dump($this->account->getSubAccount(2));
+
 echo 'Can Create Orders: ';
-echo $this->app->userprofile->canCreateOrders($this->user) ? 'True' : 'False';
+echo $this->userprofile->canCreateOrders() ? 'True' : 'False';
 echo '</br>Can Edit Orders: ';
-echo $this->app->userprofile->canEditOrders($this->user) ? 'True' : 'False';
+echo $this->userprofile->canEditOrders() ? 'True' : 'False';
 echo '</br>Can Delete Orders: ';
-echo $this->app->userprofile->canDeleteOrders($this->user) ? 'True' : 'False';
+echo $this->userprofile->canDeleteOrders() ? 'True' : 'False';
 
 ?>
 

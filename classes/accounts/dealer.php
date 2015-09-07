@@ -15,4 +15,6 @@ class DealerAccount extends Account {
 
     public $type = 'dealer';
 
+    public $_subaccounts;
+
 }

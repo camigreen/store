@@ -14,29 +14,42 @@
  */
 class UserProfileHelper extends UserAppHelper {
 
+    public $user;
+    public $_accounts;
+
     public function getName() {
         return 'userprofile';
     }
 
-    public function canCreateOrders($user = null, $asset_id = 0) {
-        if(is_null($user)) {
-            $user = $this->_get();
+    public function get($id = null) {
+        $this->user = parent::get($id);
+        $accounts = $this->user->getParam('accounts');
+        foreach($accounts as $type => $account_id) {
+            $this->_accounts[$account_id] = $this->app->table->account->get($account_id, $type);
+            $this->_accounts[$account_id]->initParams();
         }
-        return $this->isAdmin($user, $asset_id) || $this->authorise($user, 'order.create', $asset_id);
+        return $this;
+    }
+
+    public function canCreateOrders($user = null, $asset_id = 0) {
+        if(!isset($this->user)) {
+            $this->user = $this->get();
+        }
+        return $this->isAdmin($this->user, $asset_id) || $this->authorise($this->user, 'order.create', $asset_id);
 
     }
     public function canEditOrders($user = null, $asset_id = 0) {
-        if(is_null($user)) {
-            $user = $this->_get();
+        if(!isset($this->user)) {
+            $this->user = $this->get();
         } 
-        return $this->isAdmin($user, $asset_id) || $this->authorise($user, 'order.edit', $asset_id);
+        return $this->isAdmin($this->user, $asset_id) || $this->authorise($this->user, 'order.edit', $asset_id);
 
     }
     public function canDeleteOrders($user = null, $asset_id = 0) {
-        if(is_null($user)) {
-            $user = $this->_get();
+        if(!isset($this->user)) {
+            $this->user = $this->get();
         } 
-        return $this->isAdmin($user, $asset_id) || $this->authorise($user, 'order.delete', $asset_id);
+        return $this->isAdmin($this->user, $asset_id) || $this->authorise($this->user, 'order.delete', $asset_id);
 
     }
 

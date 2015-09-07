@@ -11,21 +11,13 @@
  *
  * @author Shawn
  */
-class AccountHelper extends AppHelper {
+class AccountHelper extends ObjectHelper {
     
     
-    public function __construct($app) {
-        parent::__construct($app);
+    public function create($class = null, $args = array()) {
         
-        $app->loader->register('Account','classes:account.php');
-    }
-    
-    public function get($name) {
-        
-        $class = $name.'Account';
-        
-        if (file_exists($this->app->path->path('classes:'.basename($class,'account').'.php'))) {
-            $this->app->loader->register($class, 'classes:'.basename($class,'account').'.php');
+        if (!is_null($class) && file_exists($this->app->path->path('classes:/accounts/'.$class.'.php'))) {
+            $this->app->loader->register($class, 'classes:/accounts/'.$class.'.php');
         } else {
             $class = 'Account';
         }
