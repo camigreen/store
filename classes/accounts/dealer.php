@@ -17,4 +17,11 @@ class DealerAccount extends Account {
 
     public $_subaccounts;
 
+    public function initParams() {
+    	parent::initParams();
+
+    	$this->params->poc = $this->app->data->create($this->params->poc);
+    }
+
+
 }

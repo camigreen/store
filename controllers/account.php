@@ -50,21 +50,18 @@ class AccountController extends AppController {
             return $this->app->error->raiseError(500, JText::_('No template selected'));
         }
         $this->userprofile = $this->app->userprofile->get();
-        $accounts = array(
-            'Dealer' => 1
-        );
-        $acc = $this->userprofile->user->setParam('accounts', $accounts);
-        $this->userprofile->user->save();
+        $this->account = $this->userprofile->_accounts[1];
         // Check ACL
-        if (!$this->account->canAccess($this->userprofile->user)) {
-            return $this->app->error->raiseError(403, JText::_('Unable to access this account'));
-        }
-
+        // if (!$this->account->canAccess($this->userprofile->user)) {
+        //     return $this->app->error->raiseError(403, JText::_('Unable to access this account'));
+        // }
+        $options[] = $this->app->html->_('select.option', '', '- [SELECT] -');
+        echo $this->app->html->queryList("SELECT id AS value, name AS text FROM #__users", $options, 'users');
         // execute task
         $this->taskMap['display'] = null;
         $this->taskMap['__default'] = null;
-        $layout = 'accounts';
-        
+        $layout = 'dealer';
+        $this->getView()->addTemplatePath($this->template->getPath().'/accounts');
 
         $this->getView()->addTemplatePath($this->template->getPath())->setLayout($layout)->display();
     }

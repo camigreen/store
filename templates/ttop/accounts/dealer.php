@@ -1,9 +1,9 @@
 <?php 
 
-echo '<h3>Account Page</h3>';
+echo '<h3>Dealer Account Page</h3>';
 
-echo 'User';
-var_dump($this->userprofile);
+// echo 'Users';
+// var_dump($this->users);
 
 echo 'Account';
 var_dump($this->account);
@@ -17,6 +17,8 @@ echo '</br>Can Edit Orders: ';
 echo $this->userprofile->canEditOrders() ? 'True' : 'False';
 echo '</br>Can Delete Orders: ';
 echo $this->userprofile->canDeleteOrders() ? 'True' : 'False';
+
+$poc = $this->account->params->get('poc');
 
 ?>
 
@@ -33,6 +35,10 @@ echo $this->userprofile->canDeleteOrders() ? 'True' : 'False';
 		<input type="hidden" name="modified_by_name" value="<?php echo $this->account->modified_by; ?>" />
 		<input type="text" name="account[params][terms]" value="<?php echo $this->account->params->get('terms', ''); ?>" />
 		<input type="text" name="account[params][discount]" value="<?php echo $this->account->params->get('discount', ''); ?>" />
+		<input type="text" name="account[params][poc][name]" value="<?php echo $poc->get('name',''); ?>" />
+		<input type="text" name="account[params][poc][phone]" value="<?php echo $poc->get('phone',''); ?>" />
+		<input type="text" name="account[params][poc][email]" value="<?php echo $poc->get('email',''); ?>" />
+		<input type="text" name="account[params][poc][fax]" value="<?php echo $poc->get('fax',''); ?>" />
 		<input type="submit" class="uk-button uk-button-primary" value="Save" />
 	</form>
 </div>
