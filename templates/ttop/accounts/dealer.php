@@ -6,19 +6,21 @@ echo '<h3>Dealer Account Page</h3>';
 // var_dump($this->users);
 
 echo 'Account';
-var_dump($this->account);
+var_dump($this->userprofile->getAccount());
 
 // echo 'OEMs';
 // var_dump($this->account->getSubAccount(2));
 
 echo 'Can Create Orders: ';
-echo $this->userprofile->canCreateOrders() ? 'True' : 'False';
+echo $this->app->userprofile->canCreateOrders() ? 'True' : 'False';
 echo '</br>Can Edit Orders: ';
-echo $this->userprofile->canEditOrders() ? 'True' : 'False';
+echo $this->app->userprofile->canEditOrders() ? 'True' : 'False';
 echo '</br>Can Delete Orders: ';
-echo $this->userprofile->canDeleteOrders() ? 'True' : 'False';
+echo $this->app->userprofile->canDeleteOrders() ? 'True' : 'False';
 
-$poc = $this->account->params->get('poc');
+$this->account = $this->userprofile->getAccount();
+
+$poc = $this->account->getParam('poc');
 
 ?>
 

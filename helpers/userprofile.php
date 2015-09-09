@@ -12,44 +12,64 @@
  *
  * @author Shawn
  */
-class UserProfileHelper extends UserAppHelper {
+class UserProfileHelper extends AppHelper {
 
-    public $user;
-    public $_accounts;
+    protected $_profiles = array();
 
     public function getName() {
         return 'userprofile';
     }
 
     public function get($id = null) {
-        $this->user = parent::get($id);
-        $accounts = $this->user->getParam('accounts');
-        foreach($accounts as $type => $account_id) {
-            $this->_accounts[$account_id] = $this->app->table->account->get($account_id, $type);
-            $this->_accounts[$account_id]->initParams();
+        if (empty($id)) {
+            $id = $this->app->user->get()->id;
         }
-        return $this;
+        $table = $this->app->table->userprofile;
+        if (!in_array($id, $this->_profiles)) {
+            $this->_profiles[$id] = $table->get($id);
+        }
+        return $this->_profiles[$id];
+    }
+
+    /**
+     * Check if a user can access a resource
+     *
+     * @param JUser $user The user to check
+     * @param int $access The access level to check against
+     *
+     * @return boolean If the user have the rights to access that level
+     *
+     * @since 1.0.0
+     */
+    public function canAccess($user = null, $access = 0) {
+
+        if (is_null($user)) {
+            $user = $this->get();
+        }
+
+        return in_array($access, $user->getAuthorisedViewLevels());
+
     }
 
     public function canCreateOrders($user = null, $asset_id = 0) {
-        if(!isset($this->user)) {
-            $this->user = $this->get();
+        if(empty($user)) {
+            $user = $this->app->user->get();
         }
-        return $this->isAdmin($this->user, $asset_id) || $this->authorise($this->user, 'order.create', $asset_id);
+        return $this->app->user->isAdmin($user, $asset_id) || $this->app->user->authorise($user, 'order.create', $asset_id);
 
     }
     public function canEditOrders($user = null, $asset_id = 0) {
-        if(!isset($this->user)) {
-            $this->user = $this->get();
-        } 
-        return $this->isAdmin($this->user, $asset_id) || $this->authorise($this->user, 'order.edit', $asset_id);
+        if(empty($user)) {
+            $user = $this->app->user->get();
+        }
+        return $this->app->user->isAdmin($user, $asset_id) || $this->app->user->authorise($user, 'order.edit', $asset_id);
 
     }
     public function canDeleteOrders($user = null, $asset_id = 0) {
-        if(!isset($this->user)) {
-            $this->user = $this->get();
-        } 
-        return $this->isAdmin($this->user, $asset_id) || $this->authorise($this->user, 'order.delete', $asset_id);
+        if(empty($user)) {
+            $user = $this->app->user->get();
+        }
+        return $this->app->user->isAdmin($user, $asset_id) || $this->app->user->authorise($user, 'order.delete', $asset_id);
 
     }
 

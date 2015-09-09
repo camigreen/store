@@ -33,15 +33,13 @@ class Account {
 
     public $access = 1;
 
+    public $state = 1;
+
     public $app;
 
+    public $config;
+
     public function __construct() {
-
-        // get app instance
-        $app = App::getInstance('zoo');
-
-        // decorate data as object
-        $this->params = $app->parameter->create($this->params);
 
     }
 
@@ -81,6 +79,9 @@ class Account {
      * @since 1.0
      */
     public function getParam($name) {
+        if (is_array($this->params->get($name))) {
+            return $this->app->parameter->create($this->params->get($name));
+        }
         return $this->params->get($name);
     }
 
@@ -121,8 +122,14 @@ class Account {
     }
 
     public function initParams() {
-        require $this->app->path->path('classes:/accounts/config.php');
-        foreach ($params[$this->type] as $key => $value) {
+
+        require_once($this->app->path->path('classes:/accounts/config.php'));
+        if (is_string($this->params) || is_null($this->params)) {
+            // decorate data as this
+            $this->params = $this->app->parameter->create($this->params);
+        }
+        $this->config = $config;
+        foreach ($this->config['types'][$this->type] as $key => $value) {
             if(!$this->params->get($key)) {
                 $this->params->set($key, $value);
             }

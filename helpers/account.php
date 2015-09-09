@@ -11,7 +11,27 @@
  *
  * @author Shawn
  */
-class AccountHelper extends ObjectHelper {
+class AccountHelper extends AppHelper {
+
+	protected $_accounts;
+
+	public function __construct($app) {
+		parent::__construct($app);
+
+		$this->app->loader->register('Account', 'classes:/accounts/default.php');
+
+        
+	}
+
+	public function get($id, $type = null) {
+		if (!isset($this->_accounts[$id])) {
+			$table = $this->app->table->account;
+			$account = $table->get($id, $type);
+			$this->_accounts[$id] = $account;
+		}
+		
+		return $this->_accounts[$id]; 
+	}
     
     
     public function create($class = null, $args = array()) {
@@ -22,7 +42,13 @@ class AccountHelper extends ObjectHelper {
             $class = 'Account';
         }
         
-        $object = new $class($this->app);
+        $object = new $class();
+
+        if (property_exists($object, 'app')) {
+        	$object->app = $this->app;
+        }
+
+        $object->initParams();
         
         return $object;
     }

@@ -49,18 +49,13 @@ class AccountController extends AppController {
         if (!$this->template = $this->application->getTemplate()) {
             return $this->app->error->raiseError(500, JText::_('No template selected'));
         }
-        $this->userprofile = $this->app->userprofile->get();
-        $this->account = $this->userprofile->_accounts[1];
+        $this->accounts = $this->app->table->account->all();
+        
         // Check ACL
         // if (!$this->account->canAccess($this->userprofile->user)) {
         //     return $this->app->error->raiseError(403, JText::_('Unable to access this account'));
         // }
-        $options[] = $this->app->html->_('select.option', '', '- [SELECT] -');
-        echo $this->app->html->queryList("SELECT id AS value, name AS text FROM #__users", $options, 'users');
-        // execute task
-        $this->taskMap['display'] = null;
-        $this->taskMap['__default'] = null;
-        $layout = 'dealer';
+        $layout = 'search';
         $this->getView()->addTemplatePath($this->template->getPath().'/accounts');
 
         $this->getView()->addTemplatePath($this->template->getPath())->setLayout($layout)->display();
@@ -93,10 +88,11 @@ class AccountController extends AppController {
         if($aid) {
             $account = $this->table->get($aid);
         } else {
-            $account = $this->app->object->create('account');
+            $account = $this->app->account->create('dealer');
         }
-        var_dump($post);
+
         self::bind($account, $post['account']);
+
         $params = $this->app->parameter->create();
 
         $account->created = $this->app->date->create($account->created)->toSQL();
@@ -111,7 +107,7 @@ class AccountController extends AppController {
 
         
         $result = $this->table->save($account);
-        $msg = 'Account Saved';
+        $msg = 'The account has been successfully saved.';
         $link = $this->baseurl;
         switch ($this->getTask()) {
             case 'apply' :

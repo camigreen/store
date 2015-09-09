@@ -14,6 +14,8 @@ class AccountTable extends AppTable {
 
 	public function __construct($app) {
 		parent::__construct($app, '#__zoo_account');
+		
+		$this->app->loader->register('Account','classes:/accounts/default.php');
 	}
 
 	public function get($key, $type = null, $new = false) {
@@ -29,12 +31,8 @@ class AccountTable extends AppTable {
 
 		parent::_initObject($object);
 
-		// workaround for php bug, which calls constructor before filling values
-		if (is_string($object->params) || is_null($object->params)) {
-			// decorate data as object
-			$object->params = $this->app->parameter->create($object->params);
-		}
-
+		$object->initParams();
+	
 		// add to cache
 		$key_name = $this->key;
 
