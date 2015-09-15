@@ -2,15 +2,10 @@
 
 // Set Statuses for Accounts
 
-define('ACCOUNT_STATUS_ACTIVE', 'Active');
-define('ACCOUNT_STATUS_INACTIVE', 'Inactive');
-define('ACCOUNT_STATUS_SUSPENDED', 'Suspended');
-define('ACCOUNT_STATUS_TRASHED', 'Trashed');
-
-$config['status'][1] = ACCOUNT_STATUS_ACTIVE;
-$config['status'][2] = ACCOUNT_STATUS_INACTIVE;
-$config['status'][3] = ACCOUNT_STATUS_SUSPENDED;
-$config['status'][4] = ACCOUNT_STATUS_TRASHED;
+$config['status'][1] = JText::_('ACCOUNT_STATUS_ACTIVE');
+$config['status'][2] = JText::_('ACCOUNT_STATUS_INACTIVE');
+$config['status'][3] = JText::_('ACCOUNT_STATUS_SUSPENDED');
+$config['status'][4] = JText::_('ACCOUNT_STATUS_TRASHED');
 
 $config['types']['default'] = array();
 $config['types']['dealer'] = array(

@@ -12,6 +12,11 @@ class StoreApplication extends Application {
         parent::__construct();
         
         $zoo = APP::getInstance('zoo');
+
+        // Set defines
+
+        JFactory::getLanguage()->load('' , dirname(__FILE__));
+
         
 //        Register Paths
         $path = dirname(__FILE__);
@@ -26,11 +31,16 @@ class StoreApplication extends Application {
         $zoo->path->register($path.'/pdf', 'pdf');
         $zoo->path->register($path.'/tables', 'tables');
         $zoo->path->register($path.'/classes/data', 'data');
+        $zoo->path->register($path.'/events', 'events');
         include_once $path.'/vendor/autoload.php';
         
 //        Load Classes
         $zoo->loader->register('ElementStore','elements:element/element.php');
         $zoo->loader->register('ElementStore','elements:elementstore/elementstore.php');
+
+        // register and connect events
+        $zoo->event->register('AccountEvent');
+        $zoo->event->dispatcher->connect('account:init', array('AccountEvent', 'init'));
         
 //        Add CSS
         $zoo->document->addStyleSheet('assets:css/ttop.css');
@@ -38,8 +48,6 @@ class StoreApplication extends Application {
         
 //        Add Scripts
         $zoo->document->addScript('elements:cart/assets/js/storeitem.js');
-        
-        // test
         
     }
 }

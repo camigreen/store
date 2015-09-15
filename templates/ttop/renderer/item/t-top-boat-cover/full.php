@@ -14,6 +14,8 @@ $boat_length = $item->getElement('555ad97f-e3e7-4608-a103-6de9f6d00291')->get('o
 $prices = $this->app->prices->create($item->type, $boat_length);
 $category = $item->getPrimaryCategory()->getParent();
 $data_item = array('id' => $item->id, 'name' => 'T-Top Boat Cover');
+
+echo $item->getType()->getAssetName();
 ?>
 <div id="<?php echo $item->id ?>" class="<?php echo $item->type; ?>" data-item='<?php echo json_encode($data_item); ?>'>
     <div class="uk-grid <?php echo $class; ?>">

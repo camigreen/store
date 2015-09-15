@@ -37,8 +37,6 @@ class Account {
 
     public $app;
 
-    public $config;
-
     public function __construct() {
 
     }
@@ -65,8 +63,21 @@ class Account {
      *
      * @since 2.0
      */
+    public function canEdit($user = null) {
+        var_dump($this->app->zoo->getApplication()->assetRules);
+    }
+
+    /**
+     * Check if the given usen can access this item
+     *
+     * @param  JUser $user The user to check
+     *
+     * @return boolean       If the user can access the item
+     *
+     * @since 2.0
+     */
     public function getType() {
-        return $this->type;
+        return JText::_('ACCOUNT_TYPE_'.$this->type);
     }
 
     /**
@@ -101,6 +112,47 @@ class Account {
     }
 
     /**
+     * Set the status for the account object
+     *
+     * @param  string $state The parameter to retrieve
+     * 
+     * @param  boolean $save Automatically save to the database? default = false
+     *
+     * @return Account $this for chaining support.
+     *
+     * @since 1.0
+     */
+    public function setState($state, $save = false) {
+        if ($this->state != $state) {
+
+            // set state
+            $old_state   = $this->state;
+            $this->state = $state;
+
+            // autosave comment ?
+            if ($save) {
+                $this->app->table->account->save($this);
+            }
+
+            // fire event
+            $this->app->event->dispatcher->notify($this->app->event->create($this, 'account:stateChanged', compact('old_state')));
+        }
+
+        return $this;
+    }
+
+        /**
+     * Get the state account object
+     *
+     * @return string  The human readable value of the account state.
+     *
+     * @since 1.0
+     */
+    public function getState() {
+        return $this->config['status'][$this->state];
+    }
+
+    /**
      * Get the sub-account for the account
      *
      * @param  int $id The id of the subaccount to retrieve. Default is NULL
@@ -121,18 +173,4 @@ class Account {
         return $this->subaccounts[$id];
     }
 
-    public function initParams() {
-
-        require_once($this->app->path->path('classes:/accounts/config.php'));
-        if (is_string($this->params) || is_null($this->params)) {
-            // decorate data as this
-            $this->params = $this->app->parameter->create($this->params);
-        }
-        $this->config = $config;
-        foreach ($this->config['types'][$this->type] as $key => $value) {
-            if(!$this->params->get($key)) {
-                $this->params->set($key, $value);
-            }
-        }
-    }
 }

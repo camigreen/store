@@ -25,12 +25,12 @@
 			<?php endif; ?>
 			<?php foreach($this->accounts as $account) : ?>
 			<tr>
-				<td class="uk-text-center" ><a class="uk-button uk-button-primary" href="accounts?task=edit&id=<?php echo $account->id; ?>">Edit</a></td>
+				<td class="uk-text-center" ><a class="uk-button uk-button-primary" href="?option=com_zoo&controller=account&task=edit&aid=<?php echo $account->id; ?>">Edit</a></td>
 				<td><?php echo $account->id; ?></td>
 				<td><?php echo $account->name; ?></td>
 				<td><?php echo $account->number; ?></td>
-				<td><?php echo $account->type; ?></td>
-				<td><?php echo $account->config[$account->status]; ?></td>
+				<td><?php echo $account->getType(); ?></td>
+				<td><?php echo $account->getState(); ?></td>
 			</tr>
 			<?php endforeach; ?>
 		</tbody>

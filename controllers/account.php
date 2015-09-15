@@ -36,6 +36,7 @@ class AccountController extends AppController {
 
         // registers tasks
         $this->registerTask('apply', 'save');
+        $this->registerTask('edit', 'edit');
     }
     
     /*
@@ -50,6 +51,8 @@ class AccountController extends AppController {
             return $this->app->error->raiseError(500, JText::_('No template selected'));
         }
         $this->accounts = $this->app->table->account->all();
+        $this->title = "Accounts";
+        $this->record_count = count($this->accounts);
         
         // Check ACL
         // if (!$this->account->canAccess($this->userprofile->user)) {
@@ -61,19 +64,32 @@ class AccountController extends AppController {
         $this->getView()->addTemplatePath($this->template->getPath())->setLayout($layout)->display();
     }
 
-    public function account() {
+    public function edit() {
         if (!$this->template = $this->application->getTemplate()) {
             return $this->app->error->raiseError(500, JText::_('No template selected'));
         }
 
+        $aid = $this->app->request->get('aid', 'int');
+        $edit = $aid > 0;
 
-        
+        if($edit) {
+            if(!$this->account= $this->table->get($aid)) {
+                $this->app->error->raiseError(500, JText::sprintf('Unable to access an account with the id of %s', $aid));
+                return;
+            }
+            $this->account->canEdit();
+            // // check ACL
+            // if (!$this->account->canEdit()) {
+            //     throw new ItemControllerException("Invalid access permissions", 1);
+            // }
+        }
 
-        
+        $layout = 'edit';
 
-       
+        $this->getView()->addTemplatePath($this->template->getPath().'/accounts');
 
-        
+        $this->getView()->addTemplatePath($this->template->getPath())->setLayout($layout)->display();
+
     }
 
     public function save() {
