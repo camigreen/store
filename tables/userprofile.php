@@ -18,6 +18,7 @@ class UserProfileTable extends AppTable {
 
 	protected function _initObject($object) {
 
+
 		parent::_initObject($object);
 
 		// workaround for php bug, which calls constructor before filling values
@@ -37,8 +38,10 @@ class UserProfileTable extends AppTable {
 			$this->_objects[$object->$key_name] = $object;
 		}
 
+		$new = !(bool) $object->id;
+
 		// trigger init event
-		$this->app->event->dispatcher->notify($this->app->event->create($object, 'userprofile:init'));
+		$this->app->event->dispatcher->notify($this->app->event->create($object, 'userprofile:init', compact('new')));
 
 		return $object;
 	}

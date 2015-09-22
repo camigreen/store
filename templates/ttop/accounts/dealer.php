@@ -23,7 +23,6 @@ $this->account = $this->userprofile->getAccount();
 $poc = $this->account->getParam('poc');
 
 ?>
-
 <div class="uk-width-1-1">
 	<form class="uk-form" action="/admin/accounts?task=apply&aid=<?php echo $this->account->id; ?>" method="post"
 		<input type="text" name="account[name]" value="<?php echo $this->account->name; ?>" />

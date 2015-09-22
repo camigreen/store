@@ -11,7 +11,7 @@
  *
  * @package Component.Events
  */
-class AccountEvent {
+class UserProfileEvent {
 
 	/**
 	 * When an application is loaded on the frontend,
@@ -21,13 +21,18 @@ class AccountEvent {
 	 */
 	public static function init($event) {
 
-		$account = $event->getSubject();
-        $app         = $account->app;
+		$userprofile = $event->getSubject();
+        $app         = $userprofile->app;
 
-        if (is_string($account->params) || is_null($account->params)) {
-            // decorate data as this
-            $account->params = $app->parameter->create($account->params);
-        }
+        if(!$event['new']) {
+	        $user = $app->user->get($userprofile->id);
+
+	        foreach(get_object_vars($user) as $key => $value) {
+	        	if(property_exists($userprofile, $key)) {
+	        		$userprofile->$key = $value;
+	        	}
+	        }
+	    }
 
 	}
 
@@ -52,36 +57,6 @@ class AccountEvent {
 
 		$account = $event->getSubject();
 
-	}
-
-	/**
-	 * Placeholder for the installed event
-	 *
-	 * @param  AppEvent $event The event triggered
-	 */
-	public static function installed($event) {
-
-		$account = $event->getSubject();
-		$update = $event['update'];
-
-	}
-
-	/**
-	 * Placeholder for the addmenuitems event
-	 *
-	 * @param  AppEvent $event The event triggered
-	 */
-	public static function addmenuitems($event) {
-
-		$account = $event->getSubject();
-
-		// Tab object
-		$tab = $event['tab'];
-
-		// add child
-
-		// return the tab object
-		$event['tab'] = $tab;
 	}
 
 }

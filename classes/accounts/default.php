@@ -39,6 +39,10 @@ class Account {
 
     public function __construct() {
 
+        $app = App::getInstance('zoo');
+
+        $this->params = $app->parameter->create($this->params);
+
     }
 
     /**
@@ -89,11 +93,15 @@ class Account {
      *
      * @since 1.0
      */
-    public function getParam($name) {
-        if (is_array($this->params->get($name))) {
-            return $this->app->parameter->create($this->params->get($name));
+    public function getParams() {
+        $params = array();
+        foreach($this->params as $k => $v) {
+            $value = explode('.',$k, 5);
+            if (!in_array($value[0], $params)) {
+                $params[] = $value[0];
+            }
         }
-        return $this->params->get($name);
+        return $params;
     }
 
     /**
@@ -149,7 +157,7 @@ class Account {
      * @since 1.0
      */
     public function getState() {
-        return $this->config['status'][$this->state];
+        return JText::_($this->app->status->get('account', $this->state));
     }
 
     /**
@@ -161,16 +169,49 @@ class Account {
      *
      * @since 1.0
      */
-    public function getSubAccount($id) {
-        $subs = $this->params->get('subaccounts');
-        if (!array_key_exists($id, $subs)) {
-            return $this->app->error->raiseError(403, JText::_('Unable to access this sub-account'));
+    public function getSubAccounts($type = 'default') {
+        $class = $type == 'default' ? 'Account' : $type.'Account';
+        if($this->app->path->path('classes:accounts/'.$type.'.php')) {
+            $this->app->loader->register($class, 'classes:accounts/'.$type.'.php');
+        } else {
+            $class = 'Account';
+            $this->app->loader->register($class, 'classes:accounts/default.php');
         }
-        if (!array_key_exists($id, $this->subaccounts)) {
-            $table = $this->app->table->account;
-            $this->subaccounts[$id] = $table->get($id);
+        
+        $result = $this->app->database->query('SELECT b.* FROM #__zoo_account_link AS a LEFT JOIN (#__zoo_account AS b) ON (a.child = b.id) WHERE a.parent = '.$this->id.' AND b.type = "'.$type.'"');
+        $objects = array();
+        while ($object = $this->app->database->fetchObject($result, $class)) { 
+            $objects[$object->id] = $object;
         }
-        return $this->subaccounts[$id];
+        return $objects;
+    }
+
+    /**
+     * Get the sub-account for the account
+     *
+     * @param  int $id The id of the subaccount to retrieve. Default is NULL
+     *
+     * @return mixed  Account Object or array of Account Objects
+     *
+     * @since 1.0
+     */
+    public function saveSubAccounts() {
+        if(!$this->app->database->query('DELETE FROM #__zoo_account_link WHERE parent = "'.$this->id.'"')) {
+            $this->app->error->raiseError(500, JText::_('There was an error saving the related sub-accounts'));
+            return;
+        }
+        $subs = $this->params->get('sub-accounts.');
+        $obj = $this->app->data->create();
+        $obj->parent = $this->id;
+        foreach ($subs as $type => $accounts) {
+            foreach($accounts as $account) {
+                $obj->child = $account;
+                $this->app->database->insertObject('#__zoo_account_link', $obj);
+            }
+ 
+        }
+        
+        return false;
     }
 
 }

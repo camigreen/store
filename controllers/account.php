@@ -37,6 +37,11 @@ class AccountController extends AppController {
         // registers tasks
         $this->registerTask('apply', 'save');
         $this->registerTask('edit', 'edit');
+        $this->registerTask('save2new', 'save');
+        $this->registerTask('cancel', 'display');
+        $this->registerTask('upload', 'upload');
+        // $this->taskMap['display'] = null;
+        // $this->taskMap['__default'] = null;
     }
     
     /*
@@ -47,9 +52,11 @@ class AccountController extends AppController {
                     Void
     */
     public function display($cachable = false, $urlparams = false) {
+
         if (!$this->template = $this->application->getTemplate()) {
             return $this->app->error->raiseError(500, JText::_('No template selected'));
         }
+        echo $this->app->request->getCmd('view');
         $this->accounts = $this->app->table->account->all();
         $this->title = "Accounts";
         $this->record_count = count($this->accounts);
@@ -58,10 +65,29 @@ class AccountController extends AppController {
         // if (!$this->account->canAccess($this->userprofile->user)) {
         //     return $this->app->error->raiseError(403, JText::_('Unable to access this account'));
         // }
+
+
         $layout = 'search';
         $this->getView()->addTemplatePath($this->template->getPath().'/accounts');
 
         $this->getView()->addTemplatePath($this->template->getPath())->setLayout($layout)->display();
+    }
+
+    public function upload() {
+        $path = 'media/zoo/applications/store/images/';
+        $this->app->document->setMimeEncoding('application/json');
+        $file_parts = explode('.',$_FILES['files']['name'][0]);
+        $file_ext = array_pop($file_parts);
+        $uuid = $this->app->request->get('uuid','word', null);
+        $uuid = $uuid ? $uuid : $this->app->utility->generateUUID();
+        $file = $path.$uuid.'.'.$file_ext;
+        JFile::upload($_FILES['files']['tmp_name'][0], $file);
+        $result = array(
+            'file' => '/'.$file,
+            'UUID' => $uuid, 
+
+        );
+        echo json_encode($result);
     }
 
     public function edit() {
@@ -71,25 +97,48 @@ class AccountController extends AppController {
 
         $aid = $this->app->request->get('aid', 'int');
         $edit = $aid > 0;
+        
 
         if($edit) {
             if(!$this->account= $this->table->get($aid)) {
                 $this->app->error->raiseError(500, JText::sprintf('Unable to access an account with the id of %s', $aid));
                 return;
             }
-            $this->account->canEdit();
-            // // check ACL
-            // if (!$this->account->canEdit()) {
-            //     throw new ItemControllerException("Invalid access permissions", 1);
-            // }
+            $type = $this->account->type;
+            $this->title = "Edit Account";
+            $subAccounts = array();
+            foreach ($this->account->getSubAccounts('oem') as $account) {
+                $subAccounts[$account->type][] = $account->id;
+            }
+            $this->account->params->set('sub-accounts.', $subAccounts);
+        } else {
+            $type = $this->app->request->get('account_type', 'word', 'default');
+            $this->account = $this->app->account->create($type);
+            $this->title = "Create a New $type Account";
+            
         }
-
+        $this->paramform = $this->app->storeparameterform->create($this->app->path->path('classes:accounts/account.xml'), $type);
+        $this->paramform->setValues($this->account);
         $layout = 'edit';
-
+        
+        $this->groups = $this->paramform->getGroups();
+         
         $this->getView()->addTemplatePath($this->template->getPath().'/accounts');
 
         $this->getView()->addTemplatePath($this->template->getPath())->setLayout($layout)->display();
 
+    }
+
+    public function add () {
+        if (!$this->template = $this->application->getTemplate()) {
+            return $this->app->error->raiseError(500, JText::_('No template selected'));
+        }
+        $this->title = 'Choose an Account Type';
+        $layout = 'add';
+
+        $this->getView()->addTemplatePath($this->template->getPath().'/accounts');
+
+        $this->getView()->addTemplatePath($this->template->getPath())->setLayout($layout)->display();
     }
 
     public function save() {
@@ -100,26 +149,29 @@ class AccountController extends AppController {
         $aid = $this->app->request->get('aid', 'int');
         $post = $this->app->request->get('post:', 'array', array());
         $tzoffset   = $this->app->date->getOffset();
+        $type = $this->app->request->get('account_type', 'word', 'default');
 
         if($aid) {
             $account = $this->table->get($aid);
         } else {
-            $account = $this->app->account->create('dealer');
+            $account = $this->app->account->create($type);
         }
 
-        self::bind($account, $post['account']);
+        $core = $post['core'];
+
+        self::bind($account, $core);
 
         $params = $this->app->parameter->create();
+
+        foreach($post['params'] as $key => $value) {
+            $params->set($key.'.', $value);
+        }
+
+        $account->params = $params;
 
         $account->created = $this->app->date->create($account->created)->toSQL();
         $account->modified = $now->toSQL();
         $account->modified_by = $user;
-        
-        foreach($post['account']['params'] as $k => $v) {
-            $params->set($k, $v);
-        }
-
-        $account->params = $params;
 
         
         $result = $this->table->save($account);
@@ -127,7 +179,10 @@ class AccountController extends AppController {
         $link = $this->baseurl;
         switch ($this->getTask()) {
             case 'apply' :
-                $link .= '';
+                $link .= '&task=edit&aid='.$account->id;
+                break;
+            case 'save2new':
+                $link .= '&task=add';
                 break;
         }
 

@@ -80,21 +80,31 @@ class OrderEvent {
 	}
 
 	/**
-	 * Placeholder for the configParams event
+	 * Placeholder for the deleted event
 	 *
 	 * @param  AppEvent $event The event triggered
 	 */
-	public static function configParams($event) {
+	public static function paymentFailed($event) {
 
 		$order = $event->getSubject();
+		$response = $event['response'];
+		$app = $order->app;
+		$app->log->createLogger('email',array('sgibbons@palmettoimages.com'));
+		foreach ($response as $key => $value) {
+			if ($key == 'response') {
+				continue;
+			}
+				$value = is_bool($value) ? ($value ? 'True' : 'False') : $value;
+				$data[] = $key.': '.$value;
+		}
+		foreach ($order->items as $key => $value) {
+				$data[] = $value->name."\n";
+		}
+		$message = implode("\n", $data);
+        $app->log->notice($message,'Process Payment Failed');
 
-		// set events ReturnValue after modifying $params
-		$params = $event->getReturnValue();
-
-        $params[] = '<order><params group="order-config"><param name="test" type="text" size="3" default="15" label="Test Param" description="Test Param Description" /></params></order>';
-
-		$event->setReturnValue($params);
 
 	}
+
 
 }

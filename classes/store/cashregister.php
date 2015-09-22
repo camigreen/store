@@ -307,14 +307,14 @@ class CashRegister {
 
             //$order->updateSession();
         } else {
-            $this->app->log->createLogger('email',array('sgibbons@palmettoimages.com'));
-            $data = (string) $this->app->data->create($response);
-            $this->app->log->notice($data,'Process Payment Failed');
+
+            // trigger payment failure event
+            $this->app->event->dispatcher->notify($this->app->event->create($this->order, 'order:paymentFailed', array('response' => $response)));
+            
             $result = array(
                 'approved' => $response->approved,
                 'response' => $response
             );
-            //$this->sendNotificationEmail($result, 'error');
         }
         $order->result = $result;
         return $order;

@@ -15,13 +15,17 @@ class UserProfile {
 
     public $id;
 
-    protected $_user;
+    public $name;
 
-    public $account_id;
+    public $username;
 
-    public $account_type;
+    public $email;
 
-    protected $_account;
+    public $password;
+
+    public $block;
+
+    public $sendEmail;
 
     public $created;
 
@@ -38,6 +42,8 @@ class UserProfile {
     public $access = 1;
 
     public $app;
+
+    public  $user;
 
     public function __construct() {
 
@@ -116,35 +122,5 @@ class UserProfile {
      */
     public function setParam($name, $value) {
         return $this->params->set($name, $value);
-    }
-
-    /**
-     * Get the sub-account for the account
-     *
-     * @param  int $id The id of the subaccount to retrieve. Default is NULL
-     *
-     * @return mixed  Account Object or array of Account Objects
-     *
-     * @since 1.0
-     */
-    public function getSubAccount($id) {
-        $subs = $this->params->get('subaccounts');
-        if (!array_key_exists($id, $subs)) {
-            return $this->app->error->raiseError(403, JText::_('Unable to access this sub-account'));
-        }
-        if (!array_key_exists($id, $this->subaccounts)) {
-            $table = $this->app->table->account;
-            $this->subaccounts[$id] = $table->get($id);
-        }
-        return $this->subaccounts[$id];
-    }
-
-    public function initParams() {
-        require $this->app->path->path('classes:/accounts/config.php');
-        foreach ($params[$this->type] as $key => $value) {
-            if(!$this->params->get($key)) {
-                $this->params->set($key, $value);
-            }
-        }
     }
 }

@@ -32,6 +32,7 @@ class StoreApplication extends Application {
         $zoo->path->register($path.'/tables', 'tables');
         $zoo->path->register($path.'/classes/data', 'data');
         $zoo->path->register($path.'/events', 'events');
+        $zoo->path->register($path.'/fields', 'fields');
         include_once $path.'/vendor/autoload.php';
         
 //        Load Classes
@@ -39,8 +40,12 @@ class StoreApplication extends Application {
         $zoo->loader->register('ElementStore','elements:elementstore/elementstore.php');
 
         // register and connect events
+        $zoo->event->register('OrderEvent');
+        $zoo->event->dispatcher->connect('order:paymentFailed', array('OrderEvent', 'paymentFailed'));
         $zoo->event->register('AccountEvent');
         $zoo->event->dispatcher->connect('account:init', array('AccountEvent', 'init'));
+        $zoo->event->register('UserProfileEvent');
+        $zoo->event->dispatcher->connect('userprofile:init', array('UserProfileEvent', 'init'));
         
 //        Add CSS
         $zoo->document->addStyleSheet('assets:css/ttop.css');

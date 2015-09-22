@@ -32,12 +32,24 @@ class AccountHelper extends AppHelper {
 		
 		return $this->_accounts[$id]; 
 	}
+
+	public function getByTypes($types) {
+		$types = !is_array($types) ? (array) $types : $types;
+		$conditions = array();
+		foreach($types as $type) {
+			$conditions[] = empty($conditions) ? 'type = "'.$type.'"' : ' OR type = "'.$type.'"';
+		}
+
+		$result = $this->app->table->account->all(array('conditions' => implode("\n",$conditions)));
+		return $result;
+	}
     
     
     public function create($class = null, $args = array()) {
+    	$class = $class.'Account';
         
-        if (!is_null($class) && file_exists($this->app->path->path('classes:/accounts/'.$class.'.php'))) {
-            $this->app->loader->register($class, 'classes:/accounts/'.$class.'.php');
+        if (!is_null($class) && file_exists($this->app->path->path('classes:/accounts/'.basename($class, 'Account').'.php'))) {
+            $this->app->loader->register($class, 'classes:/accounts/'.basename($class, 'Account').'.php');
         } else {
             $class = 'Account';
         }
@@ -48,7 +60,8 @@ class AccountHelper extends AppHelper {
         	$object->app = $this->app;
         }
 
-        $object->initParams();
+        // trigger init event
+		$this->app->event->dispatcher->notify($this->app->event->create($object, 'account:init'));
         
         return $object;
     }

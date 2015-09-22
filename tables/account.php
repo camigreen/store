@@ -62,6 +62,8 @@ class AccountTable extends AppTable {
 
 		$result = parent::save($object);
 
+		$object->saveSubAccounts();
+
 		// trigger save event
 		$this->app->event->dispatcher->notify($this->app->event->create($object, 'account:saved', compact('new')));
 

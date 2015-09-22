@@ -16,6 +16,9 @@ class UserProfileController extends AppController {
     public function __construct($default = array()) {
         parent::__construct($default);
 
+        // set table
+        $this->table = $this->app->table->userprofile;
+
         // get application
         $this->application = $this->app->zoo->getApplication();
 
@@ -33,6 +36,12 @@ class UserProfileController extends AppController {
 
         // registers tasks
         $this->registerTask('apply', 'save');
+        $this->registerTask('edit', 'edit');
+        $this->registerTask('save2new', 'save');
+        $this->registerTask('cancel', 'display');
+        $this->registerTask('upload', 'upload');
+        // $this->taskMap['display'] = null;
+        // $this->taskMap['__default'] = null;
     }
     
     /*
@@ -43,74 +52,159 @@ class UserProfileController extends AppController {
                     Void
     */
     public function display($cachable = false, $urlparams = false) {
+
         if (!$this->template = $this->application->getTemplate()) {
             return $this->app->error->raiseError(500, JText::_('No template selected'));
         }
-        $this->userprofile = $this->app->userprofile->get();
+        echo $this->app->request->getCmd('view');
+        $this->users = $this->table->all();
+        $this->title = "Users";
+        $this->record_count = count($this->users);
+        
         // Check ACL
-        // if (!$this->userprofile->canAccess($this->userprofile->user)) {
+        // if (!$this->account->canAccess($this->userprofile->user)) {
         //     return $this->app->error->raiseError(403, JText::_('Unable to access this account'));
         // }
 
-        // execute task
-        $this->taskMap['display'] = null;
-        $this->taskMap['__default'] = null;
-        $layout = 'userprofiles';
-        
+
+        $layout = 'search';
+        $this->getView()->addTemplatePath($this->template->getPath().'/accounts');
 
         $this->getView()->addTemplatePath($this->template->getPath())->setLayout($layout)->display();
     }
 
-    public function account() {
+    public function upload() {
+        $path = 'media/zoo/applications/store/images/';
+        $this->app->document->setMimeEncoding('application/json');
+        $file_parts = explode('.',$_FILES['files']['name'][0]);
+        $file_ext = array_pop($file_parts);
+        $uuid = $this->app->request->get('uuid','word', null);
+        $uuid = $uuid ? $uuid : $this->app->utility->generateUUID();
+        $file = $path.$uuid.'.'.$file_ext;
+        JFile::upload($_FILES['files']['tmp_name'][0], $file);
+        $result = array(
+            'file' => '/'.$file,
+            'UUID' => $uuid, 
+
+        );
+        echo json_encode($result);
+    }
+
+    public function edit() {
         if (!$this->template = $this->application->getTemplate()) {
             return $this->app->error->raiseError(500, JText::_('No template selected'));
         }
 
-
+        $uid = $this->app->request->get('uid', 'int');
+        $edit = $uid > 0;
         
 
-        
+        if($edit) {
+            if(!$this->user = $this->app->table->userprofile->get($uid)) {
+                $this->app->error->raiseError(500, JText::sprintf('Unable to access a user with the id of %s', $uid));
+                return;
+            }
+            $this->title = "Edit User";
+        } else {
+            $this->user = new JUser;
+            $this->title = "Create a New User";
+            
+        }
 
-       
-
+        $this->form = $this->app->form->create($this->app->path->path('classes:userprofile/config.xml'));
         
+        $this->user->params = $this->app->parameter->create($this->user->params);
+        $this->user->password = null;
+        $this->form->setValues($this->user);
+
+        $layout = 'edit';
+        
+        $this->groups = $this->form->getGroups();
+         
+        $this->getView()->addTemplatePath($this->template->getPath().'/userprofile');
+
+        $this->getView()->addTemplatePath($this->template->getPath())->setLayout($layout)->display();
+
+    }
+
+    public function add () {
+        if (!$this->template = $this->application->getTemplate()) {
+            return $this->app->error->raiseError(500, JText::_('No template selected'));
+        }
+        $this->title = 'Choose an Account Type';
+        $layout = 'add';
+
+        $this->getView()->addTemplatePath($this->template->getPath().'/accounts');
+
+        $this->getView()->addTemplatePath($this->template->getPath())->setLayout($layout)->display();
     }
 
     public function save() {
 
         // init vars
-        $now        = $this->app->date->create();
+        $now = $this->app->date->create();
         $user = $this->app->user->get()->id;
-        $aid = $this->app->request->get('aid', 'int');
+        $uid = $this->app->request->get('uid', 'int');
         $post = $this->app->request->get('post:', 'array', array());
         $tzoffset   = $this->app->date->getOffset();
 
-        if($aid) {
-            $account = $this->table->get($aid);
+        if($uid) {
+            $profile = $this->table->get($uid);
+            $user = $profile->getUser();
+            
         } else {
-            $account = $this->app->object->create('account');
+            $user = new JUser;
+            $profile = $this->app->object->create('userprofile');
         }
-        var_dump($post);
-        self::bind($account, $post['account']);
+
+        self::bind($user, $post['core']);
+
+        $user->password = JUserHelper::hashPassword($user->password);
+
+        $user->block = $post['core']['state'] > 1;
+
+        $user->save();
+
+        $profile->id = $user->id;
+        $profile->state = $post['core']['state'];
+
         $params = $this->app->parameter->create();
 
-        $account->created = $this->app->date->create($account->created)->toSQL();
-        $account->modified = $now->toSQL();
-        $account->modified_by = $user;
-        
-        foreach($post['account']['params'] as $k => $v) {
-            $params->set($k, $v);
+        foreach($post['params'] as $key => $value) {
+            $params->set($key.'.', $value);
         }
 
-        $account->params = $params;
+        $profile->params = $params;
+
+        $elements = $this->app->parameter->create();
+
+        foreach($post['elements'] as $key => $value) {
+            $params->set($key.'.', $value);
+        }
+
+        $profile->elements = $elements;
+
+        // Set Modified Date
+        $profile->modified = $now->toSQL();
+        $profile->modified_by = $this->app->user->get()->id;
+
+        // Set Created Date
+        try {
+            $profile->created = $this->app->date->create($profile->created, $tzoffset)->toSQL();
+        } catch (Exception $e) {
+            $profile->created = $now->toSQL();
+        }
 
         
-        $result = $this->table->save($account);
-        $msg = 'Account Saved';
+        $result = $this->table->save($profile);
+        $msg = 'The user has been successfully saved.';
         $link = $this->baseurl;
         switch ($this->getTask()) {
             case 'apply' :
-                $link .= '';
+                $link .= '&task=edit&uid='.$profile->id;
+                break;
+            case 'save2new':
+                $link .= '&task=add';
                 break;
         }
 
