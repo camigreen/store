@@ -28,7 +28,7 @@
 			</div>
 			<div class="uk-width-1-6 side-bar">
 				<div class="uk-grid" uk-grid-margin>
-					<div class="uk-grid-margin-1-1">
+					<div class="uk-grid-margin-1-1 uk-text-small">
 						<div>Created:</div>
 						<div><?php echo $this->user->created; ?></div>
 						<div>Created By:</div>
