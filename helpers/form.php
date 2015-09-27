@@ -193,6 +193,22 @@ class AppForm {
 	}
 
 	/**
+	 * Get the number of params in each group
+	 *
+	 * @return array Array of all group names as key and parameter count as value
+	 * @since 2.0
+	 */
+	public function checkGroup($group) {
+		if (!is_array($this->_xml)) {
+			return false;
+		}
+
+		$results = $this->getGroups();
+
+		return isset($results[$group]);
+	}
+
+	/**
 	 * Sets the xml for a group
 	 *
 	 * @param SimpleXMLElement $xml
@@ -334,13 +350,6 @@ class AppForm {
 			if (!isset($this->_xml[$group])) {
 				return false;
 			}
-			$width = $this->_xml[$group]->attributes()->width ? $this->_xml[$group]->attributes()->width : '1-1';
-			$html[] = '<fieldset class="uk-width-'.$width.'">';
-			$label = $this->_xml[$group]->attributes()->label;
-			$grp_desc = $this->_xml[$group]->attributes()->description;
-			if (!empty($label)) {
-				$html[] = '<legend>'.$label.(!empty($grp_desc) ? '<div class="uk-text-small uk-text-muted">'.$grp_desc.'</div>' : '').'</legend>';
-			}
 			
 			$html[] = '<ul class="uk-grid parameter-form" data-uk-grid-margin>';
 
@@ -379,7 +388,7 @@ class AppForm {
 				}
 			}
 
-			$html[] = '</ul></fieldset>';
+			$html[] = '</ul>';
 		}
 
 		return implode("\n", $html);

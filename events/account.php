@@ -84,4 +84,28 @@ class AccountEvent {
 		$event['tab'] = $tab;
 	}
 
+	/**
+	 * Placeholder for the linkUser event
+	 *
+	 * @param  AppEvent $event The event triggered
+	 */
+	public static function linkUser($event) {
+
+		$account = $event->getSubject();
+		$app = $account->app;
+
+		// User Object
+		$userID = (int) $event['id'];
+
+		$object = $app->object->create();
+
+		$object->set('parent', $account->id);
+		$object->set('child', $userID);
+		$object->set('type', 'user');
+
+
+
+
+	}
+
 }

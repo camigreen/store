@@ -31,6 +31,8 @@ class Account {
 
     public $params;
 
+    public $elements;
+
     public $access = 1;
 
     public $state = 1;
@@ -42,6 +44,7 @@ class Account {
         $app = App::getInstance('zoo');
 
         $this->params = $app->parameter->create($this->params);
+        $this->elements = $app->parameter->create($this->elements);
 
     }
 
@@ -212,6 +215,27 @@ class Account {
         }
         
         return false;
+    }
+
+    public function linkAccount($id) {
+
+
+
+        // fire event
+            $this->app->event->dispatcher->notify($this->app->event->create($this, 'account:linkAccount', compact('id')));
+
+    }
+    
+    public function linkUser($id) {
+
+
+        $this->elements->set('links.users',$id);
+
+        // fire event
+        $this->app->event->dispatcher->notify($this->app->event->create($this, 'account:linkUser', compact('id')));
+
+        return $this;
+
     }
 
 }

@@ -15,18 +15,6 @@ class UserProfile {
 
     public $id;
 
-    public $name;
-
-    public $username;
-
-    public $email;
-
-    public $password;
-
-    public $block;
-
-    public $sendEmail;
-
     public $created;
 
     public $created_by;
@@ -43,7 +31,7 @@ class UserProfile {
 
     public $app;
 
-    public  $user;
+    public $_user;
 
     public function __construct() {
 
@@ -82,6 +70,60 @@ class UserProfile {
         }
         return $this->_user;
     }
+
+    /**
+     * Set the status for the account object
+     *
+     * @param  string $state The parameter to retrieve
+     * 
+     * @param  boolean $save Automatically save to the database? default = false
+     *
+     * @return Account $this for chaining support.
+     *
+     * @since 1.0
+     */
+    public function setState($state, $save = false) {
+        if ($this->state != $state) {
+
+            // set state
+            $old_state   = $this->state;
+            $this->state = $state;
+
+            // autosave comment ?
+            if ($save) {
+                $this->app->table->account->save($this);
+            }
+
+            // fire event
+            $this->app->event->dispatcher->notify($this->app->event->create($this, 'account:stateChanged', compact('old_state')));
+        }
+
+        return $this;
+    }
+
+        /**
+     * Get the state account object
+     *
+     * @return string  The human readable value of the account state.
+     *
+     * @since 1.0
+     */
+    public function getState() {
+        return JText::_($this->app->status->get('account', $this->state));
+    }
+
+    /**
+     * Gets the user object
+     *
+     * @return object  JUSer  The user object assigned to the profile
+     *
+     * @since 1.0
+     */
+    public function isCurrentUser() {
+        $cUser = $this->app->session->get('user')->id;
+        return $cUser == $this->id ? true : false;
+    }
+
     /**
      * Gets the account object
      *
@@ -91,7 +133,7 @@ class UserProfile {
      */
     public function getAccount() {
         if (empty($this->_account)) {
-            $this->_account = $this->app->account->get($this->account_id, $this->account_type);
+            $this->_account = $this->app->account->get($this->elements->get('account'));
         }
         return $this->_account;
     }
@@ -122,5 +164,115 @@ class UserProfile {
      */
     public function setParam($name, $value) {
         return $this->params->set($name, $value);
+    }
+
+    /**
+     * Evaluates user permission
+     *
+     * @param JUser $user User Object
+     * @param int $asset_id
+     * @param int $created_by
+     *
+     * @return boolean True if user has permission
+     *
+     * @since 3.2
+     */
+    public function canEdit($user = null, $asset_id = 0, $created_by = 0) {
+        if (is_null($user)) {
+            $user = $this->getUser();
+        }
+        return $this->isAdmin($user, $asset_id) || $this->authorise($user, 'core.edit', $asset_id) || ($created_by === $user->id && $user->authorise('core.edit.own', $asset_id));
+    }
+
+    /**
+     * Evaluates user permission
+     *
+     * @param JUser $user User Object
+     * @param int $asset_id
+     *
+     * @return boolean True if user has permission
+     *
+     * @since 3.2
+     */
+    public function canEditState($user = null, $asset_id = 0) {
+        return $this->isAdmin($user, $asset_id) || $this->authorise($user, 'core.edit.state', $asset_id);
+    }
+
+    /**
+     * Evaluates user permission
+     *
+     * @param JUser $user User Object
+     * @param int $asset_id
+     *
+     * @return boolean True if user has permission
+     *
+     * @since 3.2
+     */
+    public function canCreate($user = null, $asset_id = 0) {
+        return $this->isAdmin($user, $asset_id) || $this->authorise($user, 'core.create', $asset_id);
+    }
+
+    /**
+     * Evaluates user permission
+     *
+     * @param JUser $user User Object
+     * @param int $asset_id
+     *
+     * @return boolean True if user has permission
+     *
+     * @since 3.2
+     */
+    public function canDelete($user = null, $asset_id = 0) {
+        return $this->isAdmin($user, $asset_id) || $this->authorise($user, 'core.delete', $asset_id);
+    }
+
+    /**
+     * Evaluates user permission
+     *
+     * @param JUser $user User Object
+     * @param int $asset_id
+     *
+     * @return boolean True if user has permission
+     *
+     * @since 3.2
+     */
+    public function canManage($user = null, $asset_id = 0) {
+        return $this->isAdmin($user, $asset_id) || $this->authorise($user, 'core.manage', $asset_id);
+    }
+
+    /**
+     * Evaluates user permission
+     *
+     * @param JUser $user User Object
+     * @param int $asset_id
+     *
+     * @return boolean True if user has permission
+     *
+     * @since 3.2
+     */
+    public function isAdmin($user = null, $asset_id = 0) {
+        return $this->authorise($user, 'core.admin', $asset_id);
+    }
+
+    /**
+     * Evaluates user permission
+     *
+     * @param JUser $user User Object
+     * @param string $action
+     * @param int $asset_id
+     *
+     * @return boolean True if user has permission
+     *
+     * @since 3.2
+     */
+    protected function authorise($user, $action, $asset_id) {
+        if (!$asset_id) {
+            $asset_id = 'com_zoo';
+        }
+        if (is_null($user)) {
+            $user = $this->get();
+        }
+
+        return (bool) $user->authorise($action, $asset_id);
     }
 }

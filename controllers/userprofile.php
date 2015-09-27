@@ -40,8 +40,6 @@ class UserProfileController extends AppController {
         $this->registerTask('save2new', 'save');
         $this->registerTask('cancel', 'display');
         $this->registerTask('upload', 'upload');
-        // $this->taskMap['display'] = null;
-        // $this->taskMap['__default'] = null;
     }
     
     /*
@@ -56,10 +54,9 @@ class UserProfileController extends AppController {
         if (!$this->template = $this->application->getTemplate()) {
             return $this->app->error->raiseError(500, JText::_('No template selected'));
         }
-        echo $this->app->request->getCmd('view');
         $this->users = $this->table->all();
         $this->title = "Users";
-        $this->record_count = count($this->users);
+        $this->noRecords = count($this->users) < 1;
         
         // Check ACL
         // if (!$this->account->canAccess($this->userprofile->user)) {
@@ -68,7 +65,7 @@ class UserProfileController extends AppController {
 
 
         $layout = 'search';
-        $this->getView()->addTemplatePath($this->template->getPath().'/accounts');
+        $this->getView()->addTemplatePath($this->template->getPath().'/userprofile');
 
         $this->getView()->addTemplatePath($this->template->getPath())->setLayout($layout)->display();
     }
@@ -94,17 +91,17 @@ class UserProfileController extends AppController {
         if (!$this->template = $this->application->getTemplate()) {
             return $this->app->error->raiseError(500, JText::_('No template selected'));
         }
-
         $uid = $this->app->request->get('uid', 'int');
         $edit = $uid > 0;
         
 
         if($edit) {
-            if(!$this->user = $this->app->table->userprofile->get($uid)) {
+            if(!$this->profile = $this->table->get($uid)) {
                 $this->app->error->raiseError(500, JText::sprintf('Unable to access a user with the id of %s', $uid));
                 return;
             }
             $this->title = "Edit User";
+            $this->user = $this->profile->getUser();
         } else {
             $this->user = new JUser;
             $this->title = "Create a New User";
@@ -115,7 +112,8 @@ class UserProfileController extends AppController {
         
         $this->user->params = $this->app->parameter->create($this->user->params);
         $this->user->password = null;
-        $this->form->setValues($this->user);
+
+        $this->tzoffset = $this->app->date->getOffset();
 
         $layout = 'edit';
         
@@ -170,19 +168,28 @@ class UserProfileController extends AppController {
 
         $params = $this->app->parameter->create();
 
-        foreach($post['params'] as $key => $value) {
-            $params->set($key.'.', $value);
+        if (isset($post['params'])) {
+            foreach($post['params'] as $key => $value) {
+                $params->set($key, $value);
+            }
         }
 
         $profile->params = $params;
 
         $elements = $this->app->parameter->create();
 
-        foreach($post['elements'] as $key => $value) {
-            $params->set($key.'.', $value);
+        if(isset($post['elements'])) {
+            foreach($post['elements'] as $key => $value) {
+                $elements->set($key, $value);
+            }
         }
 
         $profile->elements = $elements;
+
+        if(isset($post['elements']['account'])) {
+            $account = $this->app->account->get($post['elements']['account']);
+            $account->linkUser($user->id);
+        }
 
         // Set Modified Date
         $profile->modified = $now->toSQL();
@@ -195,7 +202,6 @@ class UserProfileController extends AppController {
             $profile->created = $now->toSQL();
         }
 
-        
         $result = $this->table->save($profile);
         $msg = 'The user has been successfully saved.';
         $link = $this->baseurl;
@@ -209,6 +215,27 @@ class UserProfileController extends AppController {
         }
 
         $this->setRedirect($link, $msg);
+
+    }
+
+    public function resetPassword() {
+        $uid = $this->app->request->get('uid','int');
+        if(!$user = $this->app->user->get($uid)) {
+            return $this->app->error->raiseError(500, JText::_('An error occured while resetting the password.'));
+        }
+        $new_pwd = JUserHelper::genRandomPassword();
+        $user->password = JUserHelper::hashPassword($new_pwd);
+        $user->save();
+        $email = $this->app->mail->create();
+        $email->setSubject("Password Reset");
+        $email->setBody($new_pwd);
+        $email->addRecipient($user->email);
+        $email->Send();
+
+        $msg = "The users password has been reset.\n An email has been sent to the user.";
+        $link = $this->baseurl.'&task=edit&uid='.$user->id;
+        $this->setRedirect($link,$msg);
+
 
     }
 }

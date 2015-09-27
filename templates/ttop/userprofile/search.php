@@ -8,7 +8,7 @@
 		</div>
 	</div>
 	<div class="uk-width-1-1 uk-margin-bottom">	
-		<button id="add_new" class="uk-button uk-button-success"><span class="uk-icon uk-icon-plus-circle"></span>New</button>
+		<button class="uk-button uk-button-success" data-task="edit"><span class="uk-icon uk-icon-plus-circle"></span>New User</button>
 	</div>
 
 	<div class="uk-width-1-1">
@@ -18,60 +18,56 @@
 					<th class="uk-width-1-10"></th>
 					<th class="uk-text-center uk-width-1-10" >ID</th>
 					<th class="uk-width-2-10">Name</th>
-					<th class="uk-width-2-10">Account Number</th>
-					<th class="uk-width-1-10">Type</th>
+					<th class="uk-width-2-10">E-Mail</th>
+					<th class="uk-width-1-10">Account</th>
 					<th class="uk-width-2-10">Status</th>
 				</tr>
 			</thead>
 			<tbody>
-				<?php if($this->record_count <= 0) : ?>
-					<tr><td colspan="7" class="uk-text-center">No Orders Found!</td></tr>
+				<?php if($this->noRecords) : ?>
+					<tr><td colspan="7" class="uk-text-center">No Users Found!</td></tr>
 				<?php endif; ?>
-				<?php foreach($this->accounts as $account) : ?>
+				<?php foreach($this->users as $user) : ?>
+				<?php 
+					$account = $user->getAccount(); 
+					$_user = $user->getUser();
+				?>
 				<tr>
-					<td class="uk-text-center" ><button id="<?php echo $account->id; ?>" class="uk-button uk-button-primary" >Edit</button></td>
-					<td><?php echo $account->id; ?></td>
-					<td><?php echo $account->name; ?></td>
-					<td><?php echo $account->number; ?></td>
-					<td><?php echo $account->getType(); ?></td>
-					<td><?php echo $account->getState(); ?></td>
+					<td class="uk-text-center" ><button data-task="edit" data-id="<?php echo $user->id; ?>" class="uk-button uk-button-primary" >Edit</button></td>
+					<td><?php echo $user->id; ?></td>
+					<td><?php echo $_user->name; ?></td>
+					<td><?php echo $_user->email; ?></td>
+					<td><?php echo $account ? $account->name : null; ?></td>
+					<td><?php echo $user->getState(); ?></td>
 				</tr>
 				<?php endforeach; ?>
 			</tbody>
 		</table>
-		<form id="account_form" method="post" action="<?php echo $this->baseurl; ?>">
+		<form id="user_admin_form" method="post" action="<?php echo $this->baseurl; ?>">
 			<input type="hidden" name="task" value="edit" />
-			<input type="hidden" name="aid" value="0" />
+			<input type="hidden" name="uid" value="0" />
 		</form>
 		<script>
-			jQuery(function($) {
+			// jQuery(function($) {
 
-				$(document).ready(function(){
-					$('#add_new').on('click', function() {
-						var form = document.getElementById('account_form');
-						form.task.value = 'add';
-						var button = document.createElement('input');
-						button.style.display = 'none';
-						button.type = 'submit';
+			// 	$(document).ready(function(){
 
-						form.appendChild(button).click();
+					// $('button').on('click', function(e) {
+					// 	var task = $(e.target).data('task');
+					// 	console.log(task);
+						// var form = document.getElementById('user_admin_form');
+						// form.task.value = task;
+						// form.uid.value = $(e.target).data('id');
+						// var button = document.createElement('input');
+						// button.style.display = 'none';
+						// button.type = 'submit';
 
-						//form.removeChild(button);
-					})
-					$('table button').on('click', function(e) {
-						var form = document.getElementById('account_form');
-						form.task.value = 'edit';
-						form.aid.value = $(e.target).prop('id');
-						var button = document.createElement('input');
-						button.style.display = 'none';
-						button.type = 'submit';
-
-						form.appendChild(button).click();
+						// form.appendChild(button).click();
 
 						//form.removeChild(button);
-					})
-				})
-			})
+			// 		// })
+			// 	})
+			// })
 		</script>
 	</div>
 </div>

@@ -24,16 +24,6 @@ class UserProfileEvent {
 		$userprofile = $event->getSubject();
         $app         = $userprofile->app;
 
-        if(!$event['new']) {
-	        $user = $app->user->get($userprofile->id);
-
-	        foreach(get_object_vars($user) as $key => $value) {
-	        	if(property_exists($userprofile, $key)) {
-	        		$userprofile->$key = $value;
-	        	}
-	        }
-	    }
-
 	}
 
 	/**
