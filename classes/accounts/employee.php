@@ -15,4 +15,32 @@ class EmployeeAccount extends Account {
 
     public $type = 'employee';
 
+    public $_user;
+
+    /**
+     * Gets the user object
+     *
+     * @return object  JUSer  The user object assigned to the profile
+     *
+     * @since 1.0
+     */
+    public function getUser() {
+        if (empty($this->_user)) {
+            $this->_user = $this->app->user->get($this->elements->get('user', 0));
+        }
+        return $this->_user;
+    }
+
+     /**
+     * Checks if the user is the current user.
+     *
+     * @return boolean  True if the user is the current user.
+     *
+     * @since 1.0
+     */
+    public function isCurrentUser() {
+        $cUser = $this->app->session->get('user')->id;
+        return $cUser == $this->id ? true : false;
+    }
+
 }

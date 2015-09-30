@@ -19,8 +19,8 @@
 					<th class="uk-text-center uk-width-1-10" >ID</th>
 					<th class="uk-width-2-10">Name</th>
 					<th class="uk-width-2-10">E-Mail</th>
-					<th class="uk-width-1-10">Account</th>
-					<th class="uk-width-2-10">Status</th>
+					<th class="uk-width-2-10">Account</th>
+					<th class="uk-width-1-10">Status</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -48,26 +48,26 @@
 			<input type="hidden" name="uid" value="0" />
 		</form>
 		<script>
-			// jQuery(function($) {
+			jQuery(function($) {
 
-			// 	$(document).ready(function(){
+				$(document).ready(function(){
 
-					// $('button').on('click', function(e) {
-					// 	var task = $(e.target).data('task');
-					// 	console.log(task);
-						// var form = document.getElementById('user_admin_form');
-						// form.task.value = task;
-						// form.uid.value = $(e.target).data('id');
-						// var button = document.createElement('input');
-						// button.style.display = 'none';
-						// button.type = 'submit';
+					$('button').on('click', function(e) {
+						var task = $(e.target).data('task');
+						console.log(task);
+						var form = document.getElementById('user_admin_form');
+						form.task.value = task;
+						form.uid.value = $(e.target).data('id');
+						var button = document.createElement('input');
+						button.style.display = 'none';
+						button.type = 'submit';
 
-						// form.appendChild(button).click();
+						form.appendChild(button).click();
 
-						//form.removeChild(button);
-			// 		// })
-			// 	})
-			// })
+						form.removeChild(button);
+					})
+				})
+			})
 		</script>
 	</div>
 </div>

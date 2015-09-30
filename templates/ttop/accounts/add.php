@@ -12,7 +12,7 @@
 	</ul>
 	<form id="account_type" method="post" action="<?php echo $this->baseurl; ?>">
 		<input type="hidden" name="task" value="edit" />
-		<input type="hidden" name="account_type" value="default" />
+		<input type="hidden" name="type" value="default" />
 	</form>
 	<script>
 		jQuery(function($) {
@@ -21,7 +21,7 @@
 				$('ul button').on('click', function(e) {
 					var type = $(e.target).data('type');
 					var form = document.getElementById('account_type');
-					form.account_type.value = type;
+					form.type.value = type;
 					var button = document.createElement('input');
 					button.style.display = 'none';
 					button.type = 'submit';

@@ -56,7 +56,6 @@ class AccountController extends AppController {
         if (!$this->template = $this->application->getTemplate()) {
             return $this->app->error->raiseError(500, JText::_('No template selected'));
         }
-        echo $this->app->request->getCmd('view');
         $this->accounts = $this->app->table->account->all();
         $this->title = "Accounts";
         $this->record_count = count($this->accounts);
@@ -96,15 +95,15 @@ class AccountController extends AppController {
         }
 
         $aid = $this->app->request->get('aid', 'int');
+        $type = $this->app->request->get('type', 'word');
         $edit = $aid > 0;
         
 
         if($edit) {
-            if(!$this->account= $this->table->get($aid)) {
+            if(!$this->account= $this->table->get($aid, $type)) {
                 $this->app->error->raiseError(500, JText::sprintf('Unable to access an account with the id of %s', $aid));
                 return;
             }
-            $type = $this->account->type;
             $this->title = "Edit Account";
             $subAccounts = array();
             foreach ($this->account->getSubAccounts('oem') as $account) {
@@ -112,16 +111,16 @@ class AccountController extends AppController {
             }
             $this->account->params->set('sub-accounts.', $subAccounts);
         } else {
-            $type = $this->app->request->get('account_type', 'word', 'default');
+            $type = $this->app->request->get('type', 'word', 'default');
             $this->account = $this->app->account->create($type);
             $this->title = "Create a New $type Account";
             
         }
-        $this->paramform = $this->app->storeparameterform->create($this->app->path->path('classes:accounts/account.xml'), $type);
-        $this->paramform->setValues($this->account);
+        $this->form = $this->app->form->create(array($this->app->path->path('classes:accounts/config.xml'), $type));
+        $this->form->setValues($this->account);
         $layout = 'edit';
         
-        $this->groups = $this->paramform->getGroups();
+        $this->groups = $this->form->getGroups();
          
         $this->getView()->addTemplatePath($this->template->getPath().'/accounts');
 
@@ -145,16 +144,23 @@ class AccountController extends AppController {
 
         // init vars
         $now        = $this->app->date->create();
-        $user = $this->app->user->get()->id;
+        $cUser = $this->app->user->get()->id;
         $aid = $this->app->request->get('aid', 'int');
         $post = $this->app->request->get('post:', 'array', array());
         $tzoffset   = $this->app->date->getOffset();
-        $type = $this->app->request->get('account_type', 'word', 'default');
+        $type = $this->app->request->get('type', 'word', 'default');
 
         if($aid) {
-            $account = $this->table->get($aid);
+            $account = $this->table->get($aid, $type);
         } else {
             $account = $this->app->account->create($type);
+            $account->created_by = $cUser;
+        }
+
+        if($type == 'employee') {
+            $user = $post['core'];
+            $user['id'] = $post['elements']['user'];
+            $this->saveUser($user);
         }
 
         $core = $post['core'];
@@ -169,9 +175,24 @@ class AccountController extends AppController {
 
         $account->params = $params;
 
-        $account->created = $this->app->date->create($account->created)->toSQL();
+        $elements = $this->app->parameter->create();
+
+        foreach($post['elements'] as $key => $value) {
+            $elements->set($key, $value);
+        }
+
+        $account->elements = $elements;
+
+        // Set Created Date
+        try {
+            $account->created = $this->app->date->create($account->created, $tzoffset)->toSQL();
+        } catch (Exception $e) {
+            $account->created = $now->toSQL();
+        }
+
+        // Set Modified Date
         $account->modified = $now->toSQL();
-        $account->modified_by = $user;
+        $account->modified_by = $cUser;
 
         
         $result = $this->table->save($account);
@@ -179,7 +200,7 @@ class AccountController extends AppController {
         $link = $this->baseurl;
         switch ($this->getTask()) {
             case 'apply' :
-                $link .= '&task=edit&aid='.$account->id;
+                $link .= '&task=edit&aid='.$account->id.'&type='.$account->type;
                 break;
             case 'save2new':
                 $link .= '&task=add';
@@ -188,5 +209,21 @@ class AccountController extends AppController {
 
         $this->setRedirect($link, $msg);
 
+    }
+
+    public function saveUser($user) {
+        if($user['id']) {
+            $_user = $this->app->user->get($user->id); 
+        } else {
+            $_user = new JUser;
+        }
+
+        self::bind($_user, $user);
+
+        $_user->password = JUserHelper::hashPassword($user->password);
+
+        $_user->block = $user['state'] > 1;
+
+        $_user->save();
     }
 }

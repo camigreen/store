@@ -68,7 +68,7 @@
 											if($this->profile->isCurrentUser()) {
 												echo $this->form->render('password');
 											} else {
-												echo '<button id="resetPWD" class="uk-width-1-3 uk-button uk-button-primary uk-margin-small-bottom" data-task="resetPassword">Reset Password</button>';
+												echo '<button id="resetPWD" class="uk-width-1-3 uk-button uk-button-primary uk-margin" data-task="resetPassword">Reset Password</button>';
 											}
 										?>
 									</fieldset>

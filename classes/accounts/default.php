@@ -49,37 +49,9 @@ class Account {
     }
 
     /**
-     * Check if the given usen can access this item
+     * Get the account type
      *
-     * @param  JUser $user The user to check
-     *
-     * @return boolean       If the user can access the item
-     *
-     * @since 2.0
-     */
-    public function canAccess($user = null) {
-        return $this->app->userprofile->canAccess($user, $this->access);
-    }
-
-    /**
-     * Check if the given usen can access this item
-     *
-     * @param  JUser $user The user to check
-     *
-     * @return boolean       If the user can access the item
-     *
-     * @since 2.0
-     */
-    public function canEdit($user = null) {
-        var_dump($this->app->zoo->getApplication()->assetRules);
-    }
-
-    /**
-     * Check if the given usen can access this item
-     *
-     * @param  JUser $user The user to check
-     *
-     * @return boolean       If the user can access the item
+     * @return string       The account type.
      *
      * @since 2.0
      */

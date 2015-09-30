@@ -25,6 +25,7 @@ class FormHelper extends AppHelper {
 		$args = (array) $args;
 		array_unshift($args, $this->app);
 		return $this->app->object->create('AppForm', $args);
+
 	}
 
 	/**
@@ -81,11 +82,11 @@ class AppForm {
 	 * @param string|SimpleXMLElement $xml The xml file path or the xml string or the SimpleXMLElement
 	 * @since 2.0
 	 */
-	public function __construct($app, $xml = null) {
+	public function __construct($app, $xml = null, $type = 'default') {
 
 		// init vars
 		$this->app = $app;
-		$this->loadXML($xml);
+		$this->loadXML($xml, $type);
 	}
 
 	/**
@@ -237,15 +238,25 @@ class AppForm {
 	 * @return boolean true on success
 	 * @since 2.0
 	 */
-	public function loadXML($xml) {
+	public function loadXML($xml, $type = 'default') {
 
 		$element = false;
 
 		if ($xml instanceof SimpleXMLElement) {
 			$element = $xml;
 		}
+
 		// load xml file or string ?
 		if ($element || ($element = @simplexml_load_file($xml)) || ($element = simplexml_load_string($xml))) {
+
+			foreach($element->account as $account) {
+				if($account->type == $type) {
+
+					$element = $account;
+					continue;
+				}
+			}
+
 			if (isset($element->form->fieldset)) {
 				foreach ($element->form->fieldset as $fieldset) {
 							$this->setXML($fieldset);
@@ -353,6 +364,8 @@ class AppForm {
 			
 			$html[] = '<ul class="uk-grid parameter-form" data-uk-grid-margin>';
 
+			$group_control_name = $this->_xml[$group]->attributes()->controlname ? $this->_xml[$group]->attributes()->controlname : $control_name;
+
 			// add params
 			foreach ($this->_xml[$group]->field as $field) {
 
@@ -363,7 +376,7 @@ class AppForm {
 				$width = $width ? $width : '1-1';
 				$value = $this->getValue((string) $field->attributes()->name, (string) $field->attributes()->default);
 				$class = 'uk-width-1-1';
-				$control_name = $this->_xml[$group]->attributes()->controlname ? $this->_xml[$group]->attributes()->controlname : $control_name;
+				$control_name = $field->attributes()->controlname ? $field->attributes()->controlname : $group_control_name;
 
 				$_field = '<div class="field">'.$this->app->field->render($type, $name, $value, $field, array('control_name' => $control_name, 'parent' => $this, 'class' => $class)).'</div>';
 

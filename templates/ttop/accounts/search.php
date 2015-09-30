@@ -29,7 +29,7 @@
 				<?php endif; ?>
 				<?php foreach($this->accounts as $account) : ?>
 				<tr>
-					<td class="uk-text-center" ><button id="<?php echo $account->id; ?>" class="uk-button uk-button-primary" >Edit</button></td>
+					<td class="uk-text-center" ><button id="<?php echo $account->id; ?>" data-type="<?php echo $account->type; ?>" class="uk-button uk-button-primary" >Edit</button></td>
 					<td><?php echo $account->id; ?></td>
 					<td><?php echo $account->name; ?></td>
 					<td><?php echo $account->number; ?></td>
@@ -42,6 +42,7 @@
 		<form id="account_form" method="post" action="<?php echo $this->baseurl; ?>">
 			<input type="hidden" name="task" value="edit" />
 			<input type="hidden" name="aid" value="0" />
+			<input type="hidden" name="type" />
 		</form>
 		<script>
 			jQuery(function($) {
@@ -59,8 +60,10 @@
 						//form.removeChild(button);
 					})
 					$('table button').on('click', function(e) {
+						var type = $(e.target).data('type');
 						var form = document.getElementById('account_form');
 						form.task.value = 'edit';
+						form.type.value = type;
 						form.aid.value = $(e.target).prop('id');
 						var button = document.createElement('input');
 						button.style.display = 'none';

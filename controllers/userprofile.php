@@ -103,10 +103,14 @@ class UserProfileController extends AppController {
             $this->title = "Edit User";
             $this->user = $this->profile->getUser();
         } else {
+            $this->profile = $this->app->object->create('userprofile');
             $this->user = new JUser;
             $this->title = "Create a New User";
             
         }
+
+        echo JHtmlAccess::usergroup('test', array());
+        echo JHtmlAccess::assetgrouplist('test', array());
 
         $this->form = $this->app->form->create($this->app->path->path('classes:userprofile/config.xml'));
         
@@ -145,7 +149,7 @@ class UserProfileController extends AppController {
         $uid = $this->app->request->get('uid', 'int');
         $post = $this->app->request->get('post:', 'array', array());
         $tzoffset   = $this->app->date->getOffset();
-
+        var_dump($post);
         if($uid) {
             $profile = $this->table->get($uid);
             $user = $profile->getUser();
@@ -186,7 +190,7 @@ class UserProfileController extends AppController {
 
         $profile->elements = $elements;
 
-        if(isset($post['elements']['account'])) {
+        if(isset($post['elements']['account']) && $post['elements']['account'] != "0") {
             $account = $this->app->account->get($post['elements']['account']);
             $account->linkUser($user->id);
         }
