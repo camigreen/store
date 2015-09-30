@@ -43,6 +43,7 @@
 			<input type="hidden" name="task" value="edit" />
 			<input type="hidden" name="aid" value="0" />
 			<input type="hidden" name="type" />
+			<?php echo JHtml::_('form.token'); ?>
 		</form>
 		<script>
 			jQuery(function($) {

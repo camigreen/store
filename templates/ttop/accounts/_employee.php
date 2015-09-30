@@ -1,4 +1,13 @@
-<?php $this->form->setValues($this->account->getUser()); ?>
+<?php 
+	$user = $this->account->getUser();
+	$groups = JUserHelper::getUserGroups($user->id);
+
+?>
+
+<?php 
+	$this->form->setValues($user);
+	$this->form->setValue('password', null); 
+?>
 <?php if($this->form->checkGroup('details')) : ?>
 	<div class="uk-form-row">
 		<fieldset id="details">
@@ -12,7 +21,7 @@
 		<fieldset id="password">
 			<legend>Password</legend>
 			<?php 
-				if($this->account->isCurrentUser()) {
+				if($this->account->isCurrentUser() || !$user->id) {
 					echo $this->form->render('password');
 				} else {
 					echo '<button id="resetPWD" class="uk-width-1-3 uk-button uk-button-primary uk-margin" data-task="resetPassword">Reset Password</button>';
@@ -40,3 +49,4 @@
 <?php endif; ?>
 
 <input type="hidden" name="elements[user]" value="<?php echo $this->account->elements->get('user'); ?>" />
+<input type="hidden" name="elements[account]" value="<?php echo $this->account->elements->get('account', 8); ?>" />

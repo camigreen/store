@@ -45,6 +45,8 @@
 				<input type="hidden" name="task" value="apply" />
 				<input type="hidden" name="aid" value="<?php echo $this->account->id; ?>" />
 				<input type="hidden" name="type" value="<?php echo $this->account->type; ?>" />
+				<?php echo $this->app->html->_('form.token'); ?>
+				
 			</form>
 			<script>
 				jQuery(function($) {

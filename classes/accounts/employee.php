@@ -25,9 +25,11 @@ class EmployeeAccount extends Account {
      * @since 1.0
      */
     public function getUser() {
-        if (empty($this->_user)) {
-            $this->_user = $this->app->user->get($this->elements->get('user', 0));
-        }
+    	if (empty($this->_user) && $this->elements->get('user', 0) == 0) {
+    		$this->_user = new JUser;
+    	} else {
+    		$this->_user = $this->app->user->get($this->elements->get('user'));
+    	}
         return $this->_user;
     }
 
@@ -40,7 +42,8 @@ class EmployeeAccount extends Account {
      */
     public function isCurrentUser() {
         $cUser = $this->app->session->get('user')->id;
-        return $cUser == $this->id ? true : false;
+        $user = $this->getUser();
+        return $cUser == $user->id ? true : false;
     }
 
 }

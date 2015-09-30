@@ -90,6 +90,8 @@ class AccountController extends AppController {
     }
 
     public function edit() {
+
+
         if (!$this->template = $this->application->getTemplate()) {
             return $this->app->error->raiseError(500, JText::_('No template selected'));
         }
@@ -142,6 +144,9 @@ class AccountController extends AppController {
 
     public function save() {
 
+        // check for request forgeries
+        $this->app->session->checkToken() or jexit('Invalid Token');
+
         // init vars
         $now        = $this->app->date->create();
         $cUser = $this->app->user->get()->id;
@@ -160,6 +165,7 @@ class AccountController extends AppController {
         if($type == 'employee') {
             $user = $post['core'];
             $user['id'] = $post['elements']['user'];
+            $user['group'] = $post['elements']['job_title'];
             $this->saveUser($user);
         }
 
@@ -213,17 +219,58 @@ class AccountController extends AppController {
 
     public function saveUser($user) {
         if($user['id']) {
-            $_user = $this->app->user->get($user->id); 
+            $_user = $this->app->user->get($user['id']); 
         } else {
             $_user = new JUser;
         }
 
-        self::bind($_user, $user);
+        self::bind($_user, $user, array('password'));
 
-        $_user->password = JUserHelper::hashPassword($user->password);
+        if(!empty($post['core']['password'])) {
+            $_user->password = JUserHelper::hashPassword($user->password);
+        }
 
         $_user->block = $user['state'] > 1;
 
         $_user->save();
+
+        $_groups = JUserHelper::getUserGroups($_user->id);
+        $emp_groups = array(10, 11);
+        $groups = array();
+
+        foreach($_groups as $group) {
+            if(!in_array($group, $emp_groups)) {
+                $groups[] = $group;
+            }
+        }
+        $groups[] = $user['group'];
+
+
+        JUserHelper::setUserGroups($_user->id, $groups);
+
+
+    }
+
+    public function resetPassword() {
+        $aid = $this->app->request->get('aid','int');
+        $account = $this->table->get($aid);
+        $user_id = $account->elements->get('user');
+        if(!$user = $this->app->user->get($user_id)) {
+            return $this->app->error->raiseError(500, JText::_('An error occured while resetting the password.'));
+        }
+        $new_pwd = JUserHelper::genRandomPassword();
+        $user->password = JUserHelper::hashPassword($new_pwd);
+        $user->save();
+        $email = $this->app->mail->create();
+        $email->setSubject("Password Reset");
+        $email->setBody($new_pwd);
+        $email->addRecipient($user->email);
+        $email->Send();
+
+        $msg = "The users password has been reset.\n An email has been sent to the user.";
+        $link = $this->baseurl.'&task=edit&aid='.$account->id.'&type='.$account->type;
+        $this->setRedirect($link,$msg);
+
+
     }
 }
