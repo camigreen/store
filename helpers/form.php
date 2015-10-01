@@ -82,11 +82,11 @@ class AppForm {
 	 * @param string|SimpleXMLElement $xml The xml file path or the xml string or the SimpleXMLElement
 	 * @since 2.0
 	 */
-	public function __construct($app, $xml = null, $type = 'default') {
+	public function __construct($app, $xml = null, $params = array()) {
 
 		// init vars
 		$this->app = $app;
-		$this->loadXML($xml, $type);
+		$this->loadXML($xml, $params);
 	}
 
 	/**
@@ -238,7 +238,9 @@ class AppForm {
 	 * @return boolean true on success
 	 * @since 2.0
 	 */
-	public function loadXML($xml, $type = 'default') {
+	public function loadXML($xml, $params = array()) {
+
+		extract($params);
 
 		$element = false;
 
@@ -249,16 +251,21 @@ class AppForm {
 		// load xml file or string ?
 		if ($element || ($element = @simplexml_load_file($xml)) || ($element = simplexml_load_string($xml))) {
 
-			foreach($element->account as $account) {
-				if($account->type == $type) {
+			foreach($element->template as $tmpl) {
+				if($tmpl->attributes()->name == $template) {
 
-					$element = $account;
+					$element = $tmpl;
 					continue;
 				}
 			}
-
-			if (isset($element->form->fieldset)) {
-				foreach ($element->form->fieldset as $fieldset) {
+			foreach($element->type as $_type) {
+				if($_type->attributes()->name == $type) {
+					$element = $_type;
+					continue;
+				}
+			}
+			if (isset($element->fieldset)) {
+				foreach ($element->fieldset as $fieldset) {
 							$this->setXML($fieldset);
 					
 				}
@@ -374,14 +381,15 @@ class AppForm {
 				$name = (string) $field->attributes()->name;
 				$width = (string) $field->attributes()->width;
 				$width = $width ? $width : '1-1';
-				$value = $this->getValue((string) $field->attributes()->name, (string) $field->attributes()->default);
+				$default = strlen((string) $field->attributes()->default) > 0 ? (string) $field->attributes()->default : null; 
+				$value = $this->getValue((string) $field->attributes()->name, $default);
 				$class = 'uk-width-1-1';
 				$control_name = $field->attributes()->controlname ? $field->attributes()->controlname : $group_control_name;
 
 				$_field = '<div class="field">'.$this->app->field->render($type, $name, $value, $field, array('control_name' => $control_name, 'parent' => $this, 'class' => $class)).'</div>';
 
 				if ($type != 'hidden') {
-					$html[] = '<li class="parameter uk-width-'.$width.'">';
+					$html[] = '<li id="'.$group.'-'.$name.'" class="parameter uk-width-'.$width.'">';
 
 					$output = '&#160;';
 					if ((string) $field->attributes()->label != '') {

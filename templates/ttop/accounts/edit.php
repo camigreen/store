@@ -46,7 +46,7 @@
 				<input type="hidden" name="aid" value="<?php echo $this->account->id; ?>" />
 				<input type="hidden" name="type" value="<?php echo $this->account->type; ?>" />
 				<?php echo $this->app->html->_('form.token'); ?>
-				
+
 			</form>
 			<script>
 				jQuery(function($) {
@@ -55,6 +55,9 @@
 						$('button').on('click', function(e) {
 							e.preventDefault();
 							var task = $(e.target).data('task');
+							if(!task) {
+								return;
+							}
 							var form = document.getElementById('account_admin_form');
 							form.task.value = task;
 							var button = document.createElement('input');

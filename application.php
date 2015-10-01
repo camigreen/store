@@ -55,4 +55,5 @@ class StoreApplication extends Application {
         $zoo->document->addScript('elements:cart/assets/js/storeitem.js');
         
     }
+
 }

@@ -11,8 +11,8 @@
  *
  * @author Shawn Gibbons
  */
-class DealerAccount extends Account {
+class DealershipAccount extends Account {
 
-    public $type = 'dealer';
+    public $type = 'dealership';
 
 }

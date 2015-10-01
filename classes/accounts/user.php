@@ -11,9 +11,9 @@
  *
  * @author Shawn Gibbons
  */
-class EmployeeAccount extends Account {
+class UserAccount extends Account {
 
-    public $type = 'employee';
+    public $type = 'user';
 
     public $_user;
 
@@ -45,5 +45,4 @@ class EmployeeAccount extends Account {
         $user = $this->getUser();
         return $cUser == $user->id ? true : false;
     }
-
 }

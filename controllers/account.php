@@ -97,28 +97,28 @@ class AccountController extends AppController {
         }
 
         $aid = $this->app->request->get('aid', 'int');
-        $type = $this->app->request->get('type', 'word');
+        list($template, $type) = array_pad(explode('.',$this->app->request->get('type', 'string'), 2), 2, 'default');
         $edit = $aid > 0;
-        
+        echo 'Template: '.$template.'</br>';
+        echo 'Type: '.$type;
 
         if($edit) {
-            if(!$this->account= $this->table->get($aid, $type)) {
+            if(!$this->account = $this->table->get($aid, $type == 'default' ? $template : $type)) {
                 $this->app->error->raiseError(500, JText::sprintf('Unable to access an account with the id of %s', $aid));
                 return;
             }
             $this->title = "Edit Account";
             $subAccounts = array();
-            foreach ($this->account->getSubAccounts('oem') as $account) {
-                $subAccounts[$account->type][] = $account->id;
+            foreach ($this->account->getSubAccounts('oem') as $subaccount) {
+                $subAccounts[$subaccount->type][] = $subaccount->id;
             }
-            $this->account->params->set('sub-accounts.', $subAccounts);
+            $this->account->elements->set('subaccounts', $subAccounts);
         } else {
-            $type = $this->app->request->get('type', 'word', 'default');
             $this->account = $this->app->account->create($type);
             $this->title = "Create a New $type Account";
             
         }
-        $this->form = $this->app->form->create(array($this->app->path->path('classes:accounts/config.xml'), $type));
+        $this->form = $this->app->form->create(array($this->app->path->path('classes:accounts/config.xml'), compact('template', 'type')));
         $this->form->setValues($this->account);
         $layout = 'edit';
         
@@ -188,6 +188,12 @@ class AccountController extends AppController {
         }
 
         $account->elements = $elements;
+
+        foreach($post['subaccounts'] as $type => $subaccounts) {
+            foreach($subaccounts as $subaccount) {
+                $this->app->account->associate($account->id, $subaccount, $type);
+            }
+        }
 
         // Set Created Date
         try {

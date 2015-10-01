@@ -65,5 +65,17 @@ class AccountHelper extends AppHelper {
         
         return $object;
     }
+
+    public function associate($parent, $child, $type) {
+    	$query = 'INSERT INTO #__zoo_account_map (parent, child, type) VALUES ('.$parent.','.$child.',"'.$type.'")';
+    	
+        try {
+            $this->app->database->query($query);
+        } catch (Exception $e) {
+            
+        }
+    	
+
+    }
     
 }

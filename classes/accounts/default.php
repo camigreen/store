@@ -153,7 +153,7 @@ class Account {
             $this->app->loader->register($class, 'classes:accounts/default.php');
         }
         
-        $result = $this->app->database->query('SELECT b.* FROM #__zoo_account_link AS a LEFT JOIN (#__zoo_account AS b) ON (a.child = b.id) WHERE a.parent = '.$this->id.' AND b.type = "'.$type.'"');
+        $result = $this->app->database->query('SELECT b.* FROM #__zoo_account_map AS a LEFT JOIN (#__zoo_account AS b) ON (a.child = b.id) WHERE a.parent = '.$this->id.' AND b.type = "'.$type.'"');
         $objects = array();
         while ($object = $this->app->database->fetchObject($result, $class)) { 
             $objects[$object->id] = $object;
