@@ -17,7 +17,6 @@
 	</div>
 <?php endif; ?>
 <?php $this->form->setValues($this->account->elements->get('subaccounts')); ?>
-<?php var_dump($this->form->getValues()); ?>
 <?php if($this->form->checkGroup('subaccounts')) : ?>
 	<div class="uk-form-row">
 		<fieldset id="subaccounts">

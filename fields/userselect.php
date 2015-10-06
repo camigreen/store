@@ -1,9 +1,13 @@
 <?php 
-	$value = (array) $value;
+	// $value = (array) $value;
+	$value = array(8,11);
 	$users = array();
 	foreach($value as $id) {
 		$users[] = $this->app->account->get($id, 'user');
 	}
+	$accounts = explode(',', (string) $node->attributes()->account_type);
+	$accounts = $this->app->account->getByTypes($accounts);
+	var_dump($accounts);
 ?>
 <div class="uk-width-1-1">
 <?php if(!empty($users)) : ?>
