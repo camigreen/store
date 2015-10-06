@@ -91,7 +91,7 @@ $items = $order->items;
                     </div>
                     <div class="uk-width-1-1">
 
-                        <div class="payment-data">Last 4 of Credit Card: <?php echo $creditCard->get('cardNumber').' '.$creditCard->get('card_name'); ?></div>
+                        <div class="payment-data">Last 4 of Credit Card: <?php echo substr($creditCard->get('cardNumber'), -4).' '.$creditCard->get('card_name'); ?></div>
                     </div>
 
                 </div>
