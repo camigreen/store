@@ -8,9 +8,5 @@
 		</param>
 		<param name="notify_emails" type="textarea" default="" size="150" label="New Order Notifications" description="Email addresses for new orders.  Separate addresses by commas." />
 		<param name="ship_markup" type="text" default="" label="Shipping Markup" description="The global markup for all shipping prices." />
-		<param name="testing" type="radio" default="0" label="Payment Testing" description="Set the payment operation to testing mode.">
-			<option value="0">Off</option>
-			<option value="1">On</option>
-		</param>
 	</params>
 </config>
