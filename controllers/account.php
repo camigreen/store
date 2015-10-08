@@ -97,11 +97,11 @@ class AccountController extends AppController {
         }
 
         $aid = $this->app->request->get('aid', 'int');
-        list($template, $type) = array_pad(explode('.',$this->app->request->get('type', 'string'), 2), 2, 'default');
+        $account_type = $this->app->request->get('type', 'string');
+        list($template, $type) = array_pad(explode('.',$account_type, 2), 2, 'default');
         $edit = $aid > 0;
         echo 'Template: '.$template.'</br>';
         echo 'Type: '.$type;
-
         if($edit) {
             if(!$this->account = $this->table->get($aid, $type == 'default' ? $template : $type)) {
                 $this->app->error->raiseError(500, JText::sprintf('Unable to access an account with the id of %s', $aid));
@@ -114,8 +114,8 @@ class AccountController extends AppController {
             }
             $this->account->elements->set('subaccounts', $subAccounts);
         } else {
-            $this->account = $this->app->account->create($type);
-            $this->title = "Create a New $type Account";
+            $this->account = $this->app->account->create($account_type);
+            $this->title = $type == 'default' ? "Create a New $template Account" : "Create a New $type Account";
             
         }
         $this->form = $this->app->form->create(array($this->app->path->path('classes:accounts/config.xml'), compact('template', 'type')));

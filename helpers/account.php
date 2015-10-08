@@ -46,7 +46,9 @@ class AccountHelper extends AppHelper {
     
     
     public function create($class = null, $args = array()) {
-    	$class = $class.'Account';
+    	list($parent, $child) = array_pad(explode('.',$class, 2), 2, null);
+
+    	$class = $child == null ? $parent.'Account' : $child.'Account';
         
         if (!is_null($class) && file_exists($this->app->path->path('classes:/accounts/'.basename($class, 'Account').'.php'))) {
             $this->app->loader->register($class, 'classes:/accounts/'.basename($class, 'Account').'.php');
