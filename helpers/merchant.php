@@ -15,21 +15,31 @@ class MerchantHelper extends AppHelper {
 
     protected $merchant;
     protected $testMode = false;
+    protected $params;
+
+    public function __construct($app) {
+
+        parent::__construct($app);
+        $application = $this->app->zoo->getApplication();
+        $this->params = $application->getParams()->get('global.anet.');
+        $this->params = $this->app->parameter->create($this->params);
+        $this->testMode = (bool) $this->params->get('testing');
+        
+    }
 
     
     public function anet() {
-        $this->testMode = (bool) $this->app->zoo->getApplication()->getParams()->get('global.store.testing');
         if($this->testMode) {
-            define("AUTHORIZENET_API_LOGIN_ID", "9f4Wf2E7");
-            define("AUTHORIZENET_TRANSACTION_KEY", "65mq3Mn8C422BMk7");
+            define("AUTHORIZENET_API_LOGIN_ID", $this->params->get('sandbox_api_login_id'));
+            define("AUTHORIZENET_TRANSACTION_KEY", $this->params->get('sandbox_api_transaction_key'));
             define("AUTHORIZENET_SANDBOX", true);
         } else {
-            define("AUTHORIZENET_API_LOGIN_ID", "4xYXc62C6Uc");
-            define("AUTHORIZENET_TRANSACTION_KEY", "87zq6EPH4V9swa4z");
+            define("AUTHORIZENET_API_LOGIN_ID", $this->params->get('api_login_id'));
+            define("AUTHORIZENET_TRANSACTION_KEY", $this->params->get('api_transaction_key'));
             define("AUTHORIZENET_SANDBOX", false);
         }
 
-        $this->merchant['anet'] = new AuthorizeNetAIM;
+        $this->merchant['anet'] = new \AuthorizeNetAIM;
 
     }
 

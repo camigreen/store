@@ -232,6 +232,22 @@ class CashRegister {
     }
 
     public function processPayment() {
+        if($this->app->request->get('bypass', 'boolean')) {
+            $this->order->transaction_id = "Not Processed";
+            $this->order->save();
+            $result = array(
+                'approved' => true,
+                'orderID' => $this->order->id
+            );
+            $this->order->result = $result;
+
+            $this->sendNotificationEmail($this->order, 'receipt');
+            $this->sendNotificationEmail($this->order, 'payment');
+            $this->clearOrder();
+            
+            return $this->order;
+        }
+
         $order = $this->order;
         $billing = $order->get('billing');
         $shipping = $order->get('shipping');

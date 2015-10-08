@@ -93,7 +93,7 @@
 				<field name="email" type="text" width="1-2" default="" label="E-mail Address" description="An email address for the point of contact." />
 			</fieldset>
 			<fieldset group="elements" label="User Account Elements" controlname="elements" width="1-1">
-				<field name="percentage" type="text" width="1-2" default="" label="Percentage" description="The accounts percentage." />
+				<field name="discount" type="number" width="1-2" default="" label="Dealer Price Discount" description="The dealer price discount." />
 			</fieldset>
 			<fieldset group="subaccounts" label="Assigned Sub-Accounts" controlname="subaccounts" width="1-1">
 				<field name="oem" type="accountlist" account_type="oem" multiple="1" width="1-2" label="Select All OEMs" description="Press and hold CTRL or command to select multiple OEMs" />
