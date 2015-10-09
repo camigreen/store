@@ -18,82 +18,56 @@ class CartHelper extends AppHelper {
     public function __construct($app) {
         parent::__construct($app);
 
-        $this->app->loader->register('CartItem','classes:cartitem.php');
-
-        $this->_items = $this->app->data->create();
-        $cart = $this->app->session->get('cart',array(),'checkout');
-
-        $items = $this->app->data->create($cart);
-        $this->app->log->createLogger('file',array('media/zoo/applications/store/logs/cart/'.date('Y-m-d').'.txt'));
-        //$this->app->log->createLogger('email',array('sgibbons@palmettoimages.com'));
-        $this->add($items, true);
+        //$this->app->loader->register('CartItem','classes:cartitem.php');
 
     }
 
-    public function get($key = null) {
-    	if($key) {
-            return $this->_items[$key];
+    public function create() {
+
+        $this->_items = $this->app->parameter->create();
+
+        $items = $this->app->parameter->create($this->app->session->get('cart',array(),'checkout'));
+
+        $this->add($items);
+
+
+        return $this;
+
+    }
+
+    public function get($key) {
+        return $this->_items[$key]; 
+    }
+
+    public function getAllItems() {
+        return $this->_items;
+    }
+
+    public function add($items) {
+
+        if(!$this->_items) {
+            $this->_items = $this->app->parameter->create();
         }
 
-        return $this->_items;
-        
-    }
-
-    public function add($items, $imported = false) {
     	foreach($items as $key => $item) {
-    		$item_x = new CartItem($this->app, $item);
-            if (array_key_exists($item_x->getSKU(), $this->_items)) {
-                $this->_items[$item_x->getSKU()]->qty += $item_x->qty;
+            var_dump($item);
+    		$_item = new CartItem($this->app, $item);
+            if ($this->_items->has($_item->getSKU())) {
+                $this->_items->get($_item->getSKU())->qty += $_item->qty;
             } else {
-                $this->_items[$item_x->getSKU()] = $item_x;
-                $this->_items[$item_x->getSKU()]->imported = $imported;
-            }
-            if (!$imported) {
-                $this->app->log->notice($item_x->toLog(),'Cart Item Added');
+                $this->_items->set($_item->getSKU(), $_item);
             }
     	}
         return $this->updateSession();
     }
 
-    protected function createItem($item) {
-		$_item = $this->app->object->create('cartitem');
-        $_item->attributes = $this->app->data->create();
-    	foreach($item as $key => $value) {
-                switch ($key) {
-                    case 'attributes':
-                    case 'shipping':
-                        $_item->$key = $this->app->data->create($value);
-                        break;
-                    case 'options':
-                        $opt_set = $_item->attributes->get('option-set');
-                        if (file_exists($this->app->path->path('classes:data/'.(!is_null($opt_set) ? $opt_set['value'] : 'null').'.php'))) {
-                            $_item->options = $this->app->data->create($value, $opt_set['value']);
-                            $_item->options->ksort();
-                        } else {
-                            $_item->options = $this->app->data->create($value);
-                        }
-                        break;
-                    case 'price':
-                        $_item->$key = floatval($value);
-                        break;
-                    default:
-                        if(is_numeric($value)) {
-                            $_item->$key = intval($value);
-                        } else {
-                            $_item->$key = $value;
-                        }    
-                }
-    	}
-    	return $_item;
-    }
-
     public function remove($sku) {
-        if ($this->_items->get($sku)) {
+        if ($this->_items->has($sku)) {
             $this->_items->remove($sku);
             return $this->updateSession();
         }
         
-        return $this->_items;
+        return $this;
     }
 
     public function getItemCount() {
@@ -113,7 +87,7 @@ class CartHelper extends AppHelper {
     }
 
     public function emptyCart() {
-        $this->_items = $this->app->data->create();
+        $this->_items = $this->app->parameter->create();
         return $this->updateSession();
     }
 
@@ -122,7 +96,7 @@ class CartHelper extends AppHelper {
         if ($qty == 0) {
             return $this->remove($sku);
         } else {
-            $item = $this->get($sku)->qty = $qty;
+            $this->_items->get($sku)->qty = $qty;
         }
         
         return $this->updateSession();
@@ -132,15 +106,89 @@ class CartHelper extends AppHelper {
         $this->app->session->set('cart',(string) $this->_items,'checkout');
         return $this;
     }
+    
+}
 
-    public function __toString() {
+/**
+ * Description of newPHPClass
+ *
+ * @author Shawn
+ */
+class CartItem {
+    
+    public $id;
+    
+    public $name;
+    
+    public $qty;
+    
+    public $price;
+    
+    public $total = 0;
+    
+    public $shipping;
+    
+    public $options;
+    
+    public $attributes = array();
+    
+    public $description;
+    
+    public $make;
+    
+    public $model;
+    
+    public $pricepoints = array();
+    
+    public $sku;
+    
+    public $taxable = true;
+    
+    public $app;
+    
+    public function __construct($item, $app) {
+        $this->app = $app;
+        $item->options = $app->data->create($item->options);
+        $item->shipping = $app->data->create($item->shipping);
+        foreach ($item as $key => $value) {
+            $this->$key = $value;
+            
+        }
+        $this->generateSKU();
+        
+    }
 
-        $cart = array(
-            'itemCount' => $this->getItemCount(),
-            'cartTotal' => $this->getCartTotal(),
-            'items' => $this->_items
-        );
-        return (string) $this->app->data->create($cart);
+    
+    public function getDescription($type) {
+        $lines = array();
+        if ($type == 'receipt') {
+            foreach($this->options as $option) {
+                if (!isset($option['visible']) || $option['visible']) {
+                    $lines[] = $option['name'].': '.$option['text'];
+                }
+            } 
+            
+        } else {
+            foreach($this->options as $option) {
+                $lines[] = $option['name'].': '.$option['text'];
+            } 
+        }
+        $html = isset($lines) ? '<p>'.implode('</p><p>', $lines).'</p>' : '';
+        return $html;
+    }
+    public function generateSKU() {
+        $options = '';
+        foreach($this->options as $key => $value) {
+            $options .= $key.$value['text'];
+        }
+        
+        $this->sku = hash('md5', $this->id.$options);
+        return $this->sku;
     }
     
+    public function get($resource, $formatCurrency = false) {
+        
+        return ($formatCurrency ? $this->formatCurrency(parent::get($resource)) : parent::get($resource));
+    }
+ 
 }

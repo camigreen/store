@@ -76,8 +76,8 @@ class CashRegister {
     }
     
     public function scanItems () {
-        $cart = $this->app->cart;
-        $this->order->items = $cart->get();
+        $cart = $this->app->cart->create();
+        $this->order->items = $cart->getItems();
     }
     
     protected function setNotificationEmails() {

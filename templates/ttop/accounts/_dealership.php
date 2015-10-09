@@ -16,12 +16,30 @@
 		</fieldset>
 	</div>
 <?php endif; ?>
-<?php $this->form->setValues($this->account->elements->get('elements')); ?>
-<?php if($this->form->checkGroup('elements')) : ?>
+<?php $this->form->setValues($this->account->elements->get('billing')); ?>
+<?php if($this->form->checkGroup('billing')) : ?>
+	<div class="uk-form-row">
+		<fieldset id="billing">
+			<legend>Billing Address</legend>
+			<?php echo $this->form->render('billing')?>
+		</fieldset>
+	</div>
+<?php endif; ?>
+<?php $this->form->setValues($this->account->elements->get('shipping')); ?>
+<?php if($this->form->checkGroup('shipping')) : ?>
+	<div class="uk-form-row">
+		<fieldset id="shipping">
+			<legend>Shipping Address</legend>
+			<?php echo $this->form->render('shipping')?>
+		</fieldset>
+	</div>
+<?php endif; ?>
+<?php $this->form->setValues($this->account->elements->get('pricing')); ?>
+<?php if($this->form->checkGroup('pricing')) : ?>
 	<div class="uk-form-row">
 		<fieldset id="elements">
-			<legend>Elements</legend>
-			<?php echo $this->form->render('elements')?>
+			<legend>Account Pricing</legend>
+			<?php echo $this->form->render('pricing')?>
 		</fieldset>
 	</div>
 <?php endif; ?>

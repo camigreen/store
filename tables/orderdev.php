@@ -10,10 +10,16 @@
 	Class: ItemTable
 		The table class for items.
 */
-class OrderTable extends AppTable {
+class OrderDevTable extends AppTable {
 
 	public function __construct($app) {
-		parent::__construct($app, '#__zoo_order');
+		parent::__construct($app, '#__zoo_orderdev');
+	}
+
+	public function _initobject($object) {
+
+		return parent::_initobject($object);
+
 	}
 
 
@@ -25,8 +31,9 @@ class OrderTable extends AppTable {
 			Boolean.
 	*/
 	public function save($object) {
-
-		$object->orderDate = $this->app->date->create($object->orderDate)->toSQL();
+		$tzoffset = $this->app->date->getOffset();
+		$object->created = $this->app->date->create($object->created, $tzoffset)->toSQL();
+		$object->modified = $this->app->date->create($object->modified, $tzoffset)->toSQL();
 		$result = parent::save($object);
 		return $result;
 	}
@@ -35,4 +42,4 @@ class OrderTable extends AppTable {
 /*
 	Class: ItemTableException
 */
-class OrderTableException extends AppException {}
+class OrderDevTableException extends AppException {}

@@ -24,6 +24,13 @@ class OrderEvent {
 		$order = $event->getSubject();
         $app         = $order->app;
 
+        $order->params = $app->parameter->create($order->params);
+        $order->elements = $app->parameter->create($order->elements);
+        $order->subtotal = (float) $order->subtotal;
+        $order->tax_total = (float) $order->tax_total;
+        $order->ship_total = (float) $order->ship_total;
+        $order->total = (float) $order->total;
+
 	}
 
 	/**

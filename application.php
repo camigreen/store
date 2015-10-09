@@ -42,6 +42,7 @@ class StoreApplication extends Application {
         // register and connect events
         $zoo->event->register('OrderEvent');
         $zoo->event->dispatcher->connect('order:paymentFailed', array('OrderEvent', 'paymentFailed'));
+        $zoo->event->dispatcher->connect('order:init', array('OrderEvent', 'init'));
         $zoo->event->register('AccountEvent');
         $zoo->event->dispatcher->connect('account:init', array('AccountEvent', 'init'));
         $zoo->event->register('UserProfileEvent');

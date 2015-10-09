@@ -369,7 +369,7 @@ class AppForm {
 				return false;
 			}
 			
-			$html[] = '<ul class="uk-grid parameter-form" data-uk-grid-margin>';
+			$html[] = '<ul class="uk-grid parameter-form">';
 
 			$group_control_name = $this->_xml[$group]->attributes()->controlname ? $this->_xml[$group]->attributes()->controlname : $control_name;
 

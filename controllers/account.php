@@ -56,6 +56,16 @@ class AccountController extends AppController {
         if (!$this->template = $this->application->getTemplate()) {
             return $this->app->error->raiseError(500, JText::_('No template selected'));
         }
+        $order = $this->app->orderdev->get(6153);
+        var_dump($order->elements->get('items'));
+        // $orders = $this->app->database->queryAssocList('SELECT id FROM joomla_zoo_order');
+
+        // foreach($orders as $order) {
+
+        //     $_order = $this->app->order->create($order['id']);
+        //     $this->relayorder($_order);
+        // }
+        
         $this->accounts = $this->app->table->account->all();
         $this->title = "Accounts";
         $this->record_count = count($this->accounts);
@@ -70,6 +80,29 @@ class AccountController extends AppController {
         $this->getView()->addTemplatePath($this->template->getPath().'/accounts');
 
         $this->getView()->addTemplatePath($this->template->getPath())->setLayout($layout)->display();
+    }
+
+    public function relayorder($order) {
+
+        $orderdev = $this->app->orderdev->create();
+        $ignore = array('orderDate','salesperson');
+        foreach(get_object_vars($order) as $key => $value) {
+            if(in_array($key, $ignore)) {
+                continue;
+            }
+            if(property_exists($orderdev, $key)) {
+                $orderdev->$key = $value;
+            } else {
+                $orderdev->elements->set($key, $value);
+            }
+
+        }
+        $orderdev->created = $order->orderDate;
+        $orderdev->created_by = $order->salesperson;
+        $orderdev->modified = $order->orderDate;
+        $orderdev->modified_by = $order->salesperson;
+
+        $orderdev->save();
     }
 
     public function upload() {

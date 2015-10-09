@@ -112,40 +112,6 @@ class StoreController extends AppController {
 
     }
 
-    public function cart() {
-        $job = $this->app->request->get('job','word');
-        
-        $cart = $this->app->cart;
-
-        switch ($job) {
-            case 'add':
-                $items = $this->app->request->get('cartitems','array');
-                $cart->add($items);
-                break;
-            case 'updateQty':
-                $sku = $this->app->request->get('sku','string');
-                $qty = $this->app->request->get('qty','int');
-                $cart->updateQuantity($sku, $qty);
-                break;
-            case 'emptyCart':
-                $cart->emptyCart();
-                break;
-            case 'remove':
-                $sku = $this->app->request->get('sku','string');
-                $cart->remove($sku);
-                break;
-        }
-        
-        $this->app->document->setMimeEncoding('application/json');
-        $result = array(
-            'result' => true,
-            'items' => $cart->get(),
-            'item_count' => $cart->getItemCount(),
-            'total' => $cart->getCartTotal()
-        );
-        echo json_encode($result);
-    }
-
     public function order() {
         if (!$this->template = $this->application->getTemplate()) {
             return $this->app->error->raiseError(500, JText::_('No template selected'));
