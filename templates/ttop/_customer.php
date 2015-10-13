@@ -9,37 +9,7 @@ $order = $CR->order;
 $states = new SimpleUPS\PostalCodes();
 ?>
 
-<div class="uk-width-2-3 uk-container-center">
-    <?php if($order->hasSalesperson()) : ?>
-    <div class="uk-width-1-1 uk-margin-bottom">
-        <fieldset id="salesperson">
-            <div class="uk-grid" data-uk-margin>
-                <div class="uk-width-1-1">
-                    <legend>Salesperson Info</legend>
-                </div>
-                <div class="uk-width-1-3">
-                    <label>Service Fee</label>
-                    <select class="uk-width-1-1" name="service_fee" >
-                        <option value='0' <?php echo $order->service_fee == 0 ? 'selected' : ''; ?>>No Fee</option>
-                        <option value='0.01' <?php echo $order->service_fee == 0.01 ? 'selected' : ''; ?>>1%</option>
-                        <option value='0.02' <?php echo $order->service_fee == 0.02 ? 'selected' : ''; ?>>2%</option>
-                        <option value='0.03' <?php echo $order->service_fee == 0.03 ? 'selected' : ''; ?>>3%</option>
-                    </select>
-                </div>
-                <div class="uk-width-1-3">
-                    <label>Dealer Discount</label>
-                    <select class="uk-width-1-1" name="discount" value="<?php echo $order->discount; ?>">
-                        <option value='0' <?php echo $order->service_fee == 0 ? 'selected' : ''; ?>>Not a Dealer</option>
-                        <option value='0.2' <?php echo $order->service_fee == 0.2 ? 'selected' : ''; ?>>20%</option>
-                        <option value='0.25' <?php echo $order->service_fee == 0.25 ? 'selected' : ''; ?>>25%</option>
-                        <option value='0.3' <?php echo $order->service_fee == 0.3 ? 'selected' : ''; ?>>30%</option>
-                        <option value='0.35' <?php echo $order->service_fee == 0.35 ? 'selected' : ''; ?>>35%</option>
-                    </select>
-                </div>
-            </div>
-        </fieldset>
-    </div>
-    <?php endif; ?>   
+<div class="uk-width-2-3 uk-container-center"> 
         <div class="uk-width-1-1">
             <fieldset id="billing">
                 <div class="uk-grid" data-uk-margin>
@@ -53,28 +23,28 @@ $states = new SimpleUPS\PostalCodes();
                         </div>
                     </div>
                     <div class="uk-width-1-2">
-                        <input type="text" name="customer[billing][firstname]" class="ttop-checkout-field required" placeholder="First Name" value="<?php echo $order->billing->get('firstname'); ?>"/>
+                        <input type="text" name="billing[firstname]" class="ttop-checkout-field required" placeholder="First Name" value="<?php echo $order->get('billing.firstname'); ?>"/>
                     </div>
                     <div class="uk-width-1-2">
-                        <input type="text" name="customer[billing][lastname]" class="ttop-checkout-field required" placeholder="Last" value="<?php echo $order->billing->get('lastname'); ?>"/>
+                        <input type="text" name="billing[lastname]" class="ttop-checkout-field required" placeholder="Last" value="<?php echo $order->get('billing.lastname'); ?>"/>
                     </div>
                     <div class="uk-width-1-1">
-                        <input type="text" name="customer[billing][address]" class="ttop-checkout-field required"  placeholder="Address" value="<?php echo $order->billing->get('address'); ?>"/>
+                        <input type="text" name="billing[address]" class="ttop-checkout-field required"  placeholder="Address" value="<?php echo $order->get('billing.address'); ?>"/>
                     </div>
                     <div class="uk-width-5-10">
-                        <input type="text" name="customer[billing][city]" class="ttop-checkout-field required"  placeholder="City" value="<?php echo $order->billing->get('city'); ?>"/>
+                        <input type="text" name="billing[city]" class="ttop-checkout-field required"  placeholder="City" value="<?php echo $order->get('billing.city'); ?>"/>
                     </div>
                     <div class="uk-width-2-10">
-                        <?php echo $this->app->html->_('select.genericList',$states->getStates('US',true),'customer[billing][state]',array('class' => 'ttop-checkout-field required'),'value','text',$order->billing->get('state'))?>
+                        <?php echo $this->app->html->_('select.genericList',$states->getStates('US',true),'billing[state]',array('class' => 'ttop-checkout-field required'),'value','text',$order->get('billing.state'))?>
                     </div>
                     <div class="uk-width-3-10">
-                        <input type="text" name="customer[billing][zip]" class="ttop-checkout-field required"  placeholder="Zip" value="<?php echo $order->billing->get('zip'); ?>"/>
+                        <input type="text" name="billing[zip]" class="ttop-checkout-field required"  placeholder="Zip" value="<?php echo $order->get('billing.zip'); ?>"/>
                     </div>
                     <div class="uk-width-1-1">
-                        <input type="text" name="customer[billing][phoneNumber]" class="ttop-checkout-field required" placeholder="Phone Number" value="<?php echo $order->billing->get('phoneNumber'); ?>"/>
+                        <input type="text" name="billing[phoneNumber]" class="ttop-checkout-field required" placeholder="Phone Number" value="<?php echo $order->get('billing.phoneNumber'); ?>"/>
                     </div>
                     <div class="uk-width-1-1">
-                        <input type="text" name="customer[billing][altNumber]" class="ttop-checkout-field" placeholder="Alternate Phone Number" value="<?php echo $order->billing->get('altNumber'); ?>"/>
+                        <input type="text" name="billing[altNumber]" class="ttop-checkout-field" placeholder="Alternate Phone Number" value="<?php echo $order->get('billing.altNumber'); ?>"/>
                     </div>
                 </div>
             </fieldset>
@@ -98,28 +68,28 @@ $states = new SimpleUPS\PostalCodes();
                         </div>
                     </div>
                     <div class="uk-width-1-2">
-                        <input type="text" name="customer[shipping][firstname]"  class="ttop-checkout-field required" placeholder="First Name" value="<?php echo $order->shipping->get('firstname'); ?>"/>
+                        <input type="text" name="shipping[firstname]"  class="ttop-checkout-field required" placeholder="First Name" value="<?php echo $order->get('shipping.firstname'); ?>"/>
                     </div>
                     <div class="uk-width-1-2">
-                        <input type="text" name="customer[shipping][lastname]"  class="ttop-checkout-field required" placeholder="Last" value="<?php echo $order->shipping->get('lastname'); ?>"/>
+                        <input type="text" name="shipping[lastname]"  class="ttop-checkout-field required" placeholder="Last" value="<?php echo $order->get('shipping.lastname'); ?>"/>
                     </div>
                     <div class="uk-width-1-1">
-                        <input type="text" name="customer[shipping][address]"  class="ttop-checkout-field required" placeholder="Address" value="<?php echo $order->shipping->get('address'); ?>"/>
+                        <input type="text" name="shipping[address]"  class="ttop-checkout-field required" placeholder="Address" value="<?php echo $order->get('shipping.address'); ?>"/>
                     </div>
                     <div class="uk-width-5-10">
-                        <input type="text" name="customer[shipping][city]"  class="ttop-checkout-field required" placeholder="City" value="<?php echo $order->shipping->get('city'); ?>"/>
+                        <input type="text" name="shipping[city]"  class="ttop-checkout-field required" placeholder="City" value="<?php echo $order->get('shipping.city'); ?>"/>
                     </div>
                     <div class="uk-width-2-10">
-                        <?php echo $this->app->html->_('select.genericList',$states->getStates('US',true),'customer[shipping][state]',array('class' => 'ttop-checkout-field required'),'value','text',$order->shipping->get('state'))?>
+                        <?php echo $this->app->html->_('select.genericList',$states->getStates('US',true),'shipping[state]',array('class' => 'ttop-checkout-field required'),'value','text',$order->get('shipping.state'))?>
                     </div>
                     <div class="uk-width-3-10">
-                        <input type="text" name="customer[shipping][zip]"  class="ttop-checkout-field required" placeholder="Zip" value="<?php echo $order->shipping->get('zip'); ?>" />
+                        <input type="text" name="shipping[zip]"  class="ttop-checkout-field required" placeholder="Zip" value="<?php echo $order->get('shipping.zip'); ?>" />
                     </div>
                     <div class="uk-width-1-1">
-                        <input type="text" name="customer[shipping][phoneNumber]" class="ttop-checkout-field required" placeholder="Phone Number" value="<?php echo $order->shipping->get('phoneNumber'); ?>"/>
+                        <input type="text" name="shipping[phoneNumber]" class="ttop-checkout-field required" placeholder="Phone Number" value="<?php echo $order->get('shipping.phoneNumber'); ?>"/>
                     </div>
                     <div class="uk-width-1-1">
-                        <input type="text" name="customer[shipping][altNumber]" class="ttop-checkout-field" placeholder="Alternate Phone Number" value="<?php echo $order->shipping->get('altNumber'); ?>"/>
+                        <input type="text" name="shipping[altNumber]" class="ttop-checkout-field" placeholder="Alternate Phone Number" value="<?php echo $order->get('shipping.altNumber'); ?>"/>
                     </div>
                 </div>
             </fieldset>
@@ -132,10 +102,10 @@ $states = new SimpleUPS\PostalCodes();
                 <div class="uk-grid" data-uk-margin>
 
                     <div class="uk-width-1-1">
-                        <input type="email" class="uk-width-1-1 ttop-checkout-field required" name="customer[billing][email]" placeholder="E-mail Address" value="<?php echo $order->billing->get('email'); ?>"/>
+                        <input type="email" class="uk-width-1-1 ttop-checkout-field required" name="email" placeholder="E-mail Address" value="<?php echo $order->get('email'); ?>"/>
                     </div>
                     <div class="uk-width-1-1">
-                        <input type="email" class="uk-width-1-1 ttop-checkout-field" name="customer[billing][confirm_email]" placeholder="Confirm E-mail Address" value="<?php echo $order->billing->get('confirm_email'); ?>"/>
+                        <input type="email" class="uk-width-1-1 ttop-checkout-field" name="confirm_email" placeholder="Confirm E-mail Address" value="<?php echo $order->get('confirm_email'); ?>"/>
                     </div>
                     <div class='uk-width-1-1'>
                         <div class='uk-text-large'>Local Pickup</div>

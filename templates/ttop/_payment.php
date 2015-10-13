@@ -5,8 +5,10 @@
  * and open the template in the editor.
  */
 $order = $CR->order;
-$items = $order->items;
-$creditCard = $order->creditCard;
+$cart = $this->app->cart->create();
+$items = $cart->getAllItems();
+var_dump($items);
+$creditCard = $order->get('creditCard');
 ?>
 <div class="uk-width-1-1 uk-container-center ttop-checkout-payment">
     <div class="uk-grid">

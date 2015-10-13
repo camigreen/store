@@ -5,7 +5,7 @@
  * and open the template in the editor.
  */
 
-$CR = $this->CashRegister;
+$CR = $this->CR;
 $this->app->document->addScript('assets:js/jquery-validation-1.13.1/dist/jquery.validate.min.js');
 ?>
 <?php if($this->app->merchant->testMode()) : ?>
@@ -14,7 +14,7 @@ $this->app->document->addScript('assets:js/jquery-validation-1.13.1/dist/jquery.
         <span class="uk-text-danger uk-text-large testing-mode">TESTING MODE</span>
     </div>
     <?php echo  $CR->order; ?>
-    <?php var_dump($CR->merchant); ?>
+    <?php var_dump($CR->order->get('billing.')); ?>
 </div>
 <?php endif; ?>
 <div class="uk-clearfix ttop-checkout-title">
@@ -27,47 +27,47 @@ $this->app->document->addScript('assets:js/jquery-validation-1.13.1/dist/jquery.
 <div class="uk-width-1-1 uk-margin-bottom ttop-checkout-steps" data-uk-grid-margin>
     <ul class="uk-grid ttop-checkout-progress">
         <li class="uk-width-1-4">
-            <div id="customer" class="<?php echo $CR->page->pageStatus('customer'); ?>" >Customer<i class="uk-icon-arrow-right uk-align-right"></i></div>
+            <div id="customer" class="" >Customer<i class="uk-icon-arrow-right uk-align-right"></i></div>
         </li>
         <li class="uk-width-1-4">
-            <div id="payment" class="<?php echo $CR->page->pageStatus('payment'); ?>">Payment Info<i class="uk-icon-arrow-right uk-align-right"></i></div>
+            <div id="payment" class="">Payment Info<i class="uk-icon-arrow-right uk-align-right"></i></div>
         </li>
         <li class="uk-width-1-4">
-            <div id="confirm" class="<?php echo $CR->page->pageStatus('confirm'); ?>">Confirm Order<i class="uk-icon-arrow-right uk-align-right"></i></div>
+            <div id="confirm" class="">Confirm Order<i class="uk-icon-arrow-right uk-align-right"></i></div>
         </li>
         <li class="uk-width-1-4">
-            <div id="receipt" class="<?php echo $CR->page->pageStatus('receipt'); ?>">Receipt</div>
+            <div id="receipt" class="">Receipt</div>
         </li>
     </ul>
 
 </div>
-<form id="ttop-checkout" class="uk-form" action="?option=com_zoo&controller=store&task=checkout" method="post">
+<form id="ttop-checkout" class="uk-form" action="/store/checkout" method="post">
     <div class="uk-width-1-1 uk-margin uk-text-center ttop-checkout-pagetitle">
-        <div class="uk-article-title"><?php echo $CR->page->title; ?></div>
-        <div class="uk-article-lead"><?php echo $CR->page->subtitle; ?></div>
+        <div class="uk-article-title"><?php echo $this->title; ?></div>
+        <div class="uk-article-lead"><?php echo $this->subtitle; ?></div>
     </div>
     <div class="uk-width-1-1 uk-text-center ttop-checkout-validation-errors">
         
     </div>
-    <?php echo $this->partial($CR->page->id,compact('CR')); ?>
+    <?php echo $this->partial($this->page,compact('CR')); ?>
     <div class="uk-width-1-2 uk-container-center uk-margin-top">
         <div class="uk-grid">
-            <?php if ($CR->page->buttons['back']['active']) : ?>
+            <?php if ($this->buttons['back']['active']) : ?>
             <div class="uk-width-1-2 uk-container-center">
-                <button id="back" class="uk-width-1-1 uk-button uk-button-primary ttop-checkout-step-button" data-step="<?php echo $CR->page->buttons['back']['action']; ?>" <?php echo ($CR->page->buttons['back']['disabled'] ? 'disabled' : '') ?>><?php echo $CR->page->buttons['back']['label']; ?></button>
+                <button id="back" class="uk-width-1-1 uk-button uk-button-primary ttop-checkout-step-button" data-next="<?php echo $this->buttons['back']['next']; ?>" <?php echo ($this->buttons['back']['disabled'] ? 'disabled' : '') ?>><?php echo $this->buttons['back']['label']; ?></button>
             </div>
             <?php endif; ?>
-            <?php if ($CR->page->buttons['proceed']['active']) : ?>
+            <?php if ($this->buttons['proceed']['active']) : ?>
             <div class="uk-width-1-2 uk-container-center">
-                <button id="proceed" class="uk-width-1-1 uk-button uk-button-primary ttop-checkout-step-button" data-step="<?php echo $CR->page->buttons['proceed']['action']; ?>" <?php echo ($CR->page->buttons['proceed']['disabled'] ? 'disabled' : '') ?>><?php echo $CR->page->buttons['proceed']['label']; ?></button>
+                <button id="proceed" class="uk-width-1-1 uk-button uk-button-primary ttop-checkout-step-button" data-next="<?php echo $this->buttons['proceed']['next']; ?>" <?php echo ($this->buttons['proceed']['disabled'] ? 'disabled' : '') ?>><?php echo $this->buttons['proceed']['label']; ?></button>
             </div>
             <?php endif; ?>
         </div>
     </div>
-    <input type="hidden" name="page" value="<?php echo $CR->page->id; ?>" />
+    <input type="text" name="task" value="save" />
     <input type="hidden" name="updated" value="false" />
     <input type="hidden" name="process" value="true" />
-    <input type="hidden" name="step" />
+    <input type="hidden" name="next" />
     <input type="hidden" name="orderID" />
     <input type="hidden" name="bypass" value="0" />
 </form>
@@ -154,7 +154,7 @@ $this->app->document->addScript('assets:js/jquery-validation-1.13.1/dist/jquery.
             
             billing.find('input, select').each(function(k,v){
                 var bName = $(this).prop('name');
-                var sName = bName.replace('customer[billing]','customer[shipping]');
+                var sName = bName.replace('billing','shipping');
                 if($(this).is('select')) {
                     shipping.find('select[name="'+sName+'"]').val($(this).val());
                 } else {
@@ -352,7 +352,7 @@ $this->app->document->addScript('assets:js/jquery-validation-1.13.1/dist/jquery.
                     beforeSubmit: [
                         function (e) {
                             var dfd = $.Deferred();
-                            if ($(e.target).data('step') === 'processPayment') {
+                            if ($(e.target).data('task') === 'processPayment') {
                                 if (!$('[name="TC_Agree"]').prop('checked')) {
                                     alert('Please read and agree to the terms and conditions.');
                                     return false;
@@ -375,7 +375,7 @@ $this->app->document->addScript('assets:js/jquery-validation-1.13.1/dist/jquery.
                                     }
                                 });
                             } else {
-                                $('input[name="step"]').val($(e.target).data('step'));
+                                $('input[name="next"]').val($(e.target).data('next'));
                                 return true;
                             }
                             return dfd.promise();

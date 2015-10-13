@@ -17,14 +17,14 @@ class CartHelper extends AppHelper {
     
     public function __construct($app) {
         parent::__construct($app);
-
+        $this->_items = array();
         //$this->app->loader->register('CartItem','classes:cartitem.php');
 
     }
 
     public function create() {
 
-        $this->_items = $this->app->parameter->create();
+        $this->_items = array();
 
         $items = $this->app->parameter->create($this->app->session->get('cart',array(),'checkout'));
 
@@ -45,17 +45,14 @@ class CartHelper extends AppHelper {
 
     public function add($items) {
 
-        if(!$this->_items) {
-            $this->_items = $this->app->parameter->create();
-        }
-
     	foreach($items as $key => $item) {
-            var_dump($item);
+
     		$_item = new CartItem($this->app, $item);
-            if ($this->_items->has($_item->getSKU())) {
-                $this->_items->get($_item->getSKU())->qty += $_item->qty;
+            $sku = $_item->sku;
+            if (isset($this->_items[$sku])) {
+                $this->_items[$sku]->qty += $_item->qty;
             } else {
-                $this->_items->set($_item->getSKU(), $_item);
+                $this->_items[$sku] = $_item;
             }
     	}
         return $this->updateSession();
@@ -87,7 +84,7 @@ class CartHelper extends AppHelper {
     }
 
     public function emptyCart() {
-        $this->_items = $this->app->parameter->create();
+        $this->_items = array();
         return $this->updateSession();
     }
 
@@ -96,14 +93,15 @@ class CartHelper extends AppHelper {
         if ($qty == 0) {
             return $this->remove($sku);
         } else {
-            $this->_items->get($sku)->qty = $qty;
+            $this->_items[$sku]->qty = $qty;
         }
         
         return $this->updateSession();
     }
 
     public function updateSession() {
-        $this->app->session->set('cart',(string) $this->_items,'checkout');
+        $data = $this->app->data->create($this->_items);
+        $this->app->session->set('cart',(string) $data,'checkout');
         return $this;
     }
     
@@ -130,7 +128,7 @@ class CartItem {
     
     public $options;
     
-    public $attributes = array();
+    public $attributes;
     
     public $description;
     
@@ -146,14 +144,16 @@ class CartItem {
     
     public $app;
     
-    public function __construct($item, $app) {
-        $this->app = $app;
-        $item->options = $app->data->create($item->options);
-        $item->shipping = $app->data->create($item->shipping);
+    public function __construct($app, $item) {
+        
         foreach ($item as $key => $value) {
             $this->$key = $value;
-            
         }
+        $this->app = $app;
+        $this->options = $app->parameter->create($this->options);
+        $this->attributes = $app->parameter->create($this->attributes);
+        $this->shipping = $app->parameter->create($this->shipping);
+        //var_dump($this->options);
         $this->generateSKU();
         
     }
@@ -186,9 +186,30 @@ class CartItem {
         return $this->sku;
     }
     
-    public function get($resource, $formatCurrency = false) {
-        
-        return ($formatCurrency ? $this->formatCurrency(parent::get($resource)) : parent::get($resource));
+    public function getTotal() {
+        $total = $this->app->number->currency($this->qty*$this->price,array('currency' => 'USD'));
+        return $total;
+    }
+
+    public function getOptions() {
+        if (count($this->options) > 0) {
+            $html[] = "<ul class='uk-list options-list'>";
+            foreach($this->options as $option) {
+                $html[] = '<li><span class="option-name">'.$option['name'].':</span><span class="option-text">'.$option['text'].'</span></li>';
+            }
+            $html[] = "</ul>";
+
+            return implode('',$html);
+        }
+    }
+
+    public function toLog() {
+        foreach($this as $key => $value) {
+            if($key != 'app') {
+                $string[] = $key.': '.$value;
+            }
+        }
+        return implode(PHP_EOL,$string).PHP_EOL.'/////// End of Log ////////'.PHP_EOL;
     }
  
 }

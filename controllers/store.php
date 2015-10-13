@@ -46,8 +46,8 @@ class StoreController extends AppController {
             // execute task
             $this->taskMap['display'] = null;
             $this->taskMap['__default'] = null;
-            $task = $this->params->get('page');
-            $this->execute($task);
+            $page = $this->params->get('page');
+            $this->execute($page);
     }
 
     public function version () {

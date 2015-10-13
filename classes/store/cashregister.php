@@ -56,10 +56,11 @@ class CashRegister {
         if($id = $this->app->request->get('orderID','int')) {
             $this->order = $this->app->order->create($id);
         } else {
-            $this->order = $this->app->order->create();
+            $session_order = $this->app->session->get('order',array(),'checkout');
+            $this->order = $this->app->parameter->create($session_order);
+            $this->order->set('creditcard', $this->app->data->create($this->order->get('creditcard'), 'creditcard'));
         }
         
-        $this->page = new PageStore();
         $this->application = $this->app->zoo->getApplication();
         $this->setNotificationEmails();
     }
@@ -77,7 +78,7 @@ class CashRegister {
     
     public function scanItems () {
         $cart = $this->app->cart->create();
-        $this->order->items = $cart->getItems();
+        $this->order->items = $cart->getAllItems();
     }
     
     protected function setNotificationEmails() {
