@@ -32,7 +32,7 @@
 <?php endif; ?>
 </div>
 
-<input type="text" name="elements[users]" value="<?php echo implode(',',$parent->getValue('elements')->get('users')); ?>" />
+<input type="text" name="elements[users]" value="<?php echo implode(',',$parent->getValue('elements')->get('users', array())); ?>" />
 
 <!-- This is a button toggling the modal -->
 <button class="uk-button" data-uk-modal="{target:'#user-modal'}">Add User</button>
