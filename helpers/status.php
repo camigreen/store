@@ -20,9 +20,17 @@ class StatusHelper extends AppHelper {
         4 => 'ACCOUNT_STATUS_TRASHED'
     );
 
+    protected $user = array(
+        1 => 'USER_STATUS_ACTIVE',
+        2 => 'USER_STATUS_INACTIVE',
+        3 => 'USER_STATUS_SUSPENDED',
+        4 => 'USER_STATUS_TRASHED'
+    );
+
     protected $order;
 
     public function get($class, $state) {
+        $state = (int) $state;
         $states = $this->$class;
         if(isset($states[$state])) {
             return JText::_($states[$state]);

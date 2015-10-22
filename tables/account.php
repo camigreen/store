@@ -15,17 +15,9 @@ class AccountTable extends AppTable {
 	public function __construct($app) {
 		parent::__construct($app, '#__zoo_account');
 		
-		$this->app->loader->register('Account','classes:/accounts/default.php');
+		$this->app->loader->register('Account','classes:account.php');
 	}
 
-	public function get($key, $type = null, $new = false) {
-		if (!is_null($type) && file_exists($this->app->path->path('classes:/accounts/'.$type.'.php'))) {
-				$this->class = $type.'Account';
-            	$this->app->loader->register($this->class, 'classes:/accounts/'.$type.'.php');
-            	
-        }
-		return parent::get($key, $new);
-	}
 
 	protected function _initObject($object) {
 

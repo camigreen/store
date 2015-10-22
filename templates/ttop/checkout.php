@@ -13,8 +13,7 @@ $this->app->document->addScript('assets:js/jquery-validation-1.13.1/dist/jquery.
     <div class="uk-width-1-1 uk-text-center">
         <span class="uk-text-danger uk-text-large testing-mode">TESTING MODE</span>
     </div>
-    <?php echo  $CR->order; ?>
-    <?php var_dump($CR->order->get('billing.')); ?>
+    <?php var_dump($CR->order); ?>
 </div>
 <?php endif; ?>
 <div class="uk-clearfix ttop-checkout-title">
@@ -67,7 +66,7 @@ $this->app->document->addScript('assets:js/jquery-validation-1.13.1/dist/jquery.
     <input type="text" name="task" value="save" />
     <input type="hidden" name="updated" value="false" />
     <input type="hidden" name="process" value="true" />
-    <input type="hidden" name="next" />
+    <input type="text" name="next" />
     <input type="hidden" name="orderID" />
     <input type="hidden" name="bypass" value="0" />
 </form>
@@ -227,20 +226,6 @@ $this->app->document->addScript('assets:js/jquery-validation-1.13.1/dist/jquery.
                     dataType: 'json'
                 }).promise();
         }
-
-        function localPickup() {
-            if($('#localPickup').is(':checked')) {
-                $.each($('fieldset#shipping input'),function(k,v) {
-                    $(this).addClass('ignore');
-                })
-                $('[name="customer[localPickup]"]').val(1);
-            } else {
-                $.each($('fieldset#shipping input'),function(k,v) {
-                    $(this).removeClass('ignore');
-                })
-                $('[name="customer[localPickup]"]').val(0);
-            }
-        }
         
         $(document).ready(function(){
 
@@ -271,7 +256,7 @@ $this->app->document->addScript('assets:js/jquery-validation-1.13.1/dist/jquery.
                             $('#back.ttop-checkout-step-button').unbind("click").on("click",function(e){
                                 e.preventDefault();
                                 $('[name="process"]').val(false);
-                                $('input[name="step"]').val($(e.target).data('step'));
+                                $('input[name="next"]').val($(e.target).data('next'));
                                 $(this).closest('form').submit();
                             });
 
@@ -342,7 +327,6 @@ $this->app->document->addScript('assets:js/jquery-validation-1.13.1/dist/jquery.
                                 errorClass: "validation-fail"
                             });
                             $('#localPickup').on('click',function(e){
-                                localPickup();
                                 self.trigger('validate');
                             });
                             localPickup();
@@ -376,6 +360,7 @@ $this->app->document->addScript('assets:js/jquery-validation-1.13.1/dist/jquery.
                                 });
                             } else {
                                 $('input[name="next"]').val($(e.target).data('next'));
+                                console.log($(e.target).data('next'));
                                 return true;
                             }
                             return dfd.promise();

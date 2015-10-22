@@ -5,11 +5,9 @@
  * and open the template in the editor.
  */
 $order = $CR->order;
-$items = $order->items;
-$billing = $order->billing;
-$shipping = $order->shipping;
-$creditCard = $order->creditCard;
-$salesperson = $order->getSalesperson();
+$items = $this->cart->getAllItems();
+$elements = $order->elements;
+$salesperson = $this->app->;
 $article = JTable::getInstance("content"); 
 $article->load(22); // Get Article ID  
 ?>
@@ -23,27 +21,27 @@ $article->load(22); // Get Article ID
             <div class="uk-grid">
                 <div class="uk-width-1-2">
                     <h3>Bill To:</h3>
-                    <div><?php echo $billing->get('firstname').' '.$billing->get('lastname'); ?></div>
-                    <div><?php echo $billing->get('address') ?></div>
-                    <div><?php echo $billing->get('city').', '.$billing->get('state').'  '.$billing->get('zip') ?></div>
-                    <div>Phone: <?php echo $billing->get('phoneNumber') ?></div>
-                    <div>Alternate Phone: <?php echo $billing->get('altNumber') ?></div>
+                    <div><?php echo $elements->get('billing.firstname').' '.$elements->get('billing.lastname'); ?></div>
+                    <div><?php echo $elements->get('billing.address') ?></div>
+                    <div><?php echo $elements->get('billing.city').', '.$elements->get('billing.state').'  '.$elements->get('billing.zip') ?></div>
+                    <div>Phone: <?php echo $elements->get('billing.phoneNumber') ?></div>
+                    <div>Alternate Phone: <?php echo $elements->get('billing.altNumber') ?></div>
                 </div>
                 <?php if(!$order->localPickup) : ?>
                     <div class="uk-width-1-2">
                         <h3>Ship To:</h3>
-                        <div><?php echo $shipping->get('firstname').' '.$shipping->get('lastname'); ?></div>
-                        <div><?php echo $shipping->get('address') ?></div>
-                        <div><?php echo $shipping->get('city').', '.$shipping->get('state').'  '.$shipping->get('zip') ?></div>
-                        <div>Phone: <?php echo $shipping->get('phoneNumber') ?></div>
-                        <div>Alternate Phone: <?php echo $shipping->get('altNumber') ?></div>
+                        <div><?php echo $elements->get('shipping.firstname').' '.$elements->get('shipping.lastname'); ?></div>
+                        <div><?php echo $elements->get('shipping.address') ?></div>
+                        <div><?php echo $elements->get('shipping.city').', '.$elements->get('shipping.state').'  '.$elements->get('shipping.zip') ?></div>
+                        <div>Phone: <?php echo $elements->get('shipping.phoneNumber') ?></div>
+                        <div>Alternate Phone: <?php echo $elements->get('shipping.altNumber') ?></div>
                     </div>
                 <?php endif; ?>
             </div>
         </div>
         
         <div class="uk-width-1-1 uk-margin-top">
-            <div>E-mail: <?php echo $billing->get('email'); ?></div>
+            <div>E-mail: <?php echo $elements->get('email'); ?></div>
         </div>
         <?php if($salesperson) : ?>
             <div class="uk-width-1-1 uk-margin-top">
@@ -51,7 +49,7 @@ $article->load(22); // Get Article ID
             </div>
         <?php endif; ?>
         <div class="uk-width-1-1 uk-margin-top">
-            <div>Delivery Method: <?php echo $order->localPickup ? 'Local Pickup' : 'UPS Ground' ?></div>
+            <div>Delivery Method: <?php echo $elements->get('localPickup') ? 'Local Pickup' : 'UPS Ground' ?></div>
         </div>
         <div class="uk-width-1-1 uk-margin-top">
             <h3>Payment</h3>
@@ -134,7 +132,7 @@ $article->load(22); // Get Article ID
             </table>
         </div>
         <div class="uk-width-1-1">
-            <?php if($order->localPickup) : ?>
+            <?php if($elements->get('localPickup')) : ?>
                 You have chosen the Local Pickup option.  Your item will be available for pickup at our warehouse in North Charleston, SC.  It is located at
                 4651 Franchise Street, North Charleston, SC  29418.  Please call ahead during our normal business hours to ensure your items are ready for pickup.
             <?php endif; ?>

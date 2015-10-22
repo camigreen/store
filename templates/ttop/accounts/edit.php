@@ -40,9 +40,9 @@
 	</div>
 	<div class="uk-width-8-10">
 		<div class="uk-width-1-1">
-			<form id="account_admin_form" class="uk-form" method="post" action="<?php echo $this->baseurl; ?>" enctype="multipart/form-data">
-				<?php echo $this->partial($this->account->type); ?>
-				<input type="hidden" name="task" value="apply" />
+			<form id="account_admin_form" class="uk-form sdfsfsd" method="post" action="<?php echo $this->baseurl; ?>">
+				<?php echo $this->partial($this->account->type, array('id' => $this->account->id)); ?>
+				<input type="text" name="task" />
 				<input type="hidden" name="aid" value="<?php echo $this->account->id; ?>" />
 				<input type="hidden" name="type" value="<?php echo $this->account->type; ?>" />
 				<?php echo $this->app->html->_('form.token'); ?>
@@ -55,18 +55,8 @@
 						$('button').on('click', function(e) {
 							e.preventDefault();
 							var task = $(e.target).data('task');
-							if(!task) {
-								return;
-							}
-							var form = document.getElementById('account_admin_form');
-							form.task.value = task;
-							var button = document.createElement('input');
-							button.style.display = 'none';
-							button.type = 'submit';
-
-							form.appendChild(button).click();
-
-							//form.removeChild(button);
+							$('[name="task"]').val(task);
+							$('#account_admin_form').submit();
 						})
 					})
 				})

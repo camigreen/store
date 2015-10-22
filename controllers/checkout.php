@@ -36,6 +36,8 @@ class CheckoutController extends AppController {
 
         $this->CR = $this->app->cashregister->start();
 
+        $this->cart = $this->app->cart->create();
+
         // registers tasks
         //$this->registerTask('apply', 'save');
         // $this->taskMap['display'] = null;
@@ -57,8 +59,9 @@ class CheckoutController extends AppController {
         if (!$this->template = $this->application->getTemplate()) {
             return $this->app->error->raiseError(500, JText::_('No template selected'));
         }
-
         $this->app->document->addScript('assets:js/formhandler.js');
+
+        $this->app->account->getByUser();
 
         $layout = 'checkout';
         $this->page = 'customer';
@@ -86,6 +89,8 @@ class CheckoutController extends AppController {
             return $this->app->error->raiseError(500, JText::_('No template selected'));
         }
 
+        var_dump($this->app->userprofile->get()->getUser());
+
         $this->app->document->addScript('assets:js/formhandler.js');
 
         $layout = 'checkout';
@@ -95,11 +100,14 @@ class CheckoutController extends AppController {
         $this->subtitle = 'Please enter your payment information below.';
         $this->buttons = array(
             'back' => array(
-                    'active' => false
+                    'active' => true,
+                    'next' => 'customer',
+                    'disabled' => false,
+                    'label' => 'Back'
                 ),
             'proceed' => array(
                     'active' => true,
-                    'action' => 'payment',
+                    'next' => 'confirm',
                     'disabled' => false,
                     'label' => 'Proceed'
                 )
@@ -110,7 +118,33 @@ class CheckoutController extends AppController {
     }
 
     public function confirm() {
+        if (!$this->template = $this->application->getTemplate()) {
+            return $this->app->error->raiseError(500, JText::_('No template selected'));
+        }
 
+        $this->app->document->addScript('assets:js/formhandler.js');
+
+        $layout = 'checkout';
+
+        $this->page = 'confirm';
+        $this->title = 'Order Confirmation';
+        $this->subtitle = '<span class="uk-text-danger">Please make sure that your order is correct.</span>';
+        $this->buttons = array(
+            'back' => array(
+                    'active' => true,
+                    'next' => 'payment',
+                    'disabled' => false,
+                    'label' => 'Back'
+                ),
+            'proceed' => array(
+                    'active' => true,
+                    'next' => 'reciept',
+                    'disabled' => false,
+                    'label' => 'Proceed'
+                )
+        );
+
+        $this->getView()->addTemplatePath($this->template->getPath())->setLayout($layout)->display();
     }
 
     public function reciept() {
@@ -120,24 +154,40 @@ class CheckoutController extends AppController {
     public function save() {
 
         $order = $this->CR->order;
-
+        $tzoffset   = $this->app->date->getOffset();
+        $now        = $this->app->date->create();
+        $cUser = $this->app->user->get()->id;
         $post = $this->app->request->get('post:', 'array', array());
+        $next = $this->app->request->get('next','word', 'customer');
 
-        foreach($post as $key => $value) {
-            if(is_array($value)) {
-                foreach($value as $k => $v) {
-                    $order->set($key.'.'.$k, $v);
-                }
+        foreach($post['elements'] as $key => $value) {
+            if (is_array($value)) {
+                $order->elements->set($key.'.', $value);
             } else {
-                $order->$key = $value;
+                $order->elements->set($key, $value);
             }
+            
+        }
+        if($lp = $order->elements->get('localPickup')) {
+            $order->elements->set('localPickup', ($lp == 'on' ? true : false));
         }
 
-        var_dump($order);
+        // Set Created Date
+        try {
+            $order->created = $this->app->date->create($order->created, $tzoffset)->toSQL();
+        } catch (Exception $e) {
+            $order->created = $now->toSQL();
+        }
+
+        $order->created_by = $cUser;
+
+        // Set Modified Date
+        $order->modified = $now->toSQL();
+        $order->modified_by = $cUser;
 
         $this->app->session->set('order',(string) $order,'checkout');
 
-        $next = $this->app->request->get('next','word');
+
 
         $this->$next();
 

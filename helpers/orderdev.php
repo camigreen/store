@@ -41,8 +41,14 @@ class OrderDevHelper extends AppHelper {
     
     public function create() {
         $order = new OrderDev;
+        $order_session = $this->app->session->get('order', array(), 'checkout');
+        $_order = $this->app->parameter->create($order_session);
+        foreach($_order as $key => $value) {
+            if(property_exists($order, $key)) {
+                $order->$key = $value;
+            }
+        }
         $order->app = $this->app;
-        
         // trigger the init event
         $this->app->event->dispatcher->notify($this->app->event->create($order, 'order:init'));
 

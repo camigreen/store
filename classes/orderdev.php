@@ -41,4 +41,10 @@ class OrderDev {
 
 	}
 
+	public function __toString () {
+		$result = $this->app->parameter->create();
+		$result->loadObject($this);
+		return (string) $result;
+	}
+
 }

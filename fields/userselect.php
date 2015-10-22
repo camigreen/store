@@ -1,19 +1,29 @@
 <?php 
-	// $value = (array) $value;
-	$value = array(8,11);
-	$users = array();
-	foreach($value as $id) {
-		$users[] = $this->app->account->get($id, 'user');
+	$id = $parent->getValue('id');
+	$users = $this->app->suser->all();
+	$elements = $parent->getValue('elements');
+	$available = array();
+	$selected = array();
+	foreach($users as $user) {
+		if(!$user->elements->get('account')) {
+			$available[$user->id] = $user->name;
+		}
+		if(in_array($user->id, $elements->get('users', array()))) {
+			$selected[$user->id] = $user->name; 
+		}
 	}
-	$accounts = explode(',', (string) $node->attributes()->account_type);
-	$accounts = $this->app->account->getByTypes($accounts);
-	var_dump($accounts);
+	
+	var_dump($elements);
+	echo 'Available:';
+	var_dump($available);
+	echo 'Selected:';
+	var_dump($selected);
 ?>
 <div class="uk-width-1-1">
-<?php if(!empty($users)) : ?>
+<?php if(!empty($selected)) : ?>
 	<ul class="uk-list uk-list-striped">
-	<?php foreach($users as $user) : ?>
-		<?php echo '<li id="'.$user->id.'">'.$user->name.'<a href="#" class="uk-close uk-float-right uk-text-muted"></a></li>'; ?>
+	<?php foreach($selected as $id => $user) : ?>
+		<?php echo '<li id="'.$id.'">'.$user.'<a href="#" class="uk-close uk-float-right uk-text-muted"></a></li>'; ?>
 	<?php endforeach; ?>
 	</ul>
 <?php endif; ?>
@@ -22,6 +32,8 @@
 <?php endif; ?>
 </div>
 
+<input type="text" name="elements[users]" value="<?php echo implode(',',$parent->getValue('elements')->get('users')); ?>" />
+
 <!-- This is a button toggling the modal -->
 <button class="uk-button" data-uk-modal="{target:'#user-modal'}">Add User</button>
 
@@ -29,6 +41,17 @@
 <div id="user-modal" class="uk-modal">
     <div class="uk-modal-dialog">
         <a class="uk-modal-close uk-close"></a>
-        Add User Modal
+        <p>Select Users to add to the account.</p>
+        	<ul class="uk-list">
+        	<?php foreach($available as $id => $user) : ?>
+        	<li>
+	        	<label>
+	    			<input type="checkbox">
+	    			<?php echo $user; ?>
+	    		</label>
+    		</li>
+    		<?php endforeach; ?>
+    		</ul>
+    		<button class="uk-button">Add User(s)</button>
     </div>
 </div>

@@ -11,7 +11,7 @@
  *
  * @package Component.Events
  */
-class UserProfileEvent {
+class UserEvent {
 
 	/**
 	 * When an application is loaded on the frontend,
@@ -21,8 +21,13 @@ class UserProfileEvent {
 	 */
 	public static function init($event) {
 
-		$userprofile = $event->getSubject();
-        $app         = $userprofile->app;
+		$user = $event->getSubject();
+        $app         = $event['app'];
+
+        $user->app = $app;
+        $user->elements = $app->parameter->create($user->getParam('elements'));
+        $user->status = $user->elements->get('status', 0);
+        $user->type = $user->elements->get('type','employee');
 
 	}
 
@@ -33,8 +38,12 @@ class UserProfileEvent {
 	 */
 	public static function saved($event) {
 
-		$account = $event->getSubject();
-		$new = $event['new'];
+		$user = $event->getSubject();
+		$new = (bool)$event['new'];
+		$app = $user->app;
+		$app->suser->mapUserToAccount($user, $new);
+
+
 
 	}
 

@@ -19,7 +19,7 @@ class CashRegister {
 
     public $merchant;
     
-    public $page;
+    public $items;
     
     protected $taxRate = 0.07;
     
@@ -53,16 +53,11 @@ class CashRegister {
         $app->loader->register('PageStore','classes:store/page.php');
         $this->app = $app;
         $this->merchant = $this->app->merchant->anet;
-        if($id = $this->app->request->get('orderID','int')) {
-            $this->order = $this->app->order->create($id);
-        } else {
-            $session_order = $this->app->session->get('order',array(),'checkout');
-            $this->order = $this->app->parameter->create($session_order);
-            $this->order->set('creditcard', $this->app->data->create($this->order->get('creditcard'), 'creditcard'));
-        }
-        
+        $this->order = $this->app->orderdev->create();
+
         $this->application = $this->app->zoo->getApplication();
         $this->setNotificationEmails();
+        $this->calculateTotals();
     }
     
     protected function updateItemQty() {
@@ -160,8 +155,8 @@ class CashRegister {
 
     
     public function getShippingRate() {
-        $shipping = $this->order->get('shipping');
-        if($this->order->get('localPickup') || !$shipping->get('zip')) {
+        $shipping = $this->order->elements->get('shipping');
+        if($this->order->elements->get('localPickup') || !$shipping->get('zip')) {
             $this->shipping = 0;
         } else {
             $this->app->loader->register('Shipper','classes:store/shipper.php');
@@ -178,8 +173,9 @@ class CashRegister {
     }
     
     public function calculateTotals() {
+        $items = $this->app->cart->create()->getAllItems();
         $this->clearTotals();
-        foreach ($this->order->get('items') as $item) {
+        foreach ($items as $item) {
             $item->total = $item->price*$item->qty;
             $this->subtotal += $item->total;
             $this->taxTotal += ($item->taxable ? ($item->total*$this->taxRate) : 0);
@@ -189,15 +185,15 @@ class CashRegister {
             $this->taxTotal = 0;
         }
 
-        if($this->order->discount > 0) {
-            $this->subtotal -= $this->subtotal*$this->order->discount;
-            $this->taxTotal -= $this->taxTotal*$this->order->discount;
-        }
+        // if($this->order->discount > 0) {
+        //     $this->subtotal -= $this->subtotal*$this->order->discount;
+        //     $this->taxTotal -= $this->taxTotal*$this->order->discount;
+        // }
 
-        if($this->order->service_fee > 0) {
-            $this->subtotal += $this->subtotal*$this->order->service_fee;
-            $this->taxTotal += $this->taxTotal*$this->order->service_fee;
-        }
+        // if($this->order->service_fee > 0) {
+        //     $this->subtotal += $this->subtotal*$this->order->service_fee;
+        //     $this->taxTotal += $this->taxTotal*$this->order->service_fee;
+        // }
 
         $this->shipping = $this->getShippingRate();
 

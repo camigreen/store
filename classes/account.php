@@ -39,6 +39,10 @@ class Account {
 
     public $app;
 
+    public $subaccounts;
+
+    public $users;
+
     public function __construct() {
 
         $app = App::getInstance('zoo');
@@ -144,69 +148,33 @@ class Account {
      *
      * @since 1.0
      */
-    public function getSubAccounts($type = 'default') {
-        $class = $type == 'default' ? 'Account' : $type.'Account';
-        if($this->app->path->path('classes:accounts/'.$type.'.php')) {
-            $this->app->loader->register($class, 'classes:accounts/'.$type.'.php');
-        } else {
-            $class = 'Account';
-            $this->app->loader->register($class, 'classes:accounts/default.php');
+    public function getSubAccounts() {
+
+        $query = 'SELECT * FROM #__zoo_account_map WHERE parent = '.$this->id;
+
+        $rows = $this->app->database->queryObjectList($query);
+
+        foreach($rows as $row) {
+                $this->subaccounts[$row->child] = $this->app->account->get($row->child);
+            
         }
-        
-        $result = $this->app->database->query('SELECT b.* FROM #__zoo_account_map AS a LEFT JOIN (#__zoo_account AS b) ON (a.child = b.id) WHERE a.parent = '.$this->id.' AND b.type = "'.$type.'"');
-        $objects = array();
-        while ($object = $this->app->database->fetchObject($result, $class)) { 
-            $objects[$object->id] = $object;
-        }
-        return $objects;
+
+        return $this->subaccounts;
+
     }
 
-    /**
-     * Get the sub-account for the account
-     *
-     * @param  int $id The id of the subaccount to retrieve. Default is NULL
-     *
-     * @return mixed  Account Object or array of Account Objects
-     *
-     * @since 1.0
-     */
-    public function saveSubAccounts() {
-        if(!$this->app->database->query('DELETE FROM #__zoo_account_link WHERE parent = "'.$this->id.'"')) {
-            $this->app->error->raiseError(500, JText::_('There was an error saving the related sub-accounts'));
-            return;
+    public function getUsers() {
+
+        $query = 'SELECT * FROM #__zoo_account_user_map WHERE parent = '.$this->id;
+
+        $rows = $this->app->database->queryObjectList($query);
+
+        foreach($rows as $row) {
+                $this->users[$row->child] = $this->app->suser->get($row->child);
+            
         }
-        $subs = $this->params->get('sub-accounts.');
-        $obj = $this->app->data->create();
-        $obj->parent = $this->id;
-        foreach ($subs as $type => $accounts) {
-            foreach($accounts as $account) {
-                $obj->child = $account;
-                $this->app->database->insertObject('#__zoo_account_link', $obj);
-            }
- 
-        }
-        
-        return false;
-    }
 
-    public function linkAccount($id) {
-
-
-
-        // fire event
-            $this->app->event->dispatcher->notify($this->app->event->create($this, 'account:linkAccount', compact('id')));
-
-    }
-    
-    public function linkUser($id) {
-
-
-        $this->elements->set('links.users',$id);
-
-        // fire event
-        $this->app->event->dispatcher->notify($this->app->event->create($this, 'account:linkUser', compact('id')));
-
-        return $this;
+        return $this->users;
 
     }
 

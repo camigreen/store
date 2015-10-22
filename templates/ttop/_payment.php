@@ -5,10 +5,8 @@
  * and open the template in the editor.
  */
 $order = $CR->order;
-$cart = $this->app->cart->create();
-$items = $cart->getAllItems();
-var_dump($items);
-$creditCard = $order->get('creditCard');
+$items = $this->cart->getAllItems();
+$elements = $order->elements;
 ?>
 <div class="uk-width-1-1 uk-container-center ttop-checkout-payment">
     <div class="uk-grid">
@@ -50,7 +48,7 @@ $creditCard = $order->get('creditCard');
                             Subtotal:
                         </td>
                         <td>
-                            <?php echo $this->app->number->currency($order->subtotal,array('currency' => 'USD')); ?>
+                            <?php echo $this->app->number->currency($CR->subtotal,array('currency' => 'USD')); ?>
                         </td>
                     </tr>
                     <tr>
@@ -58,7 +56,7 @@ $creditCard = $order->get('creditCard');
                             Shipping:
                         </td>
                         <td>
-                            <?php echo $this->app->number->currency($order->ship_total,array('currency' => 'USD')); ?>
+                            <?php echo $this->app->number->currency($CR->shipping,array('currency' => 'USD')); ?>
                         </td>
                     </tr>
                     <tr>
@@ -66,7 +64,7 @@ $creditCard = $order->get('creditCard');
                             Sales Tax:
                         </td>
                         <td>
-                            <?php echo $this->app->number->currency($order->tax_total,array('currency' => 'USD')); ?>
+                            <?php echo $this->app->number->currency($CR->taxTotal,array('currency' => 'USD')); ?>
                         </td>
                     </tr>
                     <tr>
@@ -74,7 +72,7 @@ $creditCard = $order->get('creditCard');
                             Total:
                         </td>
                         <td>
-                            <?php echo $this->app->number->currency($order->total,array('currency' => 'USD')); ?>
+                            <?php echo $this->app->number->currency($CR->total,array('currency' => 'USD')); ?>
                         </td>
                     </tr>
                 </tfoot>
@@ -101,29 +99,30 @@ $creditCard = $order->get('creditCard');
                     </div>
                     <div class="uk-width-1-1">
                         <label>Card Number</label>
-                        <input type="text" name="payment[creditCard][cardNumber]" class="ttop-checkout-field required" placeholder="Credit Card Number" value='<?php echo $creditCard->get('cardNumber') ?>'/>
+
+                        <input type="text" name="elements[creditcard][cardNumber]" class="ttop-checkout-field required" placeholder="Credit Card Number" value='<?php echo $elements->get('creditcard.cardNumber') ?>'/>
                     </div>
                     <div class="uk-width-1-1">
-                        <!-- <input type="text" name="payment[creditCard][expirationDate]" class="ttop-checkout-field required" placeholder="Exp Date" value='<?php echo $creditCard->get('expirationDate'); ?>'/> -->
+                        <!-- <input type="text" name="payment[creditCard][expirationDate]" class="ttop-checkout-field required" placeholder="Exp Date" value='<?php echo $elements->get('creditcard.expirationDate'); ?>'/> -->
                         <div class="uk-grid">
                             <div class="uk-width-2-6">
                                 <label>Exp Month</label>
-                                <?php echo $creditCard->getMonthDropDown(); ?>
+                                <?php echo $this->app->field->render('ccmonthlist', 'expMonth', $elements->get('creditcard.expMonth'), null, array('control_name' => 'elements[creditcard]', 'class' => 'ttop-checkout-field required uk-width-1-1')); ?>
                             </div>
                             <div class="uk-width-2-6">
                                 <label>Exp Year</label>
-                                <?php echo $creditCard->getYearDropDown(); ?>
+                                <?php echo $this->app->field->render('ccyearlist', 'expYear', $elements->get('creditcard.expYear'), null, array('control_name' => 'elements[creditcard]', 'class' => 'ttop-checkout-field required uk-width-1-1')); ?>
                             </div>
                             <div class="uk-width-2-6">
                                 <label>CVV Code</label>
-                                <input type="text" name="payment[creditCard][card_code]" class="ttop-checkout-field required" placeholder="CVV Number" value='<?php echo $creditCard->get('card_code'); ?>'/>
+                                <input type="text" name="elements[creditcard][card_code]" class="ttop-checkout-field required" placeholder="CVV Number" value='<?php echo $elements->get('creditcard.card_code'); ?>'/>
                             </div>
                         </div>
                     </div> 
                     <div class="uk-width-1-3">
-                        <input type="hidden" name="payment[creditCard][auth_code]" value="<?php echo $creditCard->get('auth_code'); ?>"/>
-                        <input type="hidden" name="payment[creditCard][card_type]" value="<?php echo $creditCard->get('card_type'); ?>" />
-                        <input type="hidden" name="payment[creditCard][card_name]" value="<?php echo $creditCard->get('card_name'); ?>" />
+                        <input type="hidden" name="payment[creditCard][auth_code]" value="<?php echo $elements->get('creditcard.auth_code'); ?>"/>
+                        <input type="hidden" name="payment[creditCard][card_type]" value="<?php echo $elements->get('creditcard.card_type'); ?>" />
+                        <input type="hidden" name="payment[creditCard][card_name]" value="<?php echo $elements->get('creditcard.card_name'); ?>" />
                         <input type="hidden" name="amount" value="<?php echo $CR->getCurrency('total'); ?>"/>
                     </div>
                 </div>

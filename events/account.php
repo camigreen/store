@@ -29,6 +29,9 @@ class AccountEvent {
             $account->params = $app->parameter->create($account->params);
         }
 
+        //$account->getSubAccounts();
+        //$account->getUsers();
+
 	}
 
 	/**
@@ -51,60 +54,6 @@ class AccountEvent {
 	public static function deleted($event) {
 
 		$account = $event->getSubject();
-
-	}
-
-	/**
-	 * Placeholder for the installed event
-	 *
-	 * @param  AppEvent $event The event triggered
-	 */
-	public static function installed($event) {
-
-		$account = $event->getSubject();
-		$update = $event['update'];
-
-	}
-
-	/**
-	 * Placeholder for the addmenuitems event
-	 *
-	 * @param  AppEvent $event The event triggered
-	 */
-	public static function addmenuitems($event) {
-
-		$account = $event->getSubject();
-
-		// Tab object
-		$tab = $event['tab'];
-
-		// add child
-
-		// return the tab object
-		$event['tab'] = $tab;
-	}
-
-	/**
-	 * Placeholder for the linkUser event
-	 *
-	 * @param  AppEvent $event The event triggered
-	 */
-	public static function linkUser($event) {
-
-		$account = $event->getSubject();
-		$app = $account->app;
-
-		// User Object
-		$userID = (int) $event['id'];
-
-		$object = $app->object->create();
-
-		$object->set('parent', $account->id);
-		$object->set('child', $userID);
-		$object->set('type', 'user');
-
-
-
 
 	}
 

@@ -56,8 +56,6 @@ class AccountController extends AppController {
         if (!$this->template = $this->application->getTemplate()) {
             return $this->app->error->raiseError(500, JText::_('No template selected'));
         }
-        $order = $this->app->orderdev->get(6153);
-        var_dump($order->elements->get('items'));
         // $orders = $this->app->database->queryAssocList('SELECT id FROM joomla_zoo_order');
 
         // foreach($orders as $order) {
@@ -65,7 +63,7 @@ class AccountController extends AppController {
         //     $_order = $this->app->order->create($order['id']);
         //     $this->relayorder($_order);
         // }
-        
+
         $this->accounts = $this->app->table->account->all();
         $this->title = "Accounts";
         $this->record_count = count($this->accounts);
@@ -130,28 +128,20 @@ class AccountController extends AppController {
         }
 
         $aid = $this->app->request->get('aid', 'int');
-        $account_type = $this->app->request->get('type', 'string');
-        list($template, $type) = array_pad(explode('.',$account_type, 2), 2, 'default');
+        $type = $this->app->request->get('type', 'string');
         $edit = $aid > 0;
-        echo 'Template: '.$template.'</br>';
-        echo 'Type: '.$type;
         if($edit) {
             if(!$this->account = $this->table->get($aid, $type == 'default' ? $template : $type)) {
                 $this->app->error->raiseError(500, JText::sprintf('Unable to access an account with the id of %s', $aid));
                 return;
             }
             $this->title = "Edit Account";
-            $subAccounts = array();
-            foreach ($this->account->getSubAccounts('oem') as $subaccount) {
-                $subAccounts[$subaccount->type][] = $subaccount->id;
-            }
-            $this->account->elements->set('subaccounts', $subAccounts);
         } else {
             $this->account = $this->app->account->create($account_type);
             $this->title = $type == 'default' ? "Create a New $template Account" : "Create a New $type Account";
             
         }
-        $this->form = $this->app->form->create(array($this->app->path->path('classes:accounts/config.xml'), compact('template', 'type')));
+        $this->form = $this->app->form->create(array($this->template->getPath().'/accounts/config.xml', compact('type')));
         $this->form->setValues($this->account);
         $layout = 'edit';
         
@@ -208,10 +198,13 @@ class AccountController extends AppController {
 
         $params = $this->app->parameter->create();
 
-        foreach($post['params'] as $key => $value) {
-            $params->set($key.'.', $value);
-        }
 
+        if(isset($post['params'])) {
+           foreach($post['params'] as $key => $value) {
+                $params->set($key.'.', $value);
+            } 
+        }
+        
         $account->params = $params;
 
         $elements = $this->app->parameter->create();
@@ -221,6 +214,10 @@ class AccountController extends AppController {
         }
 
         $account->elements = $elements;
+
+        $users = $account->elements->get('users', array());
+
+        $account->elements->set('users', explode(',', $users));
 
         foreach($post['subaccounts'] as $type => $subaccounts) {
             foreach($subaccounts as $subaccount) {

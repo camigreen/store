@@ -8,8 +8,14 @@
 	}
 
 	
-	$accounts = explode(',', (string) $node->attributes()->account_type);
-	$accounts = $this->app->account->getByTypes($accounts);
+	$types = explode(',', (string) $node->attributes()->account_type);
+	$conditions = array();
+	foreach($types as $type) {
+		$conditions[] = empty($conditions) ? 'type = "'.$type.'"' : ' OR type = "'.$type.'"';
+	}
+	$condition = implode("\n",$conditions);
+
+	$accounts = $this->app->table->account->all(array('conditions' => $condition));
 	$value = (array) $value;
 	foreach($accounts as $key => $account) {
 		$html[] = '<option value="'.$key.'" '.(in_array($key, $value) ? "selected" : "").' >'.$account->name.'</option>';

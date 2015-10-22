@@ -251,13 +251,6 @@ class AppForm {
 		// load xml file or string ?
 		if ($element || ($element = @simplexml_load_file($xml)) || ($element = simplexml_load_string($xml))) {
 
-			foreach($element->template as $tmpl) {
-				if($tmpl->attributes()->name == $template) {
-
-					$element = $tmpl;
-					continue;
-				}
-			}
 			foreach($element->type as $_type) {
 				if($_type->attributes()->name == $type) {
 					$element = $_type;

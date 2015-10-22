@@ -18,30 +18,23 @@ class AccountHelper extends AppHelper {
 	public function __construct($app) {
 		parent::__construct($app);
 
-		$this->app->loader->register('Account', 'classes:/accounts/default.php');
+		$this->app->loader->register('Account', 'classes:account.php');
 
         
 	}
 
-	public function get($id, $type = null) {
+	public function get($id) {
 		if (!isset($this->_accounts[$id])) {
 			$table = $this->app->table->account;
-			$account = $table->get($id, $type);
+			$account = $table->get($id);
 			$this->_accounts[$id] = $account;
 		}
 		
 		return $this->_accounts[$id]; 
 	}
 
-	public function getByTypes($types) {
-		$types = !is_array($types) ? (array) $types : $types;
-		$conditions = array();
-		foreach($types as $type) {
-			$conditions[] = empty($conditions) ? 'type = "'.$type.'"' : ' OR type = "'.$type.'"';
-		}
-
-		$result = $this->app->table->account->all(array('conditions' => implode("\n",$conditions)));
-		return $result;
+	public function getByTypes() {
+		return $this->app->table->account->all();
 	}
     
     
@@ -68,16 +61,5 @@ class AccountHelper extends AppHelper {
         return $object;
     }
 
-    public function associate($parent, $child, $type) {
-    	$query = 'INSERT INTO #__zoo_account_map (parent, child, type) VALUES ('.$parent.','.$child.',"'.$type.'")';
-    	
-        try {
-            $this->app->database->query($query);
-        } catch (Exception $e) {
-            
-        }
-    	
-
-    }
     
 }
