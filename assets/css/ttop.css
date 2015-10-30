@@ -94,7 +94,6 @@
 }
 .ttop .uk-button {
     border-radius: 5px;
-    padding: 0px 15px;
 }
 .ttop .menu-buttons .uk-button {
     min-height: 30px;
@@ -109,6 +108,11 @@
 .ttop
 .ttop h1, .ttop h2, .ttop h3{
     color:#1c3767;
+}
+
+.ttop table {
+    font: 300 13px/14px "Lato";
+    color: #1C3767;
 }
 
 /*T-Top Accessories Related Styling*/

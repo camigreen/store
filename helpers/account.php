@@ -13,7 +13,7 @@
  */
 class AccountHelper extends AppHelper {
 
-	protected $_accounts;
+	protected $_accounts = array();
 
 	public function __construct($app) {
 		parent::__construct($app);
@@ -35,6 +35,25 @@ class AccountHelper extends AppHelper {
 
 	public function getByTypes() {
 		return $this->app->table->account->all();
+	}
+
+	public function getByUser($user = null) {
+
+		if(!$user) {
+			$user = $this->app->userprofile->get();
+		}
+
+		$db = $this->app->database;
+
+		$id = $db->queryResult('SELECT parent FROM #__zoo_account_user_map WHERE child = '.$user->id);
+
+		if(!$id && !array_key_exists($id, $this->_accounts)) {
+			return null;
+		} 
+
+		$account = $this->get($id);
+
+		return $account;
 	}
     
     
@@ -60,6 +79,16 @@ class AccountHelper extends AppHelper {
         
         return $object;
     }
+
+    public function mapProfilesToAccount($map = array()) {
+    	foreach($map as $key => $profiles) {
+    		$account = $this->get($key);
+    		$account->mapProfilesToAccount($profiles);
+    	}
+
+    }
+
+    
 
     
 }

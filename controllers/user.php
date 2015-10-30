@@ -32,12 +32,15 @@ class UserController extends AppController {
         // set base url
         $this->baseurl = $this->app->link(array('controller' => $this->controller), false);
 
+        $this->cUser = $this->app->user->get();
+
         // registers tasks
         $this->registerTask('apply', 'save');
         $this->registerTask('edit', 'edit');
         $this->registerTask('save2new', 'save');
         $this->registerTask('cancel', 'display');
-        $this->registerTask('upload', 'upload');
+        $this->registerTask('view', 'edit');
+        $this->registerTask('select', 'display');
         // $this->taskMap['display'] = null;
         // $this->taskMap['__default'] = null;
     }
@@ -56,17 +59,8 @@ class UserController extends AppController {
         }
 
         $this->title = 'User Search';
-        $db = $this->app->database;
-        $query = "SELECT * FROM #__users" ;
-        $ids = $db->queryResultArray($query);
-        $this->users = array();
-        foreach ($ids as $id) {
-            $user = $this->app->suser->get($id);
-            if ($user->name != 'Super User' && $user->status != 4) {
-                $this->users[$id] = $user;
-            } 
-            
-        }
+
+        $this->profiles = $this->app->table->userprofile->all(array('conditions' => array('status != 4')));
 
         $layout = 'search';
 
@@ -84,16 +78,15 @@ class UserController extends AppController {
 
 
         if($uid) {
-            $this->user = $this->app->suser->get($uid);
+            $this->profile = $this->app->userprofile->get($uid);
+            $type = $this->profile->elements->get('type');
             $this->title = 'Edit User';
         } else {
             $type = $this->app->request->get('type', 'string');
-            $this->user = $this->app->suser->create();
-            $this->user->type = $type;
+            $this->profile = $this->app->userprofile->get();
             $this->title = 'New User';
         }
-
-        $type = $this->user->type;
+        $this->user = $this->profile->getUser();
 
         $this->form = $this->app->form->create(array($this->template->getPath().'/user/config.xml', compact('type')));
         $this->form->setValues($this->user);
@@ -131,22 +124,14 @@ class UserController extends AppController {
         $type = $this->app->request->get('type', 'string');
 
         if($uid) {
-            $user = $this->app->suser->get($uid);
+            $profile = $this->app->userprofile->get($uid);
         } else {
-            $user = $this->app->suser->create();
+            $profile = $this->app->userprofile->get();
         }
 
-        $user->bind($post['core']);
+        $profile->bind($post);
 
-        foreach ($post['elements'] as $key => $value) {
-            $user->elements->set($key, $value);
-        }
-
-        $user->elements->set('type', $type);
-
-
-
-        // $_groups = JUserHelper::getUserGroups($user->id);
+        // $_groups = JUserHelper::getUserGroups($profile->id);
         // $emp_groups = array(10, 11);
         // $groups = array();
 
@@ -155,32 +140,27 @@ class UserController extends AppController {
         //         $groups[] = $group;
         //     }
         // }
-        // $groups[] = $user['group'];
+        // $groups[] = $profile['group'];
 
 
-        //JUserHelper::setUserGroups($user->id, $groups);
+        //JUserHelper::setUserGroups($profile->id, $groups);
 
-        if($new || !$user->elements->get('created') || !$user->elements->get('created_by')) {
-            $user->elements->set('created', $now->toSQL());
-            $user->elements->set('created_by', $cUser);
+        if($new || !$profile->created || !$profile->created_by) {
+            $profile->created = $now->toSQL();
+            $profile->created_by = $cUser;
         }
 
         // Set Modified Date
-        $user->elements->set('modified', $now->toSQL());
-        $user->elements->set('modified_by', $cUser);
+        $profile->modified = $now->toSQL();
+        $profile->modified_by = $cUser;
 
-        $saved = $this->app->suser->save($user) ? true : false;
+        $profile->save();
 
-        if(!$saved) {
-            $msg = 'An error occurred while saving.';
-            $this->setRedirect($this->baseurl, $msg);
-        }
-
-        $msg = $user->name.' has been successfully saved.';
+        $msg = $profile->getUser()->name.' has been successfully saved.';
         $link = $this->baseurl;
         switch ($this->getTask()) {
             case 'apply' :
-                $link .= '&task=edit&uid='.$user->id;
+                $link .= '&task=edit&uid='.$profile->id;
                 break;
             case 'save2new':
                 $link .= '&task=add';
@@ -193,17 +173,19 @@ class UserController extends AppController {
 
     public function delete() {
         $uid = $this->app->request->get('uid', 'int');
-        $user = $this->app->suser->get($uid);
+        $profile = $this->app->userprofile->get($uid);
 
-        $msg = $user->name.' was deleted successfully';
+        $msg = $profile->getUser()->name.' was deleted successfully';
 
-        if($user->superadmin) {
+        if($profile->getUser()->superadmin) {
             $msg = 'The user is a super admin and cannot be deleted.';
         }
         
-        $user->elements->set('status', 4); 
+        $profile->status = 4; 
+        $profile->getUser()->set('block', 1);
 
-        $this->app->suser->save($user);
+
+        $profile->save();
         
         $link = $this->baseurl;
 

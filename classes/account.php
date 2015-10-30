@@ -165,17 +165,36 @@ class Account {
 
     public function getUsers() {
 
-        $query = 'SELECT * FROM #__zoo_account_user_map WHERE parent = '.$this->id;
+        $query = 'SELECT child FROM #__zoo_account_user_map WHERE parent = '.$this->id;
 
-        $rows = $this->app->database->queryObjectList($query);
+        $rows = $this->app->database->queryResultArray($query);
 
         foreach($rows as $row) {
-                $this->users[$row->child] = $this->app->suser->get($row->child);
+                $this->users[$row] = $this->app->userprofile->get($row);
             
         }
 
         return $this->users;
 
+    }
+
+    public function getUser($id) {
+        return $this->_users[$id];
+    }
+
+    public function mapProfilesToAccount($map = array()) {
+        
+        $query = 'DELETE FROM #__zoo_account_user_map WHERE parent = '.$this->id;
+        $this->app->database->query($query);
+
+        if(empty($map)) {
+            return ;
+        }
+
+        foreach($map as $profile) {
+            $query = 'INSERT INTO #__zoo_account_user_map (parent, child) VALUES ('.$this->id.','.$profile.')';
+            $this->app->database->query($query);
+        }
     }
 
 }

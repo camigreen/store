@@ -29,13 +29,13 @@
 				<div class="uk-grid" uk-grid-margin>
 					<div class="uk-grid-margin-1-1 uk-text-small">
 						<div>Created:</div>
-						<div class="uk-text-muted"><?php echo $this->user->elements->get('created',null) == null ? JText::_('Not created') : $this->app->html->_('date', $this->user->elements->get('created'), JText::_('DATE_FORMAT_LC2'), $this->app->date->getOffset()); ?></div>
+						<div class="uk-text-muted"><?php echo $this->profile->created == null ? JText::_('Not created') : $this->app->html->_('date', $this->profile->created, JText::_('DATE_FORMAT_LC2'), $this->app->date->getOffset()); ?></div>
 						<div>Created By:</div>
-						<div class="uk-text-muted"><?php echo $this->app->user->get($this->user->elements->get('created_by',null))->name; ?></div>
+						<div class="uk-text-muted"><?php echo $this->app->user->get($this->profile->created_by)->name; ?></div>
 						<div>Modified:</div>
-						<div class="uk-text-muted"><?php echo $this->user->elements->get('modified',null) == null ? JText::_('Not modified') : $this->app->html->_('date', $this->user->elements->get('modified'), JText::_('DATE_FORMAT_LC2'), $this->app->date->getOffset()); ?></div>
+						<div class="uk-text-muted"><?php echo $this->profile->modified == null ? JText::_('Not modified') : $this->app->html->_('date', $this->profile->modified, JText::_('DATE_FORMAT_LC2'), $this->app->date->getOffset()); ?></div>
 						<div>Modified By:</div>
-						<div class="uk-text-muted"><?php echo $this->app->user->get($this->user->elements->get('modified_by',null))->name; ?></div>
+						<div class="uk-text-muted"><?php echo $this->app->user->get($this->profile->modified_by)->name; ?></div>
 
 					</div>
 					<div class="uk-width-1-1 menu-buttons uk-margin-top">
@@ -51,6 +51,7 @@
 				<div class="uk-width-1-1">
 					<form id="account_admin_form" class="uk-form" method="post" action="<?php echo $this->baseurl; ?>" enctype="multipart/form-data">
 							<?php $this->form->setValues($this->user); ?>
+							<?php $this->form->setValue('status',$this->profile->status); ?>
 							<?php if($this->form->checkGroup('details')) : ?>
 								<div class="uk-form-row">
 									<fieldset id="details">
@@ -64,7 +65,7 @@
 									<fieldset id="password">
 										<legend>Password</legend>
 										<?php 
-											if($this->app->session->get('user')->id == $this->user->id) {
+											if($this->app->session->get('user')->id == $this->user->id || !$this->user->id) {
 												echo $this->form->render('password');
 											} else {
 												echo '<button id="resetPWD" class="uk-width-1-3 uk-button uk-button-primary uk-margin" data-task="resetPassword">Reset Password</button>';
@@ -73,7 +74,7 @@
 									</fieldset>
 								</div>
 							<?php endif; ?>
-							<?php $this->form->setValues($this->user->elements); ?>
+							<?php $this->form->setValues($this->profile->elements); ?>
 							<?php if($this->form->checkGroup('contact')) : ?>
 								<div class="uk-form-row">
 									<fieldset id="contact">
@@ -91,8 +92,8 @@
 								</div>
 							<?php endif; ?>
 						<input type="hidden" name="task" value="apply" />
-						<input type="hidden" name="uid" value="<?php echo $this->user->id; ?>" />
-						<input type="hidden" name="type" value="<?php echo $this->user->type; ?>" />
+						<input type="hidden" name="uid" value="<?php echo $this->profile->id; ?>" />
+						<input type="hidden" name="elements[type]" value="<?php echo $this->profile->type; ?>" />
 						<?php echo $this->app->html->_('form.token'); ?>
 					</form>
 					<script>

@@ -64,6 +64,12 @@ class AccountController extends AppController {
         //     $this->relayorder($_order);
         // }
 
+        $user = $this->app->table->userprofile->get(776);
+        var_dump($user);
+        
+        // $account = $this->app->account->getByUser();
+        // var_dump($account);
+
         $this->accounts = $this->app->table->account->all();
         $this->title = "Accounts";
         $this->record_count = count($this->accounts);
@@ -128,18 +134,19 @@ class AccountController extends AppController {
         }
 
         $aid = $this->app->request->get('aid', 'int');
-        $type = $this->app->request->get('type', 'string');
         $edit = $aid > 0;
+        
         if($edit) {
-            if(!$this->account = $this->table->get($aid, $type == 'default' ? $template : $type)) {
+            if(!$this->account = $this->table->get($aid)) {
                 $this->app->error->raiseError(500, JText::sprintf('Unable to access an account with the id of %s', $aid));
                 return;
             }
+            $type = $this->account->type;
             $this->title = "Edit Account";
         } else {
             $this->account = $this->app->account->create($account_type);
+            $type = $this->app->request->get('type', 'string');
             $this->title = $type == 'default' ? "Create a New $template Account" : "Create a New $type Account";
-            
         }
         $this->form = $this->app->form->create(array($this->template->getPath().'/accounts/config.xml', compact('type')));
         $this->form->setValues($this->account);
@@ -217,7 +224,9 @@ class AccountController extends AppController {
 
         $users = $account->elements->get('users', array());
 
-        $account->elements->set('users', explode(',', $users));
+        $account->elements->set('users', ($users == '' ? array() : explode(',', $users)));
+
+        $account->mapUsersToAccount();
 
         foreach($post['subaccounts'] as $type => $subaccounts) {
             foreach($subaccounts as $subaccount) {
@@ -250,63 +259,17 @@ class AccountController extends AppController {
         }
 
         $this->setRedirect($link, $msg);
+    }
+
+    public function mapProfilesToAccount() {
+        $profiles = $this->app->request->get('profiles', 'array');
+        $aid = $this->app->request->get('aid', 'int');
+        $map[$aid] = $profiles;
+        $this->app->account->mapProfilesToAccount($map);
+        $link = $this->baseurl.'&task=edit&aid='.$aid;
+        $msg = 'Profiles added successfully';
+        $this->setRedirect($link, $msg);
 
     }
 
-    public function saveUser($user) {
-        if($user['id']) {
-            $_user = $this->app->user->get($user['id']); 
-        } else {
-            $_user = new JUser;
-        }
-
-        self::bind($_user, $user, array('password'));
-
-        if(!empty($post['core']['password'])) {
-            $_user->password = JUserHelper::hashPassword($user->password);
-        }
-
-        $_user->block = $user['state'] > 1;
-
-        $_user->save();
-
-        $_groups = JUserHelper::getUserGroups($_user->id);
-        $emp_groups = array(10, 11);
-        $groups = array();
-
-        foreach($_groups as $group) {
-            if(!in_array($group, $emp_groups)) {
-                $groups[] = $group;
-            }
-        }
-        $groups[] = $user['group'];
-
-
-        JUserHelper::setUserGroups($_user->id, $groups);
-
-
-    }
-
-    public function resetPassword() {
-        $aid = $this->app->request->get('aid','int');
-        $account = $this->table->get($aid);
-        $user_id = $account->elements->get('user');
-        if(!$user = $this->app->user->get($user_id)) {
-            return $this->app->error->raiseError(500, JText::_('An error occured while resetting the password.'));
-        }
-        $new_pwd = JUserHelper::genRandomPassword();
-        $user->password = JUserHelper::hashPassword($new_pwd);
-        $user->save();
-        $email = $this->app->mail->create();
-        $email->setSubject("Password Reset");
-        $email->setBody($new_pwd);
-        $email->addRecipient($user->email);
-        $email->Send();
-
-        $msg = "The users password has been reset.\n An email has been sent to the user.";
-        $link = $this->baseurl.'&task=edit&aid='.$account->id.'&type='.$account->type;
-        $this->setRedirect($link,$msg);
-
-
-    }
 }

@@ -23,15 +23,15 @@ class UserProfile {
 
     public $modified_by;
 
-    public $params;
-
     public $elements;
+
+    public $status = 0;
 
     public $access = 1;
 
-    public $app;
+    protected $_user;
 
-    public $_user;
+    public $app;
 
     public function __construct() {
 
@@ -39,10 +39,83 @@ class UserProfile {
         $app = App::getInstance('zoo');
 
         // decorate data as object
-        $this->params = $app->parameter->create($this->params);
         $this->elements = $app->parameter->create($this->elements);
+        $this->table = $app->table->userprofile;
 
     }
+
+    /**
+     * Save the user profile.
+     *
+     * @return boolean       If the user can access the item
+     *
+     * @since 2.0
+     */
+    public function save() {
+
+        $result = $this->_user->save();
+        if (!$result) {
+            return $this->app->error->raiseError(500, JText::_('An error occurred while saving the user object.'));
+        }
+
+        $this->user_id = $this->_user->id;
+
+        // var_dump($this);
+        // return;
+        $result = $this->table->save($this);
+
+        if (!$result) {
+            return $this->app->error->raiseError(500, JText::_('An error occurred while saving the user profile.'));
+        }
+
+        return $result;
+        
+    }
+
+    public function setUser(JUser $user) {
+        $this->_user = $user;
+        $this->_user->password = null;
+    }
+
+    /**
+     * Bind data to the userprofile object.
+     *
+     *  @param array   The binding data.
+     *
+     * @return boolean       If the user can access the item
+     *
+     * @since 2.0
+     */
+    public function bind($data = array()) {
+
+        // bind core
+        if(isset($data['core'])) {
+            foreach($data['core'] as $key => $value) {
+                $this->$key = $value;
+            }
+        }
+
+        // bind user
+        if(isset($data['user'])) {
+            $this->_user->bind($data['user']);
+        }
+
+
+        // bind elements
+        if(isset($data['elements'])) {
+            foreach($data['elements'] as $key => $value) {
+                $this->elements->set($key, $value);
+            }
+        }
+
+
+        
+        return $this;
+
+        
+    }
+
+
 
     /**
      * Check if the given usen can access this item
@@ -53,8 +126,8 @@ class UserProfile {
      *
      * @since 2.0
      */
-    public function canAccess($user = null) {
-        return $this->app->userprofile->canAccess($user, $this->access);
+    public function canAccess($access = 0) {
+        return in_array($access, $this->_user->getAuthorisedViewLevels());
     }
 
     /**
@@ -66,7 +139,7 @@ class UserProfile {
      */
     public function getUser() {
         if (empty($this->_user)) {
-            $this->_user = $this->app->user->get($this->id);
+            $this->_user = $this->app->user->get($this->user_id);
         }
         return $this->_user;
     }
@@ -166,6 +239,10 @@ class UserProfile {
         return $this->params->set($name, $value);
     }
 
+    public function getAssetName() {
+        return 'com_users';
+    }
+
     /**
      * Evaluates user permission
      *
@@ -177,102 +254,63 @@ class UserProfile {
      *
      * @since 3.2
      */
-    public function canEdit($user = null, $asset_id = 0, $created_by = 0) {
-        if (is_null($user)) {
-            $user = $this->getUser();
-        }
-        return $this->isAdmin($user, $asset_id) || $this->authorise($user, 'core.edit', $asset_id) || ($created_by === $user->id && $user->authorise('core.edit.own', $asset_id));
+    public function canEdit($user = null) {
+        $superadmin = $this->_user->superadmin ? $user->superadmin : true;
+        return $superadmin && $this->app->user->canEdit($user, $this->getAssetName());
     }
 
     /**
      * Evaluates user permission
      *
-     * @param JUser $user User Object
      * @param int $asset_id
      *
      * @return boolean True if user has permission
      *
      * @since 3.2
      */
-    public function canEditState($user = null, $asset_id = 0) {
-        return $this->isAdmin($user, $asset_id) || $this->authorise($user, 'core.edit.state', $asset_id);
+    public function canEditState($user = null) {
+        return $this->app->user->canEditState($user, $this->getAssetName());
     }
 
     /**
      * Evaluates user permission
      *
-     * @param JUser $user User Object
      * @param int $asset_id
      *
      * @return boolean True if user has permission
      *
      * @since 3.2
      */
-    public function canCreate($user = null, $asset_id = 0) {
-        return $this->isAdmin($user, $asset_id) || $this->authorise($user, 'core.create', $asset_id);
+    public function canCreate($user = null) {
+        return $this->app->user->canCreate($user, $this->getAssetName());
     }
 
     /**
      * Evaluates user permission
      *
-     * @param JUser $user User Object
      * @param int $asset_id
      *
      * @return boolean True if user has permission
      *
      * @since 3.2
      */
-    public function canDelete($user = null, $asset_id = 0) {
-        return $this->isAdmin($user, $asset_id) || $this->authorise($user, 'core.delete', $asset_id);
+    public function canDelete($user = null) {
+        return $this->canEdit($user) && $this->app->user->canDelete($user, $this->getAssetName());
     }
 
     /**
      * Evaluates user permission
      *
-     * @param JUser $user User Object
      * @param int $asset_id
      *
      * @return boolean True if user has permission
      *
      * @since 3.2
      */
-    public function canManage($user = null, $asset_id = 0) {
-        return $this->isAdmin($user, $asset_id) || $this->authorise($user, 'core.manage', $asset_id);
+    public function canManage($user = null) {
+        return $this->app->user->canManage($user, $this->getAssetName());
     }
 
-    /**
-     * Evaluates user permission
-     *
-     * @param JUser $user User Object
-     * @param int $asset_id
-     *
-     * @return boolean True if user has permission
-     *
-     * @since 3.2
-     */
-    public function isAdmin($user = null, $asset_id = 0) {
-        return $this->authorise($user, 'core.admin', $asset_id);
-    }
-
-    /**
-     * Evaluates user permission
-     *
-     * @param JUser $user User Object
-     * @param string $action
-     * @param int $asset_id
-     *
-     * @return boolean True if user has permission
-     *
-     * @since 3.2
-     */
-    protected function authorise($user, $action, $asset_id) {
-        if (!$asset_id) {
-            $asset_id = 'com_zoo';
-        }
-        if (is_null($user)) {
-            $user = $this->get();
-        }
-
-        return (bool) $user->authorise($action, $asset_id);
-    }
 }
+
+    

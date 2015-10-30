@@ -46,13 +46,14 @@
 				<input type="hidden" name="aid" value="<?php echo $this->account->id; ?>" />
 				<input type="hidden" name="type" value="<?php echo $this->account->type; ?>" />
 				<?php echo $this->app->html->_('form.token'); ?>
-
+				<?php echo $this->app->button->render('mapProfilesToAccount', 'Map');  ?>
 			</form>
 			<script>
 				jQuery(function($) {
 
 					$(document).ready(function(){
-						$('button').on('click', function(e) {
+						$('.ttop button').on('click', function(e) {
+							console.log('menu-button clicked');
 							e.preventDefault();
 							var task = $(e.target).data('task');
 							$('[name="task"]').val(task);

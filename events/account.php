@@ -29,8 +29,7 @@ class AccountEvent {
             $account->params = $app->parameter->create($account->params);
         }
 
-        //$account->getSubAccounts();
-        //$account->getUsers();
+        // $account->getUsers();
 
 	}
 
