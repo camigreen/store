@@ -216,24 +216,17 @@ class AccountController extends AppController {
         $account->params = $params;
 
         $elements = $this->app->parameter->create();
-
-        foreach($post['elements'] as $key => $value) {
-            $elements->set($key, $value);
-        }
-
-        $account->elements = $elements;
-
-        $users = $account->elements->get('users', array());
-
-        $account->elements->set('users', ($users == '' ? array() : explode(',', $users)));
-
-        $account->mapUsersToAccount();
-
-        foreach($post['subaccounts'] as $type => $subaccounts) {
-            foreach($subaccounts as $subaccount) {
-                $this->app->account->associate($account->id, $subaccount, $type);
+        if(isset($post['elements'])) {
+            foreach($post['elements'] as $key => $value) {
+                $elements->set($key, $value);
             }
         }
+        
+        $account->elements = $elements;
+        
+        $profiles = $this->app->request->get('profiles', 'array', array());
+
+        $account->mapProfilesToAccount($profiles);
 
         // Set Created Date
         try {

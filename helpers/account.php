@@ -80,11 +80,18 @@ class AccountHelper extends AppHelper {
         return $object;
     }
 
-    public function mapProfilesToAccount($map = array()) {
-    	foreach($map as $key => $profiles) {
-    		$account = $this->get($key);
-    		$account->mapProfilesToAccount($profiles);
-    	}
+    public function mapProfilesToAccount($aid, $pids = array()) {
+    		$account = $this->get($aid);
+
+    		$account_profiles = $account->getAssignedProfiles();
+
+    		foreach($account_profiles as $key => $value) {
+    			if(!in_array($pids)) {
+    				$pids[] = $key;
+    			}
+    		}
+
+    		$account->mapProfilesToAccount($pids);
 
     }
 

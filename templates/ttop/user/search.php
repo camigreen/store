@@ -37,9 +37,10 @@
 						<?php echo $this->app->button->render('view', 'View');  ?>
 					</td>
 					<?php $user = $profile->getUser(); ?>
+					<?php $account = $profile->getAccount(); ?>
 					<td><?php echo $user->name; ?></td>
 					<td><?php echo $user->email; ?></td>
-					<td><?php echo $this->app->userprofile->getAccountName($profile); ?></td>
+					<td><?php echo $account ? $account->name : null; ?></td>
 					<td><?php echo Jtext::_('PROFILE_TYPE_'.$profile->type); ?></td>
 					<td><?php echo $this->app->userprofile->getStatus($profile); ?></td>
 				</tr>

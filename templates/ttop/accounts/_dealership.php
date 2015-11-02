@@ -43,6 +43,15 @@
 		</fieldset>
 	</div>
 <?php endif; ?>
+<?php $this->form->setValues($this->account); ?>
+<?php if($this->form->checkGroup('users')) : ?>
+	<div class="uk-form-row">
+		<fieldset id="users">
+			<legend>Users</legend>
+			<?php echo $this->form->render('users')?>
+		</fieldset>
+	</div>
+<?php endif; ?>
 <?php $this->form->setValues($this->account->elements->get('subaccounts')); ?>
 <?php if($this->form->checkGroup('subaccounts')) : ?>
 	<div class="uk-form-row">

@@ -205,10 +205,18 @@ class UserProfile {
      * @since 1.0
      */
     public function getAccount() {
-        if (empty($this->_account)) {
-            $this->_account = $this->app->account->get($this->elements->get('account'));
+
+        $query = 'SELECT * FROM #__zoo_account_user_map WHERE child = '.$this->id;
+
+        if($row = $this->app->database->queryObject($query)) {
+            $account = $this->app->account->get($row->parent);    
+        } else {
+            $account = null;
         }
-        return $this->_account;
+
+        
+        return $account;
+
     }
 
     /**
@@ -237,6 +245,22 @@ class UserProfile {
      */
     public function setParam($name, $value) {
         return $this->params->set($name, $value);
+    }
+
+    public function removeAccountMap() {
+        $query = 'DELETE FROM #__zoo_account_user_map WHERE child = '.$this->id;
+        $this->app->database->query($query);
+
+        return $this;
+    }
+
+    public function mapToAccount($aid) {
+        
+        $query = 'DELETE FROM #__zoo_account_user_map WHERE child = '.$this->id;
+        $this->app->database->query($query);
+
+        $query = 'INSERT INTO #__zoo_account_user_map (parent, child) VALUES ('.$aid.','.$this->id.')';
+        $this->app->database->query($query);
     }
 
     public function getAssetName() {

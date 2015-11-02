@@ -1,5 +1,4 @@
 <?php 
-	$id = $parent->getValue('id');
 	$profiles = $this->app->userprofile->getUserAssignments();
 	$account = $this->app->account->get($parent->getValue('id'));
 	$available = isset($profiles[0]) ? $profiles[0] : array();
@@ -19,7 +18,7 @@
 	<?php foreach($selected as $id => $profile) : ?>
 		
 		<li id="<?php echo $profile->id; ?>" data-name="<?php echo $profile->getUser()->name; ?>">
-			<input type="hidden" name="profiles[]" value="<?php echo $profile->id; ?>" />
+			<input type="text" name="profiles[]" value="<?php echo $profile->id; ?>" />
 			<?php echo $profile->getUser()->name.'<a href="#" class="uk-close uk-float-right uk-text-muted"></a>'; ?>
 		</li>
 	<?php endforeach; ?>
@@ -47,7 +46,8 @@
     		</li>
     		<?php endforeach; ?>
     		</ul>
-    		<a href="#" class="uk-button uk-modal-close">Add User(s)</a>
+    		<button type="button" class="uk-button add-button">Add User(s)</button>
+    		<button type="button" class="uk-button uk-modal-close">Cancel</button>
     </div>
 </div>
 
@@ -67,6 +67,7 @@
 				}
 			})
 			console.log(selected);
+			$('button.add-button').prop('disabled',true);
 			$.each(_available, function(k,v) {
 				var elem = $(v);
 				if(!elem.hasClass('empty')) {
@@ -75,7 +76,17 @@
 					console.log(elem);
 					available[id] = name;
 				}
+				if(elem.find('input').is(':checked')) {
+					$('button.add-button').prop('disabled',false);
+				}
 			})
+			_available.find('input').each(function(k,v){
+					if($(v).is(':checked')) {
+						console.log('its checked');
+						$('button.add-button').prop('disabled', false);
+					}
+
+				})
 			console.log(available);
 
 		}
@@ -95,19 +106,34 @@
 			})
 			if ($.isEmptyObject(available)) {
 				_available.append('<li class="empty uk-text-small">No Available Users Found!</li>');
+			} else {
+				$.each(available, function(k,v) {
+					var li = $('<li></li>').prop('id', k).data('name', v);
+					var input = $('<input type="checkbox" />');
+					var label = $('<label></label>').append(input).append(v);
+					li.append(label);
+					_available.append(li);
+				})
+
 			}
-			$.each(available, function(k,v) {
-				var li = $('<li></li>').prop('id', k).data('name', v);
-				var input = $('<input type="checkbox" />');
-				var label = $('<label></label>').append(input).append(v);
-				li.append(label);
-				_available.append(li);
-			})
-			$('#user-modal a.uk-button').on('click', function() {
+			$('button.add-button').prop('disabled', true);
+			_available.find('input').on('click', function() {
 				
+				_available.find('input').each(function(k,v){
+					if($(v).is(':checked')) {
+						console.log('its checked');
+						$('button.add-button').prop('disabled', false);
+					}
+
+				})
+			})
+			
+			$('button.add-button').on('click', function(e) {
+				e.preventDefault();
+				console.log('asdafsdf');
 				var values = {};
 
-				$('.available-profile-list li').each(function(k,v) {
+				$('.available-profile-list li').not('.empty').each(function(k,v) {
 					var elem = $(v);
 					var chkbox = $(v).find('input');
 					var id = elem.prop('id');
@@ -117,6 +143,7 @@
 						values[id] = elem.data('name')
 					}
 				})
+				UIkit.modal("#user-modal").hide();
 				available = values;
 				console.log(available);
 				populateElements();

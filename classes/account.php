@@ -163,7 +163,7 @@ class Account {
 
     }
 
-    public function getUsers() {
+    public function getAssignedProfiles() {
 
         $query = 'SELECT child FROM #__zoo_account_user_map WHERE parent = '.$this->id;
 
@@ -184,15 +184,17 @@ class Account {
 
     public function mapProfilesToAccount($map = array()) {
         
-        $query = 'DELETE FROM #__zoo_account_user_map WHERE parent = '.$this->id;
-        $this->app->database->query($query);
+        // $query = 'DELETE FROM #__zoo_account_user_map WHERE parent = '.$this->id;
+        // $this->app->database->query($query);
 
         if(empty($map)) {
             return ;
         }
 
         foreach($map as $profile) {
-            $query = 'INSERT INTO #__zoo_account_user_map (parent, child) VALUES ('.$this->id.','.$profile.')';
+            $profile = $this->app->userprofile->get($profile);
+            $profile->removeAccountMap();
+            $query = 'INSERT INTO #__zoo_account_user_map (parent, child) VALUES ('.$this->id.','.$profile->id.')';
             $this->app->database->query($query);
         }
     }

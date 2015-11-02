@@ -86,6 +86,7 @@ class UserController extends AppController {
             $this->profile = $this->app->userprofile->get();
             $this->title = 'New User';
         }
+        $this->account = $this->profile->getAccount();
         $this->user = $this->profile->getUser();
 
         $this->form = $this->app->form->create(array($this->template->getPath().'/user/config.xml', compact('type')));
@@ -130,6 +131,20 @@ class UserController extends AppController {
         }
 
         $profile->bind($post);
+
+        // var_dump($post);
+        // return;
+
+        if(isset($post['assigned']['account'])) {
+            if($post['assigned']['account'] != 0) {
+                $map[] = $profile->id;
+                $this->app->account->mapProfilesToAccount($post['assigned']['account'], $map);    
+            } else {
+                $profile->removeAccountMap();
+            }
+            
+        }
+
 
         // $_groups = JUserHelper::getUserGroups($profile->id);
         // $emp_groups = array(10, 11);

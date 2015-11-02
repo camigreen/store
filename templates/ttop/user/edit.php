@@ -83,6 +83,7 @@
 									</fieldset>
 								</div>
 							<?php endif; ?>
+							<?php $this->form->setValue('account', ($this->account ? $this->account->id : 0)); ?>
 							<?php if($this->form->checkGroup('elements')) : ?>
 								<div class="uk-form-row">
 									<fieldset id="elements">

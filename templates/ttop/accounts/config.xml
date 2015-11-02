@@ -49,6 +49,9 @@
 				<option value=".25">25%</option>
 			</field>
 		</fieldset>
+		<fieldset group="users" label="Assigned Users" controlname="profiles" width="1-1">
+			<field name="users" type="userselect" width="1-2" default="" label="Account Users" description="The current status for the user." />
+		</fieldset>
 		<fieldset group="subaccounts" label="Assigned Sub-Accounts" controlname="subaccounts" width="1-1">
 			<field name="oem" type="accountlist" account_type="oem" multiple="1" width="1-2" label="Select All OEMs" description="Press and hold CTRL or command to select multiple OEMs" />
 		</fieldset>
