@@ -7,14 +7,13 @@
 		$html[] = '<option value="0">- Select -</option>';
 	}
 
-	
-	$types = explode(',', (string) $node->attributes()->account_type);
+	$types = (string) $node->attributes()->account_type == "" ? null : (string) $node->attributes()->account_type;
+	$types = $types == null ? array() : explode(',', $types);
 	$conditions = array();
 	foreach($types as $type) {
 		$conditions[] = empty($conditions) ? 'type = "'.$type.'"' : ' OR type = "'.$type.'"';
 	}
 	$condition = implode("\n",$conditions);
-
 	$accounts = $this->app->table->account->all(array('conditions' => $condition));
 	$value = (array) $value;
 	foreach($accounts as $key => $account) {

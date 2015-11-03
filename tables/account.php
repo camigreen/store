@@ -59,6 +59,13 @@ class AccountTable extends AppTable {
 
 		return $result;
 	}
+
+	public function getUnassignedOEMs() {
+
+		$query = 'SELECT b.parent, a.* FROM #__zoo_account a LEFT JOIN (SELECT * FROM #__zoo_account_map) b ON a.id = b.child WHERE a.type = "oem"';
+        return $this->_queryObjectList($query);
+
+	}
 }
 
 /*

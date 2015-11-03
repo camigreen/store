@@ -205,18 +205,7 @@ class UserProfile {
      * @since 1.0
      */
     public function getAccount() {
-
-        $query = 'SELECT * FROM #__zoo_account_user_map WHERE child = '.$this->id;
-
-        if($row = $this->app->database->queryObject($query)) {
-            $account = $this->app->account->get($row->parent);    
-        } else {
-            $account = null;
-        }
-
-        
-        return $account;
-
+        return $this->app->userprofile->getAccount($this);
     }
 
     /**

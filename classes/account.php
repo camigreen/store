@@ -39,7 +39,9 @@ class Account {
 
     public $app;
 
-    public $subaccounts;
+    public $OEMs = array();
+
+    public $parents = array();
 
     public $users;
 
@@ -148,18 +150,32 @@ class Account {
      *
      * @since 1.0
      */
-    public function getSubAccounts() {
+    public function getOEMs() {
 
         $query = 'SELECT * FROM #__zoo_account_map WHERE parent = '.$this->id;
 
         $rows = $this->app->database->queryObjectList($query);
 
         foreach($rows as $row) {
-                $this->subaccounts[$row->child] = $this->app->account->get($row->child);
+                $this->OEMs[$row->child] = $this->app->account->get($row->child);
             
         }
 
-        return $this->subaccounts;
+        return $this->OEMs;
+
+    }
+    public function getParentAccounts() {
+
+        $query = 'SELECT * FROM #__zoo_account_map WHERE child = '.$this->id;
+
+        $rows = $this->app->database->queryObjectList($query);
+
+        foreach($rows as $row) {
+                $this->parents[$row->parent] = $this->app->account->get($row->parent);
+            
+        }
+
+        return $this->parents;
 
     }
 
@@ -182,10 +198,15 @@ class Account {
         return $this->_users[$id];
     }
 
+    public function removeParentMap($aid) {
+        $query = 'DELETE FROM #__zoo_account_map WHERE parent = '.$aid.' AND child = '.$this->id;
+        $this->app->database->query($query);
+    }
+
     public function mapProfilesToAccount($map = array()) {
         
-        // $query = 'DELETE FROM #__zoo_account_user_map WHERE parent = '.$this->id;
-        // $this->app->database->query($query);
+        $query = 'DELETE FROM #__zoo_account_user_map WHERE parent = '.$this->id;
+        $this->app->database->query($query);
 
         if(empty($map)) {
             return ;
@@ -195,6 +216,38 @@ class Account {
             $profile = $this->app->userprofile->get($profile);
             $profile->removeAccountMap();
             $query = 'INSERT INTO #__zoo_account_user_map (parent, child) VALUES ('.$this->id.','.$profile->id.')';
+            $this->app->database->query($query);
+        }
+    }
+
+    public function mapOEMsToAccount($map = array()) {
+        
+        $query = 'DELETE FROM #__zoo_account_map WHERE parent = '.$this->id;
+        $this->app->database->query($query);
+
+        if(empty($map)) {
+            return ;
+        }
+
+        foreach($map as $subaccount) {
+            $subaccount = $this->app->account->get($subaccount);
+            $subaccount->removeParentMap($this->id);
+            $query = 'INSERT INTO #__zoo_account_map (parent, child) VALUES ('.$this->id.','.$subaccount->id.')';
+            $this->app->database->query($query);
+        }
+    }
+
+    public function mapToParents($map) {
+        $query = 'DELETE FROM #__zoo_account_map WHERE child = '.$this->id;
+        $this->app->database->query($query);
+
+        if(empty($map)) {
+            return ;
+        }
+
+        foreach($map as $parent) {
+            $parent = $this->app->account->get($parent);
+            $query = 'INSERT INTO #__zoo_account_map (parent, child) VALUES ('.$parent->id.','.$this->id.')';
             $this->app->database->query($query);
         }
     }

@@ -62,11 +62,7 @@ class AccountController extends AppController {
 
         //     $_order = $this->app->order->create($order['id']);
         //     $this->relayorder($_order);
-        // }
-
-        $user = $this->app->table->userprofile->get(776);
-        var_dump($user);
-        
+        // }       
         // $account = $this->app->account->getByUser();
         // var_dump($account);
 
@@ -144,8 +140,9 @@ class AccountController extends AppController {
             $type = $this->account->type;
             $this->title = "Edit Account";
         } else {
-            $this->account = $this->app->account->create($account_type);
+            $this->account = $this->app->account->get();
             $type = $this->app->request->get('type', 'string');
+            $this->account->type = $type;
             $this->title = $type == 'default' ? "Create a New $template Account" : "Create a New $type Account";
         }
 
@@ -187,17 +184,11 @@ class AccountController extends AppController {
         $type = $this->app->request->get('type', 'word', 'default');
 
         if($aid) {
-            $account = $this->table->get($aid, $type);
+            $account = $this->table->get($aid);
         } else {
-            $account = $this->app->account->create($type);
+            $account = $this->app->account->get();
+            $account->type = $type;
             $account->created_by = $cUser;
-        }
-
-        if($type == 'employee') {
-            $user = $post['core'];
-            $user['id'] = $post['elements']['user'];
-            $user['group'] = $post['elements']['job_title'];
-            $this->saveUser($user);
         }
 
         $core = $post['core'];
@@ -223,10 +214,21 @@ class AccountController extends AppController {
         }
         
         $account->elements = $elements;
+
+        // Save to get the ID.
+        $this->table->save($account);
         
         $profiles = $this->app->request->get('profiles', 'array', array());
 
         $account->mapProfilesToAccount($profiles);
+
+        $oems = $this->app->request->get('oems', 'array', array());
+
+        $account->mapOEMsToAccount($oems);
+
+        $parents = $this->app->request->get('parents', 'array', array());
+
+        $account->mapToParents($parents);
 
         // Set Created Date
         try {

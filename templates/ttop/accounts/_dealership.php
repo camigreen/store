@@ -52,7 +52,7 @@
 		</fieldset>
 	</div>
 <?php endif; ?>
-<?php $this->form->setValues($this->account->elements->get('subaccounts')); ?>
+<?php $this->form->setValues($this->account); ?>
 <?php if($this->form->checkGroup('subaccounts')) : ?>
 	<div class="uk-form-row">
 		<fieldset id="subaccounts">

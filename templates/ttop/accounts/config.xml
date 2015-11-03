@@ -50,10 +50,10 @@
 			</field>
 		</fieldset>
 		<fieldset group="users" label="Assigned Users" controlname="profiles" width="1-1">
-			<field name="users" type="userselect" width="1-2" default="" label="Account Users" description="The current status for the user." />
+			<field name="users" type="userselect" width="1-2" default="" label="Account Users" description="" />
 		</fieldset>
 		<fieldset group="subaccounts" label="Assigned Sub-Accounts" controlname="subaccounts" width="1-1">
-			<field name="oem" type="accountlist" account_type="oem" multiple="1" width="1-2" label="Select All OEMs" description="Press and hold CTRL or command to select multiple OEMs" />
+			<field name="oem" type="oemselect" multiple="1" width="1-2" label="Assigned OEMs" description="" />
 		</fieldset>
 	</type>
 	<type name="oem">
@@ -73,7 +73,20 @@
 			<field name="other_phone" type="text" width="1-3" default="" label="Other Phone" description="Another phone number for the point of contact." />
 			<field name="email" type="text" width="1-2" default="" label="E-mail Address" description="An email address for the point of contact." />
 		</fieldset>
+		<fieldset group="commission" label="Account Commission" controlname="elements" width="1-1">
+			<field name="commission" type="dropdown" width="1-4" default="" description="The OEM Commission.">
+				<option value=".00">No Commission</option>
+				<option value=".01">1%</option>
+				<option value=".02">2%</option>
+				<option value=".03">3%</option>
+				<option value=".04">4%</option>
+				<option value=".05">5%</option>
+			</field>
+		</fieldset>
 		<fieldset group="elements" label="User Account Elements" controlname="elements" width="1-1">
+		</fieldset>
+		<fieldset group="parents" label="Assigned Parent Accounts" controlname="parents" width="1-1">
+			<field name="account" type="accountselect" width="1-2"/>
 		</fieldset>
 	</type>
 </account>

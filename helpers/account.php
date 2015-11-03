@@ -23,7 +23,14 @@ class AccountHelper extends AppHelper {
         
 	}
 
-	public function get($id) {
+	public function get($id = null) {
+		if(!$id) {
+			$account = $this->app->object->create('account');
+			// trigger init event
+			$this->app->event->dispatcher->notify($this->app->event->create($account, 'account:init'));
+			return $account;
+		}
+
 		if (!isset($this->_accounts[$id])) {
 			$table = $this->app->table->account;
 			$account = $table->get($id);
@@ -55,30 +62,20 @@ class AccountHelper extends AppHelper {
 
 		return $account;
 	}
-    
-    
-    public function create($class = null, $args = array()) {
-    	list($parent, $child) = array_pad(explode('.',$class, 2), 2, null);
 
-    	$class = $child == null ? $parent.'Account' : $child.'Account';
-        
-        if (!is_null($class) && file_exists($this->app->path->path('classes:/accounts/'.basename($class, 'Account').'.php'))) {
-            $this->app->loader->register($class, 'classes:/accounts/'.basename($class, 'Account').'.php');
-        } else {
-            $class = 'Account';
+	public function getUnassignedOEMs($options = null) {
+		$oems = $this->app->table->account->getUnassignedOEMs();
+		$assignments = array();
+        foreach($oems as $oem) {
+            if($oem->parent) {
+                $assignments[$oem->parent][$oem->id] = $oem;
+            } else {
+                $assignments['unassigned'][$oem->id] = $oem;
+            }
         }
-        
-        $object = new $class();
+        return $assignments;
 
-        if (property_exists($object, 'app')) {
-        	$object->app = $this->app;
-        }
-
-        // trigger init event
-		$this->app->event->dispatcher->notify($this->app->event->create($object, 'account:init'));
-        
-        return $object;
-    }
+	}
 
     public function mapProfilesToAccount($aid, $pids = array()) {
     		$account = $this->get($aid);
