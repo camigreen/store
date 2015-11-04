@@ -29,7 +29,13 @@ class AccountEvent {
             $account->params = $app->parameter->create($account->params);
         }
 
-        // $account->getUsers();
+        if (is_string($account->elements) || is_null($account->elements)) {
+            // decorate data as this
+            $account->elements = $app->parameter->create($account->elements);
+        }
+
+        
+
 
 	}
 

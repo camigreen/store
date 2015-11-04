@@ -47,7 +47,7 @@ class AccountHelper extends AppHelper {
 	public function getByUser($user = null) {
 
 		if(!$user) {
-			$user = $this->app->userprofile->get();
+			return false;
 		}
 
 		$db = $this->app->database;
@@ -61,6 +61,11 @@ class AccountHelper extends AppHelper {
 		$account = $this->get($id);
 
 		return $account;
+	}
+
+	public function getCurrent() {
+		$user = $this->app->userprofile->getCurrent();
+		return $this->getByUser($user);
 	}
 
 	public function getUnassignedOEMs($options = null) {

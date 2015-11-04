@@ -6,11 +6,21 @@
 			<field name="state" type="statuslist" width="2-10" default="" label="Account Status" value="account" description="The current status for the user." />
 			<field name="users" type="userselect" width="1-2" default="" label="Account Users" description="The current status for the user." />
 		</fieldset>
+		<fieldset group="elements" label="Account Elements" controlname="elements">
+			<field name="sales_manager_commission" type="list" width="1-2" default="0" label="Sales Manager Commission" description="The additional commission given to sales managers." >
+				<option value=".00">No Commission</option>
+				<option value=".01">1%</option>
+				<option value=".02">2%</option>
+				<option value=".03">3%</option>
+				<option value=".04">4%</option>
+				<option value=".05">5%</option>
+			</field>
+		</fieldset>	
 	</type>
 	<type name="dealership">
 		<fieldset group="details" label="Details" controlname="core" >
-			<field name="number" controlname="elements[account_number]" type="storetext" width="2-10" default="" label="Account Number"  description="The employee's identification number." />
-			<field name="name" type="storetext" width="8-10" default="" label="Name" description="Name of the account." />
+			<field name="name" type="storetext" width="6-10" default="" label="Name" description="Name of the account." />
+			<field name="number" controlname="elements[account_number]" type="storetext" width="4-10" default="" label="Account Number"  description="The employee's identification number." />
 			<field name="state" type="statuslist" width="2-10" default="" label="Account Status" value="account" description="The current status for the user." />
 		</fieldset>
 		<fieldset group="password" label="password" controlname="core">
@@ -26,6 +36,7 @@
 			<field name="email" type="text" width="1-2" default="" label="E-mail Address" description="An email address for the point of contact." />
 		</fieldset>
 		<fieldset group="billing" label="Billing Address" controlname="elements[billing]" width="1-2">
+			<field name="name" type="text" width="1-1" default="" label="Billing Name"/>
 			<field name="street1" type="text" width="1-1" default="" label="Street Address Line 1"/>
 			<field name="street2" type="text" width="1-1" default="" label="Street Address Line 2"/>
 			<field name="city" type="text" width="3-6" default="" label="City" />
@@ -33,6 +44,7 @@
 			<field name="zip" type="text" width="1-6" default="" label="Zip Code" />
 		</fieldset>
 		<fieldset group="shipping" label="Shipping Address" controlname="elements[shipping]" width="1-2">
+			<field name="name" type="text" width="1-1" default="" label="Shipping Name"/>
 			<field name="street1" type="text" width="1-1" default="" label="Street Address Line 1"/>
 			<field name="street2" type="text" width="1-1" default="" label="Street Address Line 2"/>
 			<field name="city" type="text" width="3-6" default="" label="City" />
@@ -84,6 +96,7 @@
 			</field>
 		</fieldset>
 		<fieldset group="elements" label="User Account Elements" controlname="elements" width="1-1">
+			<field name="category" type="categorylist" label="Item Category" description="Items in this category will be credited to this OEM." />
 		</fieldset>
 		<fieldset group="parents" label="Assigned Parent Accounts" controlname="parents" width="1-1">
 			<field name="account" type="accountselect" width="1-2"/>

@@ -12,6 +12,9 @@
 */
 class CheckoutController extends AppController {
 
+    public $account = null;
+    public $processCC = 'true';
+
     
     public function __construct($default = array()) {
         parent::__construct($default);
@@ -38,6 +41,10 @@ class CheckoutController extends AppController {
 
         $this->cart = $this->app->cart->create();
 
+        if($account = $this->app->account->getCurrent()) {
+            $this->account = $account;
+        }
+
         // registers tasks
         //$this->registerTask('apply', 'save');
         // $this->taskMap['display'] = null;
@@ -61,10 +68,24 @@ class CheckoutController extends AppController {
         }
         $this->app->document->addScript('assets:js/formhandler.js');
 
-        $this->app->account->getByUser();
+        $order = $this->CR->order;
+
+        $user = $this->app->userprofile->getCurrent();
+        $this->page = 'customer';
+        if($this->account && $this->account->type != 'store') {
+            $this->page .= '.'.$this->account->type;
+            $order->elements->set('billing.', $this->account->elements->get('billing'));
+            $order->elements->set('billing.phoneNumber', $user->elements->get('office_phone'));
+            $order->elements->set('billing.altNumber', $user->elements->get('mobile_phone'));
+            $order->elements->set('shipping.', $this->account->elements->get('shipping'));
+            $order->elements->set('shipping.phoneNumber', $user->elements->get('office_phone'));
+            $order->elements->set('shipping.altNumber', $user->elements->get('mobile_phone'));
+            $order->elements->set('email', $user->getUser()->email);
+            $order->elements->set('confirm_email', $user->getUser()->email);
+        }
 
         $layout = 'checkout';
-        $this->page = 'customer';
+        
         $this->title = 'Customer Information';
         $this->subtitle = 'Please enter your information below.';
         $this->buttons = array(
@@ -79,7 +100,7 @@ class CheckoutController extends AppController {
                 )
         );
 
-        $this->getView()->addTemplatePath($this->template->getPath())->setLayout($layout)->display();
+        $this->getView()->addTemplatePath($this->template->getPath().'/checkout')->setLayout($layout)->display();
 
     }
 
@@ -89,13 +110,22 @@ class CheckoutController extends AppController {
             return $this->app->error->raiseError(500, JText::_('No template selected'));
         }
 
-        var_dump($this->app->userprofile->get()->getUser());
+        $this->page = 'payment';
+
+        $order = $this->CR->order;
+
+        if($this->account && $this->account->type != 'store') {
+            $this->page .= '.'.$this->account->type;
+            $order->elements->set('payment.account_name', $this->account->name);
+            $order->elements->set('payment.account_number', $this->account->number);
+            $this->app->session->set('order',(string) $order,'checkout');
+        }
 
         $this->app->document->addScript('assets:js/formhandler.js');
 
         $layout = 'checkout';
 
-        $this->page = 'payment';
+        
         $this->title = 'Payment Information';
         $this->subtitle = 'Please enter your payment information below.';
         $this->buttons = array(
@@ -113,7 +143,7 @@ class CheckoutController extends AppController {
                 )
         );
 
-        $this->getView()->addTemplatePath($this->template->getPath())->setLayout($layout)->display();
+        $this->getView()->addTemplatePath($this->template->getPath().'/checkout')->setLayout($layout)->display();
 
     }
 
@@ -124,9 +154,18 @@ class CheckoutController extends AppController {
 
         $this->app->document->addScript('assets:js/formhandler.js');
 
-        $layout = 'checkout';
+        $order = $this->CR->order;
 
+        $layout = 'checkout';
         $this->page = 'confirm';
+        if($this->account && $this->account->type != 'store') {
+            $this->page .= '.'.$this->account->type;
+            $this->processCC = 'false';
+            
+        }
+        
+
+        
         $this->title = 'Order Confirmation';
         $this->subtitle = '<span class="uk-text-danger">Please make sure that your order is correct.</span>';
         $this->buttons = array(
@@ -144,7 +183,13 @@ class CheckoutController extends AppController {
                 )
         );
 
-        $this->getView()->addTemplatePath($this->template->getPath())->setLayout($layout)->display();
+        
+
+        
+
+        $this->order = $order;
+
+        $this->getView()->addTemplatePath($this->template->getPath().'/checkout')->setLayout($layout)->display();
     }
 
     public function reciept() {
@@ -160,14 +205,16 @@ class CheckoutController extends AppController {
         $post = $this->app->request->get('post:', 'array', array());
         $next = $this->app->request->get('next','word', 'customer');
 
-        foreach($post['elements'] as $key => $value) {
-            if (is_array($value)) {
-                $order->elements->set($key.'.', $value);
-            } else {
-                $order->elements->set($key, $value);
+        if(isset($post['elements'])) {
+            foreach($post['elements'] as $key => $value) {
+                if (is_array($value)) {
+                    $order->elements->set($key.'.', $value);
+                } else {
+                    $order->elements->set($key, $value);
+                }
             }
-            
         }
+        
         if($lp = $order->elements->get('localPickup')) {
             $order->elements->set('localPickup', ($lp == 'on' ? true : false));
         }

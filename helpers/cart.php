@@ -59,8 +59,8 @@ class CartHelper extends AppHelper {
     }
 
     public function remove($sku) {
-        if ($this->_items->has($sku)) {
-            $this->_items->remove($sku);
+        if (isset($this->_items[$sku])) {
+            unset($this->_items[$sku]);
             return $this->updateSession();
         }
         

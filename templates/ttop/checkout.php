@@ -26,7 +26,7 @@ $this->app->document->addScript('assets:js/jquery-validation-1.13.1/dist/jquery.
 <div class="uk-width-1-1 uk-margin-bottom ttop-checkout-steps" data-uk-grid-margin>
     <ul class="uk-grid ttop-checkout-progress">
         <li class="uk-width-1-4">
-            <div id="customer" class="" >Customer<i class="uk-icon-arrow-right uk-align-right"></i></div>
+            <div id="customer" class="complete" >Customer<i class="uk-icon-arrow-right uk-align-right"></i></div>
         </li>
         <li class="uk-width-1-4">
             <div id="payment" class="">Payment Info<i class="uk-icon-arrow-right uk-align-right"></i></div>
@@ -40,7 +40,7 @@ $this->app->document->addScript('assets:js/jquery-validation-1.13.1/dist/jquery.
     </ul>
 
 </div>
-<form id="ttop-checkout" class="uk-form" action="/store/checkout" method="post">
+<form id="ttop-checkout" class="uk-form" action="/store/checkout" method="post" data-process-cc="<?php echo $this->processCC; ?>">
     <div class="uk-width-1-1 uk-margin uk-text-center ttop-checkout-pagetitle">
         <div class="uk-article-title"><?php echo $this->title; ?></div>
         <div class="uk-article-lead"><?php echo $this->subtitle; ?></div>
@@ -257,6 +257,7 @@ $this->app->document->addScript('assets:js/jquery-validation-1.13.1/dist/jquery.
                                 e.preventDefault();
                                 $('[name="process"]').val(false);
                                 $('input[name="next"]').val($(e.target).data('next'));
+                                self.$element.find('input, select').addClass('ignore');
                                 $(this).closest('form').submit();
                             });
 
@@ -329,7 +330,7 @@ $this->app->document->addScript('assets:js/jquery-validation-1.13.1/dist/jquery.
                             $('#localPickup').on('click',function(e){
                                 self.trigger('validate');
                             });
-                            localPickup();
+                            //localPickup();
                             return true;
                         }
                     ],

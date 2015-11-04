@@ -54,7 +54,6 @@ class CashRegister {
         $this->app = $app;
         $this->merchant = $this->app->merchant->anet;
         $this->order = $this->app->orderdev->create();
-
         $this->application = $this->app->zoo->getApplication();
         $this->setNotificationEmails();
         $this->calculateTotals();
@@ -155,7 +154,9 @@ class CashRegister {
 
     
     public function getShippingRate() {
-        $shipping = $this->order->elements->get('shipping');
+        if(!$shipping = $this->order->elements->get('shipping')) {
+            return $this->shipping;
+        }
         if($this->order->elements->get('localPickup') || !$shipping->get('zip')) {
             $this->shipping = 0;
         } else {

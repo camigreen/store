@@ -55,7 +55,6 @@ class UserProfileHelper extends AppHelper {
         $user = $this->app->session->get('user');
 
         $profile = $this->table->first(array('conditions' => 'user_id = '.$user->id));
-        var_dump($profile);
         $new = false;
 
         // trigger init event
@@ -64,11 +63,20 @@ class UserProfileHelper extends AppHelper {
     }
 
     public function getAccount($user = null) {
+
         $user = $user ? $user : $this->get();
+
+        if(!$user->id) {
+            return false;
+        }
 
         $query = 'SELECT * FROM #__zoo_account_user_map WHERE child = '.$user->id;
 
         $row = $this->app->database->queryObject($query);
+
+        if(!$row) {
+            return false;
+        }
 
         $account = $this->app->account->get($row->parent);
 
