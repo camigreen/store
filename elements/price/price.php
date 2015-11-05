@@ -19,6 +19,8 @@ class ElementPrice extends ElementStore {
         public function __construct() {
             parent::__construct();
             $this->app->path->register(dirname(__FILE__).'/assets/', 'assets');
+            require($this->app->path->path('prices:retail.php'));
+            $this->prices = $this->app->parameter->create($prices);
         }
 
 	/*
@@ -34,13 +36,21 @@ class ElementPrice extends ElementStore {
         
         public function render($params = array())
         {
-            $price_schedule = 'retail';
-            if(!$this->config->get('price_type') || $this->config->get('price_type') == '') {
-                $type = $this->_item->alias;
-            } else {
-                $type = $this->config->get('price_type');
+            $price_params = $params['pricing'];
+            $type = $params['type'];
+            $prices = $this->app->prices->create($type, $price_params);
+
+            
+            if($account = $this->app->account->getCurrent()) {
+                $prices['types'] = array('dealer' => $account->elements->get('pricing')['discount']);
+                $html[] = '<div>Dealer Price</div>';
+                $html[] = '<span id="dealer-price" class="uk-width-1-1"><i class="currency"></i><span class="price" data-discount=".20">0.00</span></span>';
+                $html[] = '<div>Retail Price</div>';
             }
-            return $this->renderLayout($this->app->path->path("elements:price/tmpl/default.php"),compact('price_schedule','type'));
+            $html[] = '<span id="retail-price" class="uk-width-1-1" ><i class="currency"></i><span class="price" data-price='.json_encode($prices).'>0.00</span></span>';
+            $html[] = '<div id="price" data-price='.json_encode($prices).'></div>';
+            return implode("\n", $html);
+
         }
         
         public function hasValue($params = array())

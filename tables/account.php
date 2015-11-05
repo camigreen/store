@@ -71,4 +71,4 @@ class AccountTable extends AppTable {
 /*
 	Class: ItemTableException
 */
-class ItemTableException extends AppException {}
+class AccountTableException extends AppException {}

@@ -78,7 +78,8 @@ class CartHelper extends AppHelper {
     public function getCartTotal() {
         $total = 0.00;
         foreach($this->_items as $item) {
-            $total += $item->price*$item->qty;
+            
+            $total += $item->getTotal();
         }
         return $total;
     }
@@ -135,6 +136,8 @@ class CartItem {
     public $make;
     
     public $model;
+
+    public $discount = 0;
     
     public $pricepoints = array();
     
@@ -149,12 +152,14 @@ class CartItem {
         foreach ($item as $key => $value) {
             $this->$key = $value;
         }
+        $this->discount = (float) $this->discount;
         $this->app = $app;
         $this->options = $app->parameter->create($this->options);
         $this->attributes = $app->parameter->create($this->attributes);
         $this->shipping = $app->parameter->create($this->shipping);
         //var_dump($this->options);
         $this->generateSKU();
+        $this->getTotal();
         
     }
 
@@ -187,8 +192,9 @@ class CartItem {
     }
     
     public function getTotal() {
-        $total = $this->app->number->currency($this->qty*$this->price,array('currency' => 'USD'));
-        return $total;
+        $discount = $this->price*$this->discount;
+        $this->total = ($this->price - $discount)*$this->qty;
+        return $this->total;
     }
 
     public function getOptions() {

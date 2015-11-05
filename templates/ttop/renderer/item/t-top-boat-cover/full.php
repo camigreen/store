@@ -11,11 +11,10 @@ defined('_JEXEC') or die('Restricted access');
 $class = $item->type.'-full';
 
 $boat_length = $item->getElement('555ad97f-e3e7-4608-a103-6de9f6d00291')->get('option');
-$prices = $this->app->prices->create($item->type, $boat_length);
+// $prices = $this->app->prices->create($item->type, $boat_length);
 $category = $item->getPrimaryCategory()->getParent();
 $data_item = array('id' => $item->id, 'name' => 'T-Top Boat Cover');
-
-echo $item->getType()->getAssetName();
+var_dump($this->app->cart->create());
 ?>
 <div id="<?php echo $item->id ?>" class="<?php echo $item->type; ?>" data-item='<?php echo json_encode($data_item); ?>'>
     <div class="uk-grid <?php echo $class; ?>">
@@ -161,8 +160,10 @@ echo $item->getType()->getAssetName();
                 </div>
             </div>
             <div class="uk-width-1-3">
-                <div class="uk-width-1-1 price-container">
-                    <span class="price"><i class="currency"></i><span id="price" data-price='<?php echo json_encode($prices); ?>'>0.00</span></span>
+                <div class="uk-width-1-1 uk-grid price-container">
+                    <?php if ($this->checkPosition('pricing')) : ?>
+                            <?php echo $this->renderPosition('pricing', array('type' => $item->type, 'pricing' => array($boat_length))); ?>
+                    <?php endif; ?>
                 </div>
                 <div class="uk-width-1-1 options-container uk-margin-top">
                     <?php if ($this->checkPosition('options')) : ?>
@@ -368,7 +369,7 @@ jQuery(function($){
 
             mainItem.StoreItem({
                 name: 'T-Top Boat Cover',
-                validate: true,
+                validate: false,
                 confirm: true,
                 debug: true,
                 events: {

@@ -54,11 +54,15 @@ class UserProfileHelper extends AppHelper {
 
         $user = $this->app->session->get('user');
 
-        $profile = $this->table->first(array('conditions' => 'user_id = '.$user->id));
-        $new = false;
 
-        // trigger init event
-        $this->app->event->dispatcher->notify($this->app->event->create($profile, 'userprofile:init', compact('new')));
+
+        if($profile = $this->table->first(array('conditions' => 'user_id = '.$user->id))) {
+            $new = false;
+        
+            // trigger init event
+            $this->app->event->dispatcher->notify($this->app->event->create($profile, 'userprofile:init', compact('new')));
+        }
+        
         return $profile;
     }
 
@@ -116,6 +120,16 @@ class UserProfileHelper extends AppHelper {
             }
         }
         return $assignments;
+    }
+
+    public function isDealer($profile = null) {
+        if(!$profile) {
+            $profile = $this->getCurrent();
+        }
+        if($profile) {
+            return $profile->elements->get('type') == 'dealer' ? true : false;
+        }
+        return false;
     }
 
 

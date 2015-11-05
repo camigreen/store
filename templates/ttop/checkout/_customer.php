@@ -5,7 +5,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-$elements = $CR->order->elements;
+$elements = $this->order->elements;
 $states = new SimpleUPS\PostalCodes();
 ?>
 

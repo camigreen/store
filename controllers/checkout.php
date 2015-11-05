@@ -37,7 +37,6 @@ class CheckoutController extends AppController {
         // set base url
         $this->baseurl = $this->app->link(array('controller' => $this->controller), false);
 
-        $this->CR = $this->app->cashregister->start();
 
         $this->cart = $this->app->cart->create();
 
@@ -46,7 +45,12 @@ class CheckoutController extends AppController {
         }
 
         // registers tasks
-        //$this->registerTask('apply', 'save');
+        $this->registerTask('receipt', 'display');
+        $this->registerTask('customer', 'display');
+        $this->registerTask('payment', 'display');
+        $this->registerTask('confirm', 'display');
+        $this->registerTask('save', 'display');
+        $this->registerTask('processPO', 'display');
         // $this->taskMap['display'] = null;
         // $this->taskMap['__default'] = null;
     }
@@ -59,6 +63,12 @@ class CheckoutController extends AppController {
                     Void
     */
     public function display($cachable = false, $urlparams = false) {
+
+        if($this->task != 'receipt') {
+            $this->CR = $this->app->cashregister->start();
+        }
+        $task = $this->task;
+        $this->$task();
 
     }
 
@@ -99,6 +109,8 @@ class CheckoutController extends AppController {
                     'label' => 'Proceed'
                 )
         );
+
+        $this->order = $order;
 
         $this->getView()->addTemplatePath($this->template->getPath().'/checkout')->setLayout($layout)->display();
 
@@ -142,6 +154,8 @@ class CheckoutController extends AppController {
                     'label' => 'Proceed'
                 )
         );
+
+        $this->order = $order;
 
         $this->getView()->addTemplatePath($this->template->getPath().'/checkout')->setLayout($layout)->display();
 
@@ -193,14 +207,45 @@ class CheckoutController extends AppController {
         $this->getView()->addTemplatePath($this->template->getPath().'/checkout')->setLayout($layout)->display();
     }
 
-    public function reciept() {
-        echo 'receipt';
+    public function receipt() {
+        if (!$this->template = $this->application->getTemplate()) {
+            return $this->app->error->raiseError(500, JText::_('No template selected'));
+        }
+        $id = $this->app->request->get('oid', 'int', 0);
+        $order = $this->app->orderdev->get($id);
+        $layout = 'checkout';
+        $this->page = 'receipt';
+        if($this->account && $this->account->type != 'store') {
+            $this->page .= '.'.$this->account->type;
+            
+        }
+
+        $this->title = 'Order Receipt';
+        $this->subtitle = 'Thank you for your purchase.';
+        $this->buttons = array(
+            'back' => array(
+                    'active' => false,
+                    'next' => 'payment',
+                    'disabled' => false,
+                    'label' => 'Back'
+                ),
+            'proceed' => array(
+                    'active' => true,
+                    'next' => 'home',
+                    'disabled' => false,
+                    'label' => 'Return to Home Page'
+                )
+        );
+        $this->order = $order;
+
+        $this->getView()->addTemplatePath($this->template->getPath().'/checkout')->setLayout($layout)->display();
     }
 
     public function processPO () {
         $order = $this->CR->processPayment('PO');
 
-        var_dump($order);
+        $link = $this->baseurl.'&task=receipt&oid='.$order->id;
+        $this->setRedirect($link);
 
     }
 
@@ -244,7 +289,7 @@ class CheckoutController extends AppController {
 
 
 
-        $this->$next();
+        $this->setRedirect($this->baseurl.'&task='.$next);
 
     }
 

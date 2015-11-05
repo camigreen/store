@@ -14,15 +14,20 @@
 class PricesHelper extends AppHelper {
     
     
-    public function create($type, $secondary = null) {
+    public function create($type, $params = array()) {
     	include $this->app->path->path('prices:retail.php');
-    	$prices = $prices[$type];
-    	if($secondary) {
-    		$result['item'] = $prices['item'][$secondary];
-    		$result['shipping'] = $prices['shipping'][$secondary];
-    		$prices = $result;
-    	}
-        return $this->app->data->create($prices);
+        $item = $prices[$type]['item'];
+        $shipping = $prices[$type]['shipping'];
+        $result = array();
+        foreach($params as $param) {
+            if(isset($item[$param])) {
+                $result['item'] = $item[$param];
+            }
+            if(isset($shipping[$param])) {
+                $result['shipping'] = $shipping[$param];
+            }
+        }
+        return $this->app->data->create($result);
     }
 }
 

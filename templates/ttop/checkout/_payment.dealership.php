@@ -4,7 +4,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-$order = $CR->order;
+$order = $this->order;
 $items = $this->cart->getAllItems();
 $elements = $order->elements;
 ?>
@@ -48,7 +48,7 @@ $elements = $order->elements;
                             Subtotal:
                         </td>
                         <td>
-                            <?php echo $this->app->number->currency($CR->subtotal,array('currency' => 'USD')); ?>
+                            <?php echo $this->app->number->currency($order->subtotal,array('currency' => 'USD')); ?>
                         </td>
                     </tr>
                     <tr>
@@ -56,7 +56,7 @@ $elements = $order->elements;
                             Shipping:
                         </td>
                         <td>
-                            <?php echo $this->app->number->currency($CR->shipping,array('currency' => 'USD')); ?>
+                            <?php echo $this->app->number->currency($order->ship_total,array('currency' => 'USD')); ?>
                         </td>
                     </tr>
                     <tr>
@@ -64,7 +64,7 @@ $elements = $order->elements;
                             Sales Tax:
                         </td>
                         <td>
-                            <?php echo $this->app->number->currency($CR->taxTotal,array('currency' => 'USD')); ?>
+                            <?php echo $this->app->number->currency($order->tax_total,array('currency' => 'USD')); ?>
                         </td>
                     </tr>
                     <tr>
@@ -72,7 +72,7 @@ $elements = $order->elements;
                             Total:
                         </td>
                         <td>
-                            <?php echo $this->app->number->currency($CR->total,array('currency' => 'USD')); ?>
+                            <?php echo $this->app->number->currency($order->total,array('currency' => 'USD')); ?>
                         </td>
                     </tr>
                 </tfoot>
@@ -104,12 +104,7 @@ $elements = $order->elements;
                     <div class="uk-width-1-1">
 
                     </div> 
-                    <div class="uk-width-1-3">
-                        <input type="hidden" name="payment[creditCard][auth_code]" value="<?php echo $elements->get('creditcard.auth_code'); ?>"/>
-                        <input type="hidden" name="payment[creditCard][card_type]" value="<?php echo $elements->get('creditcard.card_type'); ?>" />
-                        <input type="hidden" name="payment[creditCard][card_name]" value="<?php echo $elements->get('creditcard.card_name'); ?>" />
-                        <input type="hidden" name="amount" value="<?php echo $CR->getCurrency('total'); ?>"/>
-                    </div>
+
                 </div>
             </fieldset>
         </div>

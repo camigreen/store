@@ -5,7 +5,7 @@
  * and open the template in the editor.
  */
 
-$CR = $this->CR;
+$order = $this->order;
 $this->app->document->addScript('assets:js/jquery-validation-1.13.1/dist/jquery.validate.min.js');
 ?>
 <?php if($this->app->merchant->testMode()) : ?>
@@ -13,7 +13,7 @@ $this->app->document->addScript('assets:js/jquery-validation-1.13.1/dist/jquery.
     <div class="uk-width-1-1 uk-text-center">
         <span class="uk-text-danger uk-text-large testing-mode">TESTING MODE</span>
     </div>
-    <?php var_dump($CR->order); ?>
+    <?php var_dump($order); ?>
 </div>
 <?php endif; ?>
 <div class="uk-clearfix ttop-checkout-title">
@@ -48,7 +48,7 @@ $this->app->document->addScript('assets:js/jquery-validation-1.13.1/dist/jquery.
     <div class="uk-width-1-1 uk-text-center ttop-checkout-validation-errors">
         
     </div>
-    <?php echo $this->partial($this->page,compact('CR')); ?>
+    <?php echo $this->partial($this->page,compact('order')); ?>
     <div class="uk-width-1-2 uk-container-center uk-margin-top">
         <div class="uk-grid">
             <?php if ($this->buttons['back']['active']) : ?>

@@ -284,6 +284,24 @@ class StoreController extends AppController {
 
     }
 
+    public function pricing() {
+
+        //$id = $this->app->request->get('item_id');
+
+        $id = 405;
+
+        $item = $this->app->table->item->get($id);
+
+        $type = $item->getType()->id;
+
+        foreach($item->getElements() as $element) {
+            var_dump($element->config->get('name'));
+        }
+
+        var_dump($item);
+
+    }
+
     public function product() {
         // get request vars
         $page        = $this->app->request->getInt('page', 1);

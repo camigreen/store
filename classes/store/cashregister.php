@@ -260,7 +260,10 @@ class CashRegister {
 
     public function processPO () {
         // $this->clearOrder();
+        $items = $this->app->cart->create();
         $this->order->transaction_id = "Purchase Order";
+        $this->order->elements->set('items', $items->getAllItems());
+        $this->order->account = $this->app->account->getCurrent()->id;
         $this->app->table->orderdev->save($this->order);
         $result = array(
             'approved' => true,
@@ -268,9 +271,9 @@ class CashRegister {
         );
         $this->order->result = $result;
 
-        //$this->sendNotificationEmail($this->order, 'receipt');
-        //$this->sendNotificationEmail($this->order, 'payment');
-        //$this->clearOrder();
+        $this->sendNotificationEmail($this->order, 'receipt');
+        $this->sendNotificationEmail($this->order, 'payment');
+        $this->clearOrder();
         
         return $this->order;
     }

@@ -16,12 +16,6 @@ class OrderDevTable extends AppTable {
 		parent::__construct($app, '#__zoo_orderdev');
 	}
 
-	public function _initobject($object) {
-
-		return parent::_initobject($object);
-
-	}
-
 
 	/*
 		Function: save

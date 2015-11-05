@@ -49,7 +49,7 @@
 
     StoreItem.prototype = {
         item: {},
-        price: 0,
+        price: {},
         shipping: 0,
         qty: 1,
         total: 0,
@@ -84,7 +84,13 @@
         init: function () {
             this.item = this.$element.data('item');
             this.subitem = this.$element.hasClass('sub-item');
-            this.$price = this.$element.find('#price');
+            this.price.item = this.$element.find('#price').data('price').item;
+            this.price.shipping = this.$element.find('#price').data('price').shipping;
+            this.price.types = this.$element.find('#price').data('price').types;
+            console.log(this.price);
+            this.$element.find('#price').remove();
+            this.$retail = this.$element.find('#retail-price');
+            this.$dealer = this.$element.find('#dealer-price');
             this.$atc = $('#atc-' + this.item.id);
             this.$qty = $('#qty-' + this.item.id);
             
@@ -261,18 +267,21 @@
             
             this.trigger('validation_pass');
 
-            
+            var discount = $.type(this.price.types.dealer) !== 'undefined' ? this.price.types.dealer : 0;
             
             //            Collect all of the options from the form.
             var items = [{
                 id: this.item.id,
                 name: this.item.name,
                 qty: this.qty,
-                price: this.price.toFixed(2),
+                price: this.price.retail.toFixed(2),
                 shipping: this.shipping,
                 attributes: this._getAttributes(),
-                options: this._getOptions()
+                options: this._getOptions(),
+                discount: discount
             }];
+
+            
 //            Add item to the Cart.    
             items = this.trigger('beforeAddToCart', items);
             if (!items) {
@@ -310,7 +319,7 @@
         },
         _calculateShipping: function () {
             var self = this;
-            var shipping = this.$price.data('price').shipping;
+            var shipping = this.price.shipping;
             if(self.settings.pricePoints.shipping.length === 0) {
                 this.shipping = shipping;
             } else {
@@ -325,22 +334,22 @@
         _calculatePrice: function () {
 
             var self = this;
-            if (!this.$price.data('price')) {
-                this.price = 'Price Not Set';
+            if (!this.price.item) {
+                this.price.retail = 'Price Not Set';
                 this._publishPrice();
                 return;
             }
-            var price = this.$price.data('price').item;
-            console.log(price);
+            var price = this.price.item;
             if(self.settings.pricePoints.item.length === 0) {
-                this.price = price;
+                this.price.retail = price;
             } else {
                 $.each(self.settings.pricePoints.item, function (k, v) {
                     price = price[(self.item.hasOwnProperty(v) ? self.item[v] : self._getFieldValue(v))];
                 });
                 
-                this.price = ($.type(price) === 'undefined' ? 0 : price);
+                this.price.retail = ($.type(price) === 'undefined' ? 0 : price);
             }
+            console.log(this.price);
             this._calculateShipping();
             this._publishPrice();
 
@@ -349,14 +358,20 @@
             return $.md5(JSON.stringify(this.item));
         },
         _publishPrice: function () {
-            if ($.type(this.price) === 'string') {
-                this.$price.html('<span class="uk-text-danger">'+this.price+'</span>');
+            if ($.type(this.price.retail) === 'string') {
+                this.$retail.html('<span class="uk-text-danger">'+this.price.retail+'</span>');
                 return;
             }
-            this.total = this.price * this.qty;
+            var price_elem = $('<span class="uk-width-1-1"></span>').append('<i class="currency"></i>').append('<span class="price"></span>');
+            this.total = this.price.retail * this.qty;
             var price = this.trigger('onPublishPrice',this.total);
 //            var price = this.total;
-            this.$price.html(price.toFixed(2));
+            this.$retail.find('.price').html(price.toFixed(2));
+            if($.type(this.price.types) !== 'undefined') {
+                var dealerprice = this.price.retail - (this.price.retail*this.price.types.dealer);
+                this.$dealer.find('.price').html(dealerprice.toFixed(2));
+            }
+            
         },
         _getFields: function () {
             this.fields = this.$element.find('.item-option:not(".sub-item .item-option")');
