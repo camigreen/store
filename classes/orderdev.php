@@ -31,13 +31,11 @@ class OrderDev {
 
 	public function __construct() {
 
-
 	}
 
 	public function save() {
-		$table = $this->app->table->orderdev;
-
-		return $table->save($this);
+		$this->table->save($this);
+		$this->app->session->set('order',$this,'checkout');
 
 	}
 

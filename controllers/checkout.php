@@ -155,12 +155,13 @@ class CheckoutController extends AppController {
         $this->app->document->addScript('assets:js/formhandler.js');
 
         $order = $this->CR->order;
-
+        $next = 'processCC';
         $layout = 'checkout';
         $this->page = 'confirm';
         if($this->account && $this->account->type != 'store') {
             $this->page .= '.'.$this->account->type;
             $this->processCC = 'false';
+            $next = 'processPO';
             
         }
         
@@ -177,7 +178,7 @@ class CheckoutController extends AppController {
                 ),
             'proceed' => array(
                     'active' => true,
-                    'next' => 'reciept',
+                    'next' => $next,
                     'disabled' => false,
                     'label' => 'Proceed'
                 )
@@ -193,6 +194,13 @@ class CheckoutController extends AppController {
     }
 
     public function reciept() {
+        echo 'receipt';
+    }
+
+    public function processPO () {
+        $order = $this->CR->processPayment('PO');
+
+        var_dump($order);
 
     }
 

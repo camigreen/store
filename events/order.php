@@ -24,6 +24,7 @@ class OrderEvent {
 		$order = $event->getSubject();
         $app         = $order->app;
 
+        $order->table = $app->table->orderdev;
         $order->params = $app->parameter->create($order->params);
         $order->elements = $app->parameter->create($order->elements);
         $order->subtotal = (float) $order->subtotal;
