@@ -14,22 +14,29 @@
 class PricesHelper extends AppHelper {
     
     
-    public function create($type, $params = array()) {
+    public function create() {
     	include $this->app->path->path('prices:retail.php');
-        $item = $prices[$type]['item'];
-        $shipping = $prices[$type]['shipping'];
-        $result = array();
-        foreach($params as $param) {
-            if(isset($item[$param])) {
-                $result['item'] = $item[$param];
-            }
-            if(isset($shipping[$param])) {
-                $result['shipping'] = $shipping[$param];
-            }
-        }
-        return $this->app->data->create($result);
+        $_prices = $prices;
+        $prices = $this->app->parameter->create($_prices);
+        var_dump($prices);
+	
+    }
+
+    public function looper ($array = array(), $key = null) {
+    	foreach($array as $k => $value) {
+    		$key = $key ? $key.'.'.$k : $k;
+    		if(is_array($value)) {
+    			$final = $this->looper($value, $key);
+    			continue;
+    		} else {
+    			$final[] = $key;
+    			$key = null;
+    		}
+    		
+    		
+    	}
+    	return $final;
+
     }
 }
-
-class StoreAppException extends AppException {}
 

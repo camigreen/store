@@ -1,213 +1,151 @@
 <?php
 
-$prices['t-top-boat-cover'] = array(
-    'item' => array(
-        '1819' => array(
-            '7oz' => 599.00,
-            '8oz' => 699.00,
-            '9oz' => 849.00
-        ),
-        '2022' => array(
-            '7oz' => 699.00,
-            '8oz' => 899.00,
-            '9oz' => 1049.00
-        ),
-        '23' => array(
-            '7oz' => 749.00,
-            '8oz' => 949.00,
-            '9oz' => 1099.00
-        ),
-        '24' => array(
-            '7oz' => 899.00,
-            '8oz' => 1099.00,
-            '9oz' => 1249.00
-        ),
-        '25' => array(
-            '7oz' => 999.00,
-            '8oz' => 1199.00,
-            '9oz' => 1349.00
-        ),
-        '26' => array(
-            '7oz' => 1099.00,
-            '8oz' => 1299.00,
-            '9oz' => 1449.00
-        ),
-        '27' => array(
-            '7oz' => 1250.00,
-            '8oz' => 1450.00,
-            '9oz' => 1600.00
-        ),
-        '28' => array(
-            '7oz' => 1350.00,
-            '8oz' => 1550.00,
-            '9oz' => 1700.00
-        ),
-        '29' => array(
-            '7oz' => 1450.00,
-            '8oz' => 1650.00,
-            '9oz' => 1800.00
-        ),
-        '30' => array(
-            '7oz' => 1750.00,
-            '8oz' => 1950.00,
-            '9oz' => 2100.00
-        ),
-        '31' => array(
-            '7oz' => 1850.00,
-            '8oz' => 2050.00,
-            '9oz' => 2200.00
-        ),
-        '3234' => array(
-            '7oz' => 2150.00,
-            '8oz' => 2350.00,
-            '9oz' => 2500.00
-        ),
-        '35' => array(
-            '7oz' => 2250.00,
-            '8oz' => 2450.00,
-            '9oz' => 2600.00
-        ),
-        '3637' => array(
-            '7oz' => 2350.00,
-            '8oz' => 2550.00,
-            '9oz' => 2700.00
-        ),
-        '38' => array(
-            '7oz' => 3000.00,
-            '8oz' => 3200.00,
-            '9oz' => 3350.00
-        ),
-    ),
-    'shipping' => array(
-        '1819' => array(
-            'weight' => 22,
-            'price' => 25
-        ),
-        '2022' => array(
-            'weight' => 25,
-            'price' => 30
-        ),
-        '23' => array(
-            'weight' => 26,
-            'price' => 30
-        ),
-        '24' => array(
-            'weight' => 27,
-            'price' => 35
-        ),
-        '25' => array(
-            'weight' => 28,
-            'price' => 35
-        ),
-        '26' => array(
-            'weight' => 29,
-            'price' => 35
-        ),
-        '27' => array(
-            'weight' => 30,
-            'price' => 40
-        ),
-        '28' => array(
-            'weight' => 31,
-            'price' => 40
-        ),
-        '29' => array(
-            'weight' => 32,
-            'price' => 40
-        ),
-        '30' => array(
-            'weight' => 33,
-            'price' => 45
-        ),
-        '31' => array(
-            'weight' => 34,
-            'price' => 45
-        ),
-        '3234' => array(
-            'weight' => 37,
-            'price' => 45
-        ),
-        '35' => array(
-            'weight' => 38,
-            'price' => 45
-        ),
-        '3637' => array(
-            'weight' => 40,
-            'price' => 45
-        ),
-        '38' => array(
-            'weight' => 41,
-            'price' => 45
-        )
-    )
-);
+//******** T-Top Boat Covers  *********
+
+    // Item
+
+$prices['t-top-boat-cover.item.1819.7oz'] = 599;
+$prices['t-top-boat-cover.item.1819.8oz'] = 699;
+$prices['t-top-boat-cover.item.1819.9oz'] = 849;
+
+$prices['t-top-boat-cover.item.2022.7oz'] = 699;
+$prices['t-top-boat-cover.item.2022.8oz'] = 899;
+$prices['t-top-boat-cover.item.2022.9oz'] = 1049;
+
+$prices['t-top-boat-cover.item.23.7oz'] = 749;
+$prices['t-top-boat-cover.item.23.8oz'] = 949;
+$prices['t-top-boat-cover.item.23.9oz'] = 1099;
+
+$prices['t-top-boat-cover.item.24.7oz'] = 899;
+$prices['t-top-boat-cover.item.24.8oz'] = 1099;
+$prices['t-top-boat-cover.item.24.9oz'] = 1249;
+
+$prices['t-top-boat-cover.item.25.7oz'] = 999;
+$prices['t-top-boat-cover.item.25.8oz'] = 1199;
+$prices['t-top-boat-cover.item.25.9oz'] = 1349;
+
+$prices['t-top-boat-cover.item.26.7oz'] = 1099;
+$prices['t-top-boat-cover.item.26.8oz'] = 1299;
+$prices['t-top-boat-cover.item.26.9oz'] = 1449;
+
+$prices['t-top-boat-cover.item.27.7oz'] = 1250;
+$prices['t-top-boat-cover.item.27.8oz'] = 1450;
+$prices['t-top-boat-cover.item.27.9oz'] = 1600;
+
+$prices['t-top-boat-cover.item.28.7oz'] = 1350;
+$prices['t-top-boat-cover.item.28.8oz'] = 1550;
+$prices['t-top-boat-cover.item.28.9oz'] = 1700;
+
+$prices['t-top-boat-cover.item.29.7oz'] = 1450;
+$prices['t-top-boat-cover.item.29.8oz'] = 1650;
+$prices['t-top-boat-cover.item.29.9oz'] = 1800;
+
+$prices['t-top-boat-cover.item.30.7oz'] = 1750;
+$prices['t-top-boat-cover.item.30.8oz'] = 1950;
+$prices['t-top-boat-cover.item.30.9oz'] = 2100;
+
+$prices['t-top-boat-cover.item.31.7oz'] = 1850;
+$prices['t-top-boat-cover.item.31.8oz'] = 2050;
+$prices['t-top-boat-cover.item.31.9oz'] = 2200;
+
+$prices['t-top-boat-cover.item.3234.7oz'] = 2150;
+$prices['t-top-boat-cover.item.3234.8oz'] = 2350;
+$prices['t-top-boat-cover.item.3234.9oz'] = 2500;
+
+$prices['t-top-boat-cover.item.35.7oz'] = 2250;
+$prices['t-top-boat-cover.item.35.8oz'] = 2450;
+$prices['t-top-boat-cover.item.35.9oz'] = 2600;
+
+$prices['t-top-boat-cover.item.3637.7oz'] = 2350;
+$prices['t-top-boat-cover.item.3637.8oz'] = 2550;
+$prices['t-top-boat-cover.item.3637.9oz'] = 2700;
+
+$prices['t-top-boat-cover.item.38.7oz'] = 3000;
+$prices['t-top-boat-cover.item.38.8oz'] = 3200;
+$prices['t-top-boat-cover.item.38.9oz'] = 3350;
+
+    // Shipping
+
+$prices['t-top-boat-cover.shipping.1819.weight'] = 22;
+$prices['t-top-boat-cover.shipping.1819.price'] = 25;
+
+$prices['t-top-boat-cover.shipping.2022.weight'] = 25;
+$prices['t-top-boat-cover.shipping.2022.price'] = 30;
+
+$prices['t-top-boat-cover.shipping.23.weight'] = 26;
+$prices['t-top-boat-cover.shipping.23.price'] = 30;
+
+$prices['t-top-boat-cover.shipping.24.weight'] = 27;
+$prices['t-top-boat-cover.shipping.24.price'] = 35;
+
+$prices['t-top-boat-cover.shipping.25.weight'] = 28;
+$prices['t-top-boat-cover.shipping.25.price'] = 35;
+
+$prices['t-top-boat-cover.shipping.26.weight'] = 29;
+$prices['t-top-boat-cover.shipping.26.price'] = 35;
+
+$prices['t-top-boat-cover.shipping.27.weight'] = 30;
+$prices['t-top-boat-cover.shipping.27.price'] = 40;
+
+$prices['t-top-boat-cover.shipping.28.weight'] = 31;
+$prices['t-top-boat-cover.shipping.28.price'] = 40;
+
+$prices['t-top-boat-cover.shipping.29.weight'] = 32;
+$prices['t-top-boat-cover.shipping.29.price'] = 40;
+
+$prices['t-top-boat-cover.shipping.30.weight'] = 33;
+$prices['t-top-boat-cover.shipping.30.price'] = 45;
+
+$prices['t-top-boat-cover.shipping.31.weight'] = 34;
+$prices['t-top-boat-cover.shipping.31.price'] = 45;
+
+$prices['t-top-boat-cover.shipping.3234.weight'] = 37;
+$prices['t-top-boat-cover.shipping.3234.price'] = 45;
+
+$prices['t-top-boat-cover.shipping.35.weight'] = 38;
+$prices['t-top-boat-cover.shipping.35.price'] = 45;
+
+$prices['t-top-boat-cover.shipping.3637.weight'] = 40;
+$prices['t-top-boat-cover.shipping.3637.price'] = 45;
+
+$prices['t-top-boat-cover.shipping.38.weight'] = 41;
+$prices['t-top-boat-cover.shipping.38.price'] = 45;
 
 //TTop Accessories
+$prices['sandbags.item'] = 15;
+$prices['sandbags.shipping.weight'] = 8;
+$prices['sandbags.shipping.price'] = 7.50;
 
-$prices['sandbags'] = array(
-    'item' => 15.00,
-    'shipping' => array(
-        'weight' => 8,
-        'price' => 7.50
-    )
-);
-$prices['tie-down-set'] = array(
-    'item' => 25.00,
-    'shipping' => array(
-        'weight' => 2
-    )
-);
-$prices['suction-cups'] = array(
-    'item' => 38.00,
-    'shipping' => array(
-        'weight' => 1
-    )
-);
+$prices['tie-down-set.item'] = 25;
+$prices['tie-down-set.shipping.weight'] = 2;
+$prices['tie-down-set.shipping.price'] = 0;
 
-$prices['storage-bag'] = array(
-    'item' => array(
-        'l' => 30.00,
-        'xl' => 45.00
-    ),
-    'shipping' => array(
-        'weight' => 2
-    )
-);
+$prices['suction-cups.item'] = 38;
+$prices['suction-cups.shipping.weight'] = 1;
+$prices['suction-cups.shipping.price'] = 0;
 
+$prices['storage-bag.item.l'] = 30;
+$prices['storage-bag.item.xl'] = 45;
+$prices['storage-bag.shipping.weight'] = 2;
+$prices['storage-bag.shipping.price'] = 0;
 
 // Boat Shade Kit
 
-$prices['bsk'] = array(
-    'item' => array(
-        'unk' => 'Choose Measurements',
-        'A' => array(
-            'full' => 499.00,
-            'shade_only' => 280.00
-        ),
-        'B' => array(
-            'full' => 579.00,
-            'shade_only' => 355.00
-        ),
-        'C' => array(
-            'full' => 659.00,
-            'shade_only' => 439.00
-        ),
-        'D' => array(
-            'full' => 749.00,
-            'shade_only' => 525.00
-        ),
-    ),
-    'shipping' => array(
-        'full' => array(
-            'weight' => 15,
-            'price' => 0
-        ),
-        'shade_only' => array(
-            'weight' => 4,
-            'price' => 0
-        )
-    )
-);
+// Item
+$prices['bsk.item.unk'] = 'Choose Measurements';
+$prices['bsk.item.A.full'] = 499;
+$prices['bsk.item.A.shade_only'] = 280;
+$prices['bsk.item.B.full'] = 579;
+$prices['bsk.item.B.shade_only'] = 355;
+$prices['bsk.item.C.full'] = 659;
+$prices['bsk.item.C.shade_only'] = 439;
+$prices['bsk.item.D.full'] = 749;
+$prices['bsk.item.D.shade_only'] = 525;
+
+$prices['bsk.shipping.full.weight'] = 15;
+$prices['bsk.shipping.full.price'] = 0;
+$prices['bsk.shipping.shade_only.weight'] = 4;
+$prices['bsk.shipping.shade_only.price'] = 0;
 
 //BSK Accessories
 

@@ -571,9 +571,20 @@ class StoreController extends AppController {
         echo json_encode($order->result);
     }
 
+    public function getPrice() {
+        $prices = $this->app->prices->create();
+        // $this->outputToJSON($prices);
+
+    }
+
+    public function outputToJSON($output = null) {
+        $this->app->document->setMimeEncoding('application/json');
+        echo json_encode($output);
+    }
+
 }
 
 /*
-    Class: DefaultControllerException
+    Class: StoreControllerException
 */
-class ProductsControllerException extends AppException {}
+class StoreControllerException extends AppException {}
