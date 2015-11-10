@@ -60,6 +60,10 @@
 				<option value=".20">20%</option>
 				<option value=".25">25%</option>
 			</field>
+			<field name="taxable" type="dropdown" width="1-4" default="0" label="Sales Tax" description="Is the dealer charged sales tax?">
+				<option value="0">No</option>
+				<option value="1">Yes</option>
+			</field>
 		</fieldset>
 		<fieldset group="users" label="Assigned Users" controlname="profiles" width="1-1">
 			<field name="users" type="userselect" width="1-2" default="" label="Account Users" description="" />

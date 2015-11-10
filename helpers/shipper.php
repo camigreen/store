@@ -65,20 +65,24 @@ define('UPS_SHIPPER_COUNTRY_CODE', 'US');
 class ShipperHelper extends AppHelper {
 
     private $destination;
-    private $packages;
+    private $packages = array();
+    public $packageWeightMax = 50;
+    public $packageInsuredValuePercentage = .30;
+    protected $availableShipMethods = array('03');
+    protected $_rates;
 
 
     public function setDestination($address) {
 
         $_address = new \SimpleUPS\Address();
-        $_address->setStreet($address['addressLine1']);
+        $_address->setStreet($address['street1']);
         $_address->setCity($address['city']);
         if(isset($address['state'])) {
             $_address->setStateProvinceCode($address['state']);
         }
         
-        $_address->setPostalCode($address['postalcode']);
-        $_address->setCountryCode($address['countrycode']);
+        $_address->setPostalCode($address['zip']);
+        $_address->setCountryCode('US');
         if (UPS::isValidAddress($_address)) {
             echo 'address Validated';
             $correctedAddress = UPS::getCorrectedAddress($_address);
@@ -90,9 +94,9 @@ class ShipperHelper extends AppHelper {
         }
         $this->destination = new \SimpleUPS\InstructionalAddress($correctedAddress);
         
-        $this->destination->setAddressee($address['addressee']);
-        $this->destination->setAddressLine2($address['addressLine2']);
-        $this->destination->setAddressLine3($address['addressLine3']);
+        $this->destination->setAddressee($address['name']);
+        $this->destination->setAddressLine2($address['street2']);
+        // $this->destination->setAddressLine3($address['addressLine3']);
         $this->destination->validated = true;
         var_dump($this->destination);
         return $this;
@@ -100,32 +104,28 @@ class ShipperHelper extends AppHelper {
 
     }
 
-    protected function assemblePackages ($items) {
-        $NewPackage = array(
-            'height' => 0,
-            'width' => 0,
-            'length' => 0,
-            'weight' => 0,
-            'insurance' => 0
-        );
-        $packages = array();
-        $package = $NewPackage;
+    public function assemblePackages ($items) {
+        $newpackage = $this->app->parameter->create();
+        $count = 1;
         foreach($items as $item) {
-            $items_in_box = 1;
+            $shipping = $this->app->prices->getShipping($item->price->group, array('24'));
             $qty = $item->qty;
             while($qty >= 1) {
-                if(($package['weight'] + $item->shipping->weight) > $this->PackageWeightMax && $items_in_box >= 1) {
-                    $packages[] = $package;
-                    $package = $NewPackage;
+                //var_dump($package->get('weight', 0) + $shipping->get('weight', 0));
+                if(($newpackage->get('weight', 0) + $shipping->get('weight')) > $this->packageWeightMax) {
+                    $package = new \SimpleUPS\Rates\Package();
+                    $package->setWeight($newpackage->get('weight'))->setDeclaredValue($newpackage->get('insurance', 'USD'));
+                    $this->packages[] = $package;
+                    $newpackage = $this->app->parameter->create();
+                    $count = 1;
                 }
-                $package['weight'] += $item->shipping->weight;
-                $package['insurance'] += $item->price*$this->PackageInsuredValuePercentage;
-                $items_in_box++;
+                $newpackage->set('weight', $newpackage->get('weight', 0) + $shipping->get('weight'));
+                $newpackage->set('insurance', $newpackage->get('insurance', 0.00) + $item->getPrice()*$this->packageInsuredValuePercentage);
+                $count++;
                 $qty--;
             }
         }
-        $packages[] = $package;
-        $this->packages = $packages;
+        $this->packages[] = $package;
     }
 
     public function getRates() {
@@ -133,20 +133,18 @@ class ShipperHelper extends AppHelper {
             return;
         try {
             //define a package, we could specify the dimensions of the box if we wanted a more accurate estimate
-            $package = new \SimpleUPS\Rates\Package();
-            $package->setWeight('25')->setDeclaredValue(300.00,'USD');
-
+            
             $shipment = new \SimpleUPS\Rates\Shipment();
             $shipment->setDestination($this->destination);
-            $shipment->addPackage($package);
+            foreach($this->packages as $package) {
+                $shipment->addPackage($package);
+            }
             $rates = UPS::getRates($shipment);
-            echo 'Rates: ';
-
-            echo '<ul>';
-                foreach ($rates as $shippingMethod)
-                    echo '<li>'.$shippingMethod->getService()->getDescription().' ($'.$shippingMethod->getTotalCharges().')</li>';
-
-            echo '</ul>';
+            foreach ($rates as $shippingMethod) {
+                $this->_rates[$shippingMethod->getService()->getCode()] = $shippingMethod;
+            }
+            return $this->_rates;
+                    
 
         } catch (ShipperException $e) {
             //doh, something went wrong
@@ -157,6 +155,10 @@ class ShipperHelper extends AppHelper {
             UPS::getDebugOutput();
         }
         
+    }
+
+    public function getRateByService($service) {
+
     }
 
     public function validateAddress($address) {
@@ -177,6 +179,23 @@ class ShipperHelper extends AppHelper {
         $pc = new \SimpleUPS\PostalCodes();
         return $pc->get($code);
 
+    }
+
+    public function getAvailableShippingMethods() {
+        $method = new \SimpleUPS\Service();
+        $method->setCode('LP')->setDescription('Local Pickup - FREE');
+        $methods[] = $method;
+        foreach($this->availableShipMethods as $shipMethod) {
+            $method = new \SimpleUPS\Service();
+            $method->setCode($shipMethod);
+            $description = $method->getDescription();
+            $description = 'UPS - '. $description;
+            $method->setDescription($description);
+            $methods[] = $method;
+        }
+
+        return $methods;
+ 
     }
 
     

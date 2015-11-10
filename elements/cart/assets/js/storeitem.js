@@ -20,10 +20,7 @@
             validate: true,
             debug: true,
             confirm: false,
-            pricePoints: {
-                item: [],
-                shipping: []
-            },
+            pricePoints: [],
             events: {}
         };
         this.settings = $.extend(true, this.defaults, options);
@@ -84,10 +81,6 @@
         init: function () {
             this.item = this.$element.data('item');
             this.subitem = this.$element.hasClass('sub-item');
-            this.price.item = this.$element.find('#price').data('price').item;
-            this.price.shipping = this.$element.find('#price').data('price').shipping;
-            this.price.types = this.$element.find('#price').data('price').types;
-            console.log(this.price);
             this.$element.find('#price').remove();
             this.$retail = this.$element.find('#retail-price');
             this.$dealer = this.$element.find('#dealer-price');
@@ -97,7 +90,7 @@
             this._getFields();
             this._getOptions();
             this._createConfirmModal();
-            this._calculatePrice();
+            //this._publishPrice();
             this.trigger('onInit');
             
         },
@@ -224,7 +217,6 @@
                             });
                             this.confirm.modal.show();
                             return false;
-                            console.log('stopped');
                     }
                     console.log('stopped 2');
                     return true;
@@ -266,19 +258,16 @@
             }
             
             this.trigger('validation_pass');
-
-            var discount = $.type(this.price.types.dealer) !== 'undefined' ? this.price.types.dealer : 0;
             
             //            Collect all of the options from the form.
             var items = [{
                 id: this.item.id,
                 name: this.item.name,
+                price: this._getPriceData(),
                 qty: this.qty,
-                price: this.price.retail.toFixed(2),
                 shipping: this.shipping,
                 attributes: this._getAttributes(),
-                options: this._getOptions(),
-                discount: discount
+                options: this._getOptions()
             }];
 
             
@@ -317,60 +306,47 @@
             error.html('');
             this.confirm.modal.hide();
         },
-        _calculateShipping: function () {
-            var self = this;
-            var shipping = this.price.shipping;
-            if(self.settings.pricePoints.shipping.length === 0) {
-                this.shipping = shipping;
-            } else {
-                $.each(self.settings.pricePoints.shipping, function (k, v) {
-                    console.log(v);
-                    shipping = shipping[(self.item.hasOwnProperty(v) ? self.item[v] : self._getFieldValue(v))];
-                });
-
-                this.shipping = shipping;
-            }
-        },
-        _calculatePrice: function () {
-
-            var self = this;
-            if (!this.price.item) {
-                this.price.retail = 'Price Not Set';
-                this._publishPrice();
-                return;
-            }
-            var price = this.price.item;
-            if(self.settings.pricePoints.item.length === 0) {
-                this.price.retail = price;
-            } else {
-                $.each(self.settings.pricePoints.item, function (k, v) {
-                    price = price[(self.item.hasOwnProperty(v) ? self.item[v] : self._getFieldValue(v))];
-                });
-                
-                this.price.retail = ($.type(price) === 'undefined' ? 0 : price);
-            }
-            console.log(this.price);
-            this._calculateShipping();
-            this._publishPrice();
-
-        },
         _cartItemID: function () {
             return $.md5(JSON.stringify(this.item));
         },
+        _getPriceData: function() {
+            var priceData = {group: this.item.priceGroup, options: []};
+            var opts = this._getOptions();
+            var attributes = this._getAttributes();
+            $.each(this.settings.pricePoints, function(k,v) {
+                console.log(v);
+                if($.type(opts[v]) !== 'undefined') {
+                    priceData['options'].push(opts[v].value);
+                }
+                if($.type(attributes[v]) !== 'undefined') {
+                    priceData['options'].push(attributes[v].value);
+                }
+            })
+            return priceData;
+        },
         _publishPrice: function () {
-            if ($.type(this.price.retail) === 'string') {
-                this.$retail.html('<span class="uk-text-danger">'+this.price.retail+'</span>');
-                return;
-            }
-            var price_elem = $('<span class="uk-width-1-1"></span>').append('<i class="currency"></i>').append('<span class="price"></span>');
-            this.total = this.price.retail * this.qty;
-            var price = this.trigger('onPublishPrice',this.total);
-//            var price = this.total;
-            this.$retail.find('.price').html(price.toFixed(2));
-            if($.type(this.price.types) !== 'undefined') {
-                var dealerprice = this.price.retail - (this.price.retail*this.price.types.dealer);
-                this.$dealer.find('.price').html(dealerprice.toFixed(2));
-            }
+            var self = this;
+            var priceData = this._getPriceData();
+            $.ajax({
+                type: 'POST',
+                url: "?option=com_zoo&controller=store&task=getPrice&format=json",
+                data: self.priceData,
+                success: function(data){
+                    var elem = $('#'+self.item.id+'-price span');
+                    price = self.trigger('onPublishPrice', data.price);
+                    console.log(price);
+                    elem.html(price.toFixed(2));
+                },
+                error: function(data, status, error) {
+                    var elem = $('#'+self.item.id+'-price span');
+                    elem.html('ERROR');
+                    console.log('Error');
+                    console.log(status);
+                    console.log(error);
+                },
+                dataType: 'json'
+            });
+
             
         },
         _getFields: function () {
@@ -406,11 +382,7 @@
         _getAttributes: function () {
             var itemAttributes = {};
             var attributes;
-            if (this.subitem) {
-                attributes = this.$element.find('.item-attribute');
-            } else {
-                attributes = this.$element.find('.item-attribute:not(".sub-item .item-attribute")');
-            }
+            attributes = this.$element.find('fieldset#'+this.item.id+'-item-attributes input');
             
             $.each(attributes, function(k, v){
                 var elem = $(this);
@@ -432,8 +404,7 @@
         },
         _refresh: function () {
             this._updateQuantity();
-            this._calculatePrice();
-            this._calculateShipping();
+            this._publishPrice();
             if (this.validation.status === 'failed') {
                 this._validate();
             }

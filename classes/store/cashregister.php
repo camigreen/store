@@ -55,6 +55,11 @@ class CashRegister {
         $this->merchant = $this->app->merchant->anet;
         $this->order = $this->app->orderdev->create();
         $this->application = $this->app->zoo->getApplication();
+
+        $this->account = $this->app->account->getCurrent();
+        // var_dump($this->account);
+        // var_dump($this->account->isTaxable());
+        // var_dump($this->isTaxable());
         $this->setNotificationEmails();
         $this->calculateTotals();
     }
@@ -154,18 +159,12 @@ class CashRegister {
 
     
     public function getShippingRate() {
-        if(!$shipping = $this->order->elements->get('shipping')) {
-            return $this->shipping;
-        }
-        if($this->order->elements->get('localPickup') || !$shipping->get('zip')) {
-            $this->shipping = 0;
-        } else {
-            $this->app->loader->register('Shipper','classes:store/shipper.php');
-            $this->shipper = new Shipper($this->app, $this->order);
-            $this->shipping = $this->shipper->getRate();
-        }
-            
-        return $this->shipping;
+        $ship = $this->app->shipper;
+        $ship->setDestination($this->order->elements->get('shipping.'));
+        $ship->assemblePackages($this->app->cart->getAllItems());
+        $rates = $ship->getRates();
+        var_dump($rates);
+
     }
     
     private function clearTotals() {
@@ -177,12 +176,11 @@ class CashRegister {
         $items = $this->app->cart->create()->getAllItems();
         $this->clearTotals();
         foreach ($items as $item) {
-            $item->total = $item->price*$item->qty;
-            $this->subtotal += $item->total;
+            $this->subtotal += $item->getTotal();
             $this->taxTotal += ($item->taxable ? ($item->total*$this->taxRate) : 0);
         }
         
-        if($this->taxExempt) {
+        if(!$this->isTaxable()) {
             $this->taxTotal = 0;
         }
 
@@ -206,12 +204,19 @@ class CashRegister {
         $this->order->total = $this->total;
     }
 
-    public function setTaxExempt() {
-        $state = $this->order->get('billing')->get('state');
+    public function isTaxable() {
+
+        $state = $this->order->elements->get('billing.state');
+        $taxable = false;
         if ($state) {
-            $this->taxExempt = (!in_array($state,$this->taxableStates) && !$this->order->get('localPickup'));
+            $taxable = (!in_array($state,$this->taxableStates) && !$this->order->get('localPickup'));
         }
-        $this->calculateTotals();
+
+        if($this->account) {
+            $taxable = $this->account->isTaxable();
+        }
+
+        return $taxable;
     }
 
     public function getCurrency($key) {
@@ -224,8 +229,7 @@ class CashRegister {
     public function import() {
         $this->order->setSalesPerson(); 
         $this->scanItems();
-        $this->setFormData();
-        $this->setTaxExempt();
+        //$this->setFormData();
         $this->calculateTotals();
     }
 

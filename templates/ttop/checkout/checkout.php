@@ -6,6 +6,7 @@
  */
 
 $order = $this->order;
+$form = $this->form;
 $this->app->document->addScript('assets:js/jquery-validation-1.13.1/dist/jquery.validate.min.js');
 ?>
 <?php if($this->app->merchant->testMode()) : ?>
@@ -48,7 +49,7 @@ $this->app->document->addScript('assets:js/jquery-validation-1.13.1/dist/jquery.
     <div class="uk-width-1-1 uk-text-center ttop-checkout-validation-errors">
         
     </div>
-    <?php echo $this->partial($this->page,compact('order')); ?>
+    <?php echo $this->partial($this->page,compact('order', 'form')); ?>
     <div class="uk-width-1-2 uk-container-center uk-margin-top">
         <div class="uk-grid">
             <?php if ($this->buttons['back']['active']) : ?>

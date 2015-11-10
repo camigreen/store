@@ -7,10 +7,29 @@
  */
 $elements = $this->order->elements;
 $states = new SimpleUPS\PostalCodes();
+var_dump($this->form);
 ?>
 
 <div class="uk-width-2-3 uk-container-center"> 
         <div class="uk-width-1-1">
+            <?php $this->form->setValues($elements->get('billing.')); ?>
+            <?php if($this->form->checkGroup('billing')) : ?>
+                <div class="uk-form-row">
+                    <fieldset id="billing">
+                        <legend>Billing Address</legend>
+                        <?php echo $this->form->render('billing')?>
+                    </fieldset>
+                </div>
+            <?php endif; ?>
+            <?php $this->form->setValues($elements->get('shipping.')); ?>
+            <?php if($this->form->checkGroup('shipping')) : ?>
+                <div class="uk-form-row">
+                    <fieldset id="shipping">
+                        <legend>Shipping Address</legend>
+                        <?php echo $this->form->render('shipping')?>
+                    </fieldset>
+                </div>
+            <?php endif; ?>
             <fieldset id="billing">
                 <div class="uk-grid" data-uk-margin>
                     <div class="uk-width-1-1">
@@ -106,6 +125,12 @@ $states = new SimpleUPS\PostalCodes();
                     </div>
                     <div class="uk-width-1-1">
                         <input type="email" class="uk-width-1-1 ttop-checkout-field" name="elements[confirm_email]" placeholder="Confirm E-mail Address" value="<?php echo $elements->get('confirm_email'); ?>"/>
+                    </div>
+                    <div class="uk-width-1-1">
+                        <fieldset id="shipping_method">
+                            <input type="email" class="uk-width-1-1 ttop-checkout-field" name="elements[confirm_email]" placeholder="Confirm E-mail Address" value="<?php echo $elements->get('confirm_email'); ?>"/>
+                        </fieldset>
+                        
                     </div>
                     <div class='uk-width-1-1'>
                         <div class='uk-text-large'>Local Pickup</div>

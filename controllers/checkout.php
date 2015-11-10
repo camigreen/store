@@ -80,6 +80,8 @@ class CheckoutController extends AppController {
 
         $order = $this->CR->order;
 
+        var_dump($this->CR->getShippingRate());
+
         $user = $this->app->userprofile->getCurrent();
         $this->page = 'customer';
         if($this->account && $this->account->type != 'store') {
@@ -93,6 +95,10 @@ class CheckoutController extends AppController {
             $order->elements->set('email', $user->getUser()->email);
             $order->elements->set('confirm_email', $user->getUser()->email);
         }
+
+        $type = 'customer';
+
+        $this->form = $this->app->form->create(array($this->template->getPath().'/checkout/config.xml', compact('type')));
 
         $layout = 'checkout';
         

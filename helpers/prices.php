@@ -12,14 +12,37 @@
  * @author Shawn
  */
 class PricesHelper extends AppHelper {
+
     
-    
-    public function create() {
-    	include $this->app->path->path('prices:retail.php');
-        $_prices = $prices;
-        $prices = $this->app->parameter->create($_prices);
-        var_dump($prices);
+    public function getRetail($group, $options = array(), $default = null, $formatCurrency = false) {
+    	include $this->app->path->path('prices:prices.php');
+        $prices = $item;
+        $prices = $this->app->parameter->create($prices);
+        $search = $group;
+        $search .= !empty($options) ? '.'.implode('.', $options) : '';
+        if(!$result = $prices->get($search)) {
+            $result = $default;
+        }
+        if($formatCurrency) {
+            $result = $this->app->number->currency($result ,array('currency' => 'USD'));
+        }
+        return $result;
 	
+    }
+
+    public function getShipping($group, $options = array(), $default = array()) {
+        include $this->app->path->path('prices:prices.php');
+        $prices = $shipping;
+        $prices = $this->app->parameter->create($prices);
+        $search = $group;
+        $search .= !empty($options) ? '.'.implode('.', $options).'.' : '.';
+        var_dump($search);
+        if(!$result = $prices->get($search)) {
+            $result = $default;
+        }
+        $result = $this->app->parameter->create($result);
+        var_dump($result);
+        return $result;
     }
 
     public function looper ($array = array(), $key = null) {

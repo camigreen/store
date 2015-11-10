@@ -15,6 +15,7 @@
         <position name="options">Options</position>
 		<position name="bottom">Bottom</position>
         <position name="accessories">Accessories</position>
+        <position name="item_attributes">Item Attributes</position>
         <position name="modals">Modals</position>
 	</positions>
 	<positions layout="cover">

@@ -46,7 +46,9 @@ class CartHelper extends AppHelper {
     public function add($items) {
 
     	foreach($items as $key => $item) {
-
+            $price = $this->app->parameter->create($item['price']);
+            $price->set('total', 0.00);
+            $item['price'] = $price;
     		$_item = new CartItem($this->app, $item);
             $sku = $_item->sku;
             if (isset($this->_items[$sku])) {
@@ -136,8 +138,6 @@ class CartItem {
     public $make;
     
     public $model;
-
-    public $discount = 0;
     
     public $pricepoints = array();
     
@@ -148,11 +148,12 @@ class CartItem {
     public $app;
     
     public function __construct($app, $item) {
+
         
         foreach ($item as $key => $value) {
             $this->$key = $value;
         }
-        $this->discount = (float) $this->discount;
+        
         $this->app = $app;
         $this->options = $app->parameter->create($this->options);
         $this->attributes = $app->parameter->create($this->attributes);
@@ -190,10 +191,14 @@ class CartItem {
         $this->sku = hash('md5', $this->id.$options);
         return $this->sku;
     }
+
+    public function getPrice() {
+        return $this->app->prices->getRetail($this->price->group, $this->price->options);
+    }
     
     public function getTotal() {
-        $discount = $this->price*$this->discount;
-        $this->total = ($this->price - $discount)*$this->qty;
+        $price = (float) $this->getPrice();
+        $this->total = $price*$this->qty;
         return $this->total;
     }
 

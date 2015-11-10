@@ -262,10 +262,11 @@ class AppForm {
 							$this->setXML($fieldset);
 					
 				}
-
 				return true;
 			}
 		}
+
+
 
 		return false;
 	}
@@ -373,10 +374,11 @@ class AppForm {
 				$type = (string) $field->attributes()->type;
 				$name = (string) $field->attributes()->name;
 				$width = (string) $field->attributes()->width;
+				$required = (bool) $field->attributes()->required;
 				$width = $width ? $width : '1-1';
 				$default = strlen((string) $field->attributes()->default) > 0 ? (string) $field->attributes()->default : null; 
 				$value = $this->getValue((string) $field->attributes()->name, $default);
-				$class = 'uk-width-1-1';
+				$class = 'uk-width-1-1' . ($required ? ' required' : '');
 				$control_name = $field->attributes()->controlname ? $field->attributes()->controlname : $group_control_name;
 
 				$_field = '<div class="field">'.$this->app->field->render($type, $name, $value, $field, array('control_name' => $control_name, 'parent' => $this, 'class' => $class)).'</div>';
