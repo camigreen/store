@@ -158,13 +158,23 @@ class CashRegister {
     }
 
     
-    public function getShippingRate() {
+    public function getShippingRate($service = null) {
+        if(!$service) {
+            return 0;
+        }
+        $markup = $this->application->getParams()->get('global.shipping.ship_markup', 0);
+        $markup = intval($markup)/100;
         $ship = $this->app->shipper;
-        $ship->setDestination($this->order->elements->get('shipping.'));
-        $ship->assemblePackages($this->app->cart->getAllItems());
-        $rates = $ship->getRates();
-        var_dump($rates);
+        $ship_to = $this->app->parameter->create($this->order->elements->get('shipping.'));
+        $rates = $ship->setDestination($ship_to)->assemblePackages($this->app->cart->getAllItems())->getRates();
+        $rate = 0;
+        foreach($rates as $shippingMethod) {
+            if($shippingMethod->getService()->getCode() == $service) {
+                $rate = $shippingMethod->getTotalCharges();
+            }
+        }
 
+        return $rate += ($rate * $markup);
     }
     
     private function clearTotals() {
@@ -194,7 +204,7 @@ class CashRegister {
         //     $this->taxTotal += $this->taxTotal*$this->order->service_fee;
         // }
 
-        $this->shipping = $this->getShippingRate();
+        $this->shipping = $this->getShippingRate($this->order->elements->get('shipping_method'));
 
         $this->total = $this->subtotal + $this->taxTotal + $this->shipping;
 

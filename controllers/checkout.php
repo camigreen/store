@@ -80,20 +80,25 @@ class CheckoutController extends AppController {
 
         $order = $this->CR->order;
 
-        var_dump($this->CR->getShippingRate());
-
         $user = $this->app->userprofile->getCurrent();
         $this->page = 'customer';
         if($this->account && $this->account->type != 'store') {
             $this->page .= '.'.$this->account->type;
-            $order->elements->set('billing.', $this->account->elements->get('billing'));
-            $order->elements->set('billing.phoneNumber', $user->elements->get('office_phone'));
-            $order->elements->set('billing.altNumber', $user->elements->get('mobile_phone'));
-            $order->elements->set('shipping.', $this->account->elements->get('shipping'));
-            $order->elements->set('shipping.phoneNumber', $user->elements->get('office_phone'));
-            $order->elements->set('shipping.altNumber', $user->elements->get('mobile_phone'));
-            $order->elements->set('email', $user->getUser()->email);
-            $order->elements->set('confirm_email', $user->getUser()->email);
+            if(!$order->elements->get('billing.')) {
+                $order->elements->set('billing.', $this->account->elements->get('billing'));
+                $order->elements->set('billing.phoneNumber', $user->elements->get('office_phone'));
+                $order->elements->set('billing.altNumber', $user->elements->get('mobile_phone'));
+            }
+            if(!$order->elements->get('shipping.')) {
+                $order->elements->set('shipping.', $this->account->elements->get('shipping'));
+                $order->elements->set('shipping.phoneNumber', $user->elements->get('office_phone'));
+                $order->elements->set('shipping.altNumber', $user->elements->get('mobile_phone'));
+            }
+            if(!$order->elements->get('email') && $order->elements->get('confirm_email')) {
+                $order->elements->set('email', $user->getUser()->email);
+                $order->elements->set('confirm_email', $user->getUser()->email);
+            }
+            
         }
 
         $type = 'customer';
