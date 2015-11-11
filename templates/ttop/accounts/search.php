@@ -36,7 +36,7 @@
 						</td>
 						<td><?php echo $account->id; ?></td>
 						<td><?php echo $account->name; ?></td>
-						<td><?php echo $account->number; ?></td>
+						<td><?php echo $account->elements->get('account_number.number'); ?></td>
 						<td><?php echo $account->getType(); ?></td>
 						<td><?php echo $account->getState(); ?></td>
 					</tr>
