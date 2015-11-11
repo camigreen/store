@@ -237,6 +237,9 @@ class UserProfile {
     }
 
     public function removeAccountMap() {
+        if(!$this->id) {
+            return;
+        }
         $query = 'DELETE FROM #__zoo_account_user_map WHERE child = '.$this->id;
         $this->app->database->query($query);
 
