@@ -41,7 +41,7 @@
 			<field name="street2" type="text" width="1-1" default="" label="Street Address Line 2"/>
 			<field name="city" type="text" width="3-6" default="" label="City" />
 			<field name="state" type="stateslist" width="2-6" default="" label="State" />
-			<field name="zip" type="text" width="1-6" default="" label="Zip Code" />
+			<field name="postalCode" type="text" width="1-6" default="" label="Postal Code" />
 		</fieldset>
 		<fieldset group="shipping" label="Shipping Address" controlname="elements[shipping]" width="1-2">
 			<field name="name" type="text" width="1-1" default="" label="Shipping Name"/>
@@ -49,7 +49,7 @@
 			<field name="street2" type="text" width="1-1" default="" label="Street Address Line 2"/>
 			<field name="city" type="text" width="3-6" default="" label="City" />
 			<field name="state" type="stateslist" width="2-6" default="" label="State" />
-			<field name="zip" type="text" width="1-6" default="" label="Zip Code" />
+			<field name="postalCode" type="text" width="1-6" default="" label="Postal Code" />
 		</fieldset>
 		<fieldset group="pricing" label="Account Pricing" controlname="elements[pricing]" width="1-1">
 			<field name="discount" type="dropdown" width="1-4" default="" label="Dealer Price Discount" description="The dealer price discount.">

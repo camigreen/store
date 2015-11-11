@@ -36,12 +36,10 @@ class PricesHelper extends AppHelper {
         $prices = $this->app->parameter->create($prices);
         $search = $group;
         $search .= !empty($options) ? '.'.implode('.', $options).'.' : '.';
-        var_dump($search);
         if(!$result = $prices->get($search)) {
             $result = $default;
         }
         $result = $this->app->parameter->create($result);
-        var_dump($result);
         return $result;
     }
 

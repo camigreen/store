@@ -211,7 +211,12 @@ class AccountController extends AppController {
         $elements = $this->app->parameter->create();
         if(isset($post['elements'])) {
             foreach($post['elements'] as $key => $value) {
-                $elements->set($key, $value);
+                if(is_array($value)) {
+                    $elements->set($key.'.', $value);  
+                } else {
+                    $elements->set($key, $value);
+                }
+                
             }
         }
         

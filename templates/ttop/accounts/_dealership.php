@@ -7,7 +7,7 @@
 		</fieldset>
 	</div>
 <?php endif; ?>
-<?php $this->form->setValues($this->account->elements->get('poc')); ?>
+<?php $this->form->setValues($this->account->elements->get('poc.')); ?>
 <?php if($this->form->checkGroup('poc')) : ?>
 	<div class="uk-form-row">
 		<fieldset id="poc">
@@ -16,7 +16,7 @@
 		</fieldset>
 	</div>
 <?php endif; ?>
-<?php $this->form->setValues($this->account->elements->get('billing')); ?>
+<?php $this->form->setValues($this->account->elements->get('billing.')); ?>
 <?php if($this->form->checkGroup('billing')) : ?>
 	<div class="uk-form-row">
 		<fieldset id="billing">
@@ -25,7 +25,7 @@
 		</fieldset>
 	</div>
 <?php endif; ?>
-<?php $this->form->setValues($this->account->elements->get('shipping')); ?>
+<?php $this->form->setValues($this->account->elements->get('shipping.')); ?>
 <?php if($this->form->checkGroup('shipping')) : ?>
 	<div class="uk-form-row">
 		<fieldset id="shipping">
@@ -34,7 +34,7 @@
 		</fieldset>
 	</div>
 <?php endif; ?>
-<?php $this->form->setValues($this->account->elements->get('pricing')); ?>
+<?php $this->form->setValues($this->account->elements->get('pricing.')); ?>
 <?php if($this->form->checkGroup('pricing')) : ?>
 	<div class="uk-form-row">
 		<fieldset id="elements">

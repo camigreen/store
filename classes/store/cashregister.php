@@ -106,7 +106,7 @@ class CashRegister {
                 $path = $this->app->path->path('assets:pdfs/'.$filename);
                 $email->setSubject("Thank you for your order.");
                 $email->setBodyFromTemplate($this->application->getTemplate()->resource.'mail.checkout.receipt.php');
-                $email->addRecipient($order->billing->get('email'));
+                $email->addRecipient($order->elements->get('billing.email'));
                 $email->addAttachment($path,'Receipt'.$this->order->id.'.pdf');
                 $email->Send();
                 unlink($path);

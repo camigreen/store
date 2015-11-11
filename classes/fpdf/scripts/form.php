@@ -60,8 +60,6 @@ class FormPDF extends GridPDF {
 	}
 
 	public function setData($order) {
-    $billing = $order->billing;
-    $shipping = $order->shipping;
     $company = $this->form->company;
     $data['form_title'] = $this->form->title;
     $data['companyname'] = $company->companyname;
@@ -73,29 +71,28 @@ class FormPDF extends GridPDF {
     	$company->email
     );
     $data['billto'] = array(
-                $billing->firstname.' '.$billing->lastname,
-                $billing->address,
-                $billing->city.', '.$billing->state.'  '.$billing->zip,
-                $billing->phoneNumber,
-                $billing->altNumber,
-                $billing->email
+                $order->elements->get('billing.name'),
+                $order->elements->get('billing.street1'),
+                ($order->elements->get('billing.street2') ? $order->elements->get('billing.street2') : null),
+                $order->elements->get('billing.city').', '.$order->elements->get('billing.state').' '.$order->elements->get('billing.postalCode'),
+                $order->elements->get('billing.phoneNumber').'  '.$order->elements->get('billing.altNumber'),
+                $order->elements->get('email')
             );
-    if($order->localPickup == false) {
+    if($order->elements->get('shipping_method') != 'LP') {
         $data['shipto'] = array(
-            $shipping->firstname.' '.$shipping->lastname,
-            $shipping->address,
-            $shipping->city.', '.$shipping->state.'  '.$shipping->zip,
-            $shipping->phoneNumber,
-            $shipping->altNumber
+            $order->elements->get('shipping.name'),
+            $order->elements->get('shipping.street1'),
+            $order->elements->get('shipping.street2'),
+            $order->elements->get('shipping.city').', '.$order->elements->get('shipping.state').' '.$order->elements->get('shipping.postalCode'),
+            $order->elements->get('shipping.phoneNumber').' '.$order->elements->get('shipping.altNumber')
         );
     }
     $data['order_date'] = $order->getOrderDate();
-    $data['subtotal'] = '$'.number_format($order->subtotal,2,'.','');
+    $data['subtotal'] = '$'.number_format($order->getSubtotal(),2,'.','');
     $data['shipping'] = '$'.number_format($order->ship_total,2,'.','');
     $data['taxes'] = '$'.number_format($order->tax_total,2,'.','');
-    $data['total'] = '$'.number_format($order->total,2,'.','');
-    $items = $this->app->data->create($order->items);
-    foreach($items as $item) {
+    $data['total'] = '$'.number_format($order->getTotal(),2,'.','');
+    foreach($order->elements->get('items.') as $item) {
     	$options = array();
     	foreach($item->options as $option) {
     		$options[] = $option['name'].': '.$option['text'];
@@ -106,18 +103,28 @@ class FormPDF extends GridPDF {
     			array('format' => 'item-options','text' => implode("\n",$options))
     		),
     		'qty' => array('text' => $item->qty),
-    		'price' => array('text' => $item->price)
+    		'price' => array('text' => $order->getItemPrice($item->sku))
     	);
     	$options = array();
     }
     $data['items'] = $item_array;
-	$data['order_details'] = array(array(
-			'salesperson' => array('text' => $order->getSalesPerson()),
+	$data['order_details'][0] = array(
+			'salesperson' => array('text' => $this->app->user->get($order->created_by)->name),
     		'order_number' => array('text' => $order->id),
-    		'delivery_method' => array('text' => $order->localPickup ? 'Local Pickup' : 'UPS Ground'),
-    		'payment_information' => array('text' => $order->creditCard->card_name.' ending in '.substr($order->creditCard->cardNumber, -4)),
-    		'transaction_id' => array('text' => $order->transaction_id)
-    ));
+    		'delivery_method' => array('text' => $order->elements->get('shipping_method') == 'LP' ? 'Local Pickup' : 'UPS Ground')
+    		//'payment_information' => array('text' => $order->creditCard->card_name.' ending in '.substr($order->creditCard->cardNumber, -4)),
+    		//'transaction_id' => array('text' => $order->transaction_id)
+    );
+    switch($this->type) {
+    	case 'receipt':
+    		$data['order_details'][0]['payment_information'] = array('text' => $order->creditCard->card_name.' ending in '.substr($order->creditCard->cardNumber, -4));
+    		$data['order_details'][0]['transaction_id'] = array('text' => $order->transaction_id);
+    		break;
+    	case 'invoice':
+    		$data['order_details'][0]['ordered_by'] = array('text' => $this->app->user->get($order->created_by)->name);
+    		$data['order_details'][0]['po_number'] = array('text' => $order->elements->get('payment.po_number'));
+    		break;
+    }
 	// echo '<pre>';
 	// var_dump($data['items']);
 	// echo '</pre>';
@@ -224,6 +231,7 @@ class FormPDF extends GridPDF {
 		$text = $field->get('all-caps',0) ? strtoupper($text) : $text;
 		$this->SetXY($field->x, $field->y);
 		if(is_array($text)) {
+			$text = array_filter($text);
 			$txt = implode("\n",$text);
 			$this->Cell($field->w,$field->get('h', 0),'',$field->get('border', 0));
 			$this->SetXY($field->x, $field->y);

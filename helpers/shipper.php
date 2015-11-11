@@ -174,12 +174,10 @@ class ShipperHelper extends AppHelper {
             $service->setCode('03');
             $shipment->setService($service);
             //$shipment->setShipper($shipper);
-            var_dump($shipment);
             $rates = UPS::getRates($shipment);
             foreach ($rates as $shippingMethod) {
                 $this->_rates[$shippingMethod->getService()->getCode()] = $shippingMethod;
             }
-            var_dump($rates);
             return $rates;
                     
 

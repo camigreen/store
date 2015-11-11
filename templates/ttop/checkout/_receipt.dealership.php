@@ -7,11 +7,10 @@
  */
 $elements = $order->elements;
 $items = $order->elements->get('items.');
-
 ?>
 <div class='ttop-receipt'>
     <div class="uk-width-1-1 uk-container-center uk-text-right uk-margin-bottom">
-        <a href="/store/checkout?task=getPDF&type=receipt&id=<?php echo $order->id; ?>" class="uk-button uk-button-primary" target="_blank"><i class="uk-icon-print"></i> Print Receipt</a>
+        <a href="/store/checkout?task=getPDF&type=invoice&id=<?php echo $order->id; ?>" class="uk-button uk-button-primary" target="_blank"><i class="uk-icon-print"></i> Print Inovice</a>
     </div>
     <div class="uk-width-1-1 uk-container-center">
         <table class="uk-table uk-table-condensed">
@@ -30,7 +29,7 @@ $items = $order->elements->get('items.');
                 <tr>
                     <td class="uk-text-center"><?php echo $this->app->user->get($order->created_by)->name ?></td>
                     <td class="uk-text-center"><?php echo $order->id; ?></td>
-                    <td class="uk-text-center"><?php echo $order->created; ?></td>
+                    <td class="uk-text-center"><?php echo $order->getOrderDate(); ?></td>
                     <td class="uk-text-center"><?php echo $elements->get('localPickup') ? 'Local Pickup' : 'UPS Ground'; ?></td>
                 </tr>
             </tbody>
@@ -126,7 +125,7 @@ $items = $order->elements->get('items.');
                                     <?php echo $item->qty; ?>
                                 </td>
                                 <td class="ttop-checkout-item-total">
-                                    <?php echo $item->qty*$item->price; ?>
+                                    <?php echo $this->app->number->currency($order->getItemPrice($item->sku), array('currency' => 'USD')); ?>
                                 </td>
                             </tr>
                 <?php endforeach; ?>
@@ -140,7 +139,7 @@ $items = $order->elements->get('items.');
                                 Subtotal:
                             </td>
                             <td class="uk-text-right">
-                                <?php echo '$'.number_format($order->subtotal,2,'.',''); ?>
+                                <?php echo '$'.number_format($order->getSubtotal(),2,'.',''); ?>
                             </td>
                         </tr>
                         <tr>
@@ -173,7 +172,7 @@ $items = $order->elements->get('items.');
                                 <p>Total:</p>
                             </td>
                             <td>
-                                <p class="ttop-checkout-total uk-text-right"><?php echo '$'.number_format($order->total,2,'.',''); ?></p>
+                                <p class="ttop-checkout-total uk-text-right"><?php echo '$'.number_format($order->getTotal(),2,'.',''); ?></p>
                             </td>
                         </tr>
                     </tfoot>

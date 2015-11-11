@@ -85,16 +85,16 @@ class CheckoutController extends AppController {
         if($this->account && $this->account->type != 'store') {
             $this->page .= '.'.$this->account->type;
             if(!$order->elements->get('billing.')) {
-                $order->elements->set('billing.', $this->account->elements->get('billing'));
+                $order->elements->set('billing.', $this->account->elements->get('billing.'));
                 $order->elements->set('billing.phoneNumber', $user->elements->get('office_phone'));
                 $order->elements->set('billing.altNumber', $user->elements->get('mobile_phone'));
             }
             if(!$order->elements->get('shipping.')) {
-                $order->elements->set('shipping.', $this->account->elements->get('shipping'));
+                $order->elements->set('shipping.', $this->account->elements->get('shipping.'));
                 $order->elements->set('shipping.phoneNumber', $user->elements->get('office_phone'));
                 $order->elements->set('shipping.altNumber', $user->elements->get('mobile_phone'));
             }
-            if(!$order->elements->get('email') && $order->elements->get('confirm_email')) {
+            if(!$order->elements->get('email')) {
                 $order->elements->set('email', $user->getUser()->email);
                 $order->elements->set('confirm_email', $user->getUser()->email);
             }
@@ -224,6 +224,7 @@ class CheckoutController extends AppController {
         }
         $id = $this->app->request->get('oid', 'int', 0);
         $order = $this->app->orderdev->get($id);
+        $order->calculateCommissions();
         $layout = 'checkout';
         $this->page = 'receipt';
         if($this->account && $this->account->type != 'store') {
@@ -260,6 +261,20 @@ class CheckoutController extends AppController {
 
     }
 
+    public function getPDF() {
+        $type = $this->app->request->get('type','word');
+        if (!$this->app->path->path('classes:fpdf/scripts/'.$type.'.xml')) {
+            return $this->app->error->raiseError(500, JText::_('PDF template does not exist'));
+        }
+        $this->app->document->setMimeEncoding('application/pdf');
+
+        $pdf = $this->app->pdf->$type;
+        $id = $this->app->request->get('id','int');
+        $order = $this->app->orderdev->get($id);
+
+        $pdf->setData($order)->generate()->toBrowser();
+    }
+
     public function save() {
 
         $order = $this->CR->order;
@@ -279,9 +294,7 @@ class CheckoutController extends AppController {
             }
         }
         
-        if($lp = $order->elements->get('localPickup')) {
-            $order->elements->set('localPickup', ($lp == 'on' ? true : false));
-        }
+        $order->account = $this->account->id;
 
         // Set Created Date
         try {
@@ -303,6 +316,8 @@ class CheckoutController extends AppController {
         $this->setRedirect($this->baseurl.'&task='.$next);
 
     }
+
+
 
 
 }

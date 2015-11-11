@@ -29,14 +29,14 @@ $elements = $order->elements;
                                 <div class="ttop-checkout-item-options"><?php echo $item->getOptions(); ?></div>
 
                             </td>
-                            <td>
+                            <td class="ttop-checkout-item-total">
                                 <input type="number" class="uk-width-1-3 uk-text-center" name="qty" value="<?php echo $item->qty ?>" min="1"/>
                                 <button class="uk-button uk-button-primary update-qty">Update</button>                
                             </td>
-                            <td>
-                                <?php echo $item->getTotal(); ?>
+                            <td class="ttop-checkout-item-total">
+                                <?php echo $this->app->number->currency($order->getItemPrice($item->sku), array('currency' => 'USD')); ?>
                             </td>
-                            <td>
+                            <td class="ttop-checkout-item-total">
                                 <div id="<?php echo $sku; ?>" class="uk-icon-button uk-icon-trash trash-item"></div>
                             </td>
                         </tr>
@@ -48,7 +48,7 @@ $elements = $order->elements;
                             Subtotal:
                         </td>
                         <td>
-                            <?php echo $this->app->number->currency($order->subtotal,array('currency' => 'USD')); ?>
+                            <?php echo $this->app->number->currency($order->getSubtotal(),array('currency' => 'USD')); ?>
                         </td>
                     </tr>
                     <tr>
@@ -72,7 +72,7 @@ $elements = $order->elements;
                             Total:
                         </td>
                         <td>
-                            <?php echo $this->app->number->currency($order->total,array('currency' => 'USD')); ?>
+                            <?php echo $this->app->number->currency($order->getTotal(),array('currency' => 'USD')); ?>
                         </td>
                     </tr>
                 </tfoot>
