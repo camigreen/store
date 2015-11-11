@@ -256,7 +256,7 @@ class UserProfile {
     }
 
     public function getAssetName() {
-        return 'com_users';
+        return 'com_zoo';
     }
 
     /**
@@ -297,8 +297,8 @@ class UserProfile {
      *
      * @since 3.2
      */
-    public function canCreate($user = null) {
-        return $this->app->user->canCreate($user, $this->getAssetName());
+    public function canCreate() {
+        return $this->app->user->canCreate($this->getUser(), $this->getAssetName());
     }
 
     /**
@@ -310,8 +310,8 @@ class UserProfile {
      *
      * @since 3.2
      */
-    public function canDelete($user = null) {
-        return $this->canEdit($user) && $this->app->user->canDelete($user, $this->getAssetName());
+    public function canDelete() {
+        return $this->canEdit($user) && $this->app->user->canDelete($this->getUser(), $this->getAssetName());
     }
 
     /**
