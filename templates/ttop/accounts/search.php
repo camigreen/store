@@ -26,7 +26,7 @@
 				</thead>
 				<tbody>
 					<?php if($this->record_count <= 0) : ?>
-						<tr><td colspan="7" class="uk-text-center">No Orders Found!</td></tr>
+						<tr><td colspan="7" class="uk-text-center">No Accounts Found!</td></tr>
 					<?php endif; ?>
 					<?php foreach($this->accounts as $account) : ?>
 					<tr>
