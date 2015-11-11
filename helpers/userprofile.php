@@ -61,6 +61,9 @@ class UserProfileHelper extends AppHelper {
         
             // trigger init event
             $this->app->event->dispatcher->notify($this->app->event->create($profile, 'userprofile:init', compact('new')));
+        } else {
+            $profile = $this->app->object->create('userprofile');
+            $profile->setUser($user);
         }
         
         return $profile;
