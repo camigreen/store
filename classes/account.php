@@ -152,6 +152,14 @@ class Account {
      */
     public function getOEMs() {
 
+        if(!empty($this->OEMs)) {
+            return $this->OEMs;
+        }
+
+        if(!$this->id) {
+            return $this->OEMs;
+        }
+
         $query = 'SELECT * FROM #__zoo_account_map WHERE parent = '.$this->id;
 
         $rows = $this->app->database->queryObjectList($query);
