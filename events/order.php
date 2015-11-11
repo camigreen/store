@@ -29,9 +29,9 @@ class OrderEvent {
         $order->elements = $app->parameter->create($order->elements);
         $items = $order->elements->get('items', array());
         foreach($items as $key => $item) {
-        	$order->elements->set('items.'.$key, $app->parameter->create($item));
-        }
-        $order->elements->set('items', $app->parameter->create($items));
+         	$order->elements->set('items.'.$key, $app->parameter->create($item));
+         }
+        //$order->elements->set('items', $app->parameter->create($items));
         $order->subtotal = (float) $order->subtotal;
         $order->tax_total = (float) $order->tax_total;
         $order->ship_total = (float) $order->ship_total;

@@ -85,14 +85,16 @@ class CashRegister {
         $this->notification_emails = array_merge($this->notification_emails,$emails);
     }
     
-    public function sendNotificationEmail($order, $for = 'payment') {
+    public function sendNotificationEmail($oid, $for = 'payment') {
         if(!$this->application->getParams()->get('global.store.notify_email_enable')) {
             return;
         }
+        $order = $this->app->orderdev->get($oid);
         $email = $this->app->mail->create();
         $CR = $this;  
            if ($for == 'payment') {
-                $filename = $this->app->pdf->workorder->setData($order)->generate()->toFile();
+                $pdf = $this->app->pdf->workorder;
+                $filename = $pdf->setData($order)->generate()->toFile();
                 $path = $this->app->path->path('assets:pdfs/'.$filename);
                 $email->setSubject("T-Top Boat Cover Online Order Notification");
                 $email->setBodyFromTemplate($this->application->getTemplate()->resource.'mail.checkout.order.php');
@@ -103,6 +105,16 @@ class CashRegister {
             } 
             if($for == 'receipt') {
                 $filename = $this->app->pdf->receipt->setData($order)->generate()->toFile();
+                $path = $this->app->path->path('assets:pdfs/'.$filename);
+                $email->setSubject("Thank you for your order.");
+                $email->setBodyFromTemplate($this->application->getTemplate()->resource.'mail.checkout.receipt.php');
+                $email->addRecipient($order->elements->get('email'));
+                $email->addAttachment($path,'Receipt'.$this->order->id.'.pdf');
+                $email->Send();
+                unlink($path);
+            } 
+            if($for == 'invoice') {
+                $filename = $this->app->pdf->invoice->setData($order)->generate()->toFile();
                 $path = $this->app->path->path('assets:pdfs/'.$filename);
                 $email->setSubject("Thank you for your order.");
                 $email->setBodyFromTemplate($this->application->getTemplate()->resource.'mail.checkout.receipt.php');
@@ -285,8 +297,8 @@ class CashRegister {
         );
         $this->order->result = $result;
 
-        $this->sendNotificationEmail($this->order, 'receipt');
-        $this->sendNotificationEmail($this->order, 'payment');
+        $this->sendNotificationEmail($this->order->id, 'invoice');
+        $this->sendNotificationEmail($this->order->id, 'payment');
         $this->clearOrder();
         
         return $this->order;

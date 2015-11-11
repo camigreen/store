@@ -311,7 +311,7 @@ class UserProfile {
      * @since 3.2
      */
     public function canDelete() {
-        return $this->canEdit($user) && $this->app->user->canDelete($this->getUser(), $this->getAssetName());
+        return $this->canEdit($this->getUser()) && $this->app->user->canDelete($this->getUser(), $this->getAssetName());
     }
 
     /**

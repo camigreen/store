@@ -103,14 +103,13 @@ class OrderDev {
 		$application->getCategoryTree();
 		$items = $this->elements->get('items.');
 		$account = $this->app->account->get($this->account);
-		$acct_oems = $account->getOEMs();
+		$oems = $account->getOEMs();
 		foreach($items as $item) {
 			$_item = $this->app->table->item->get($item->id);
-			$oems = $_item->getRelatedCategoryIds();
+			$item_cat = $_item->getPrimaryCategory();
 			foreach($oems as $oem) {
-				if(in_array($oem, $acct_oems)) {
-					$_oem = $this->app->account->get($oem);
-					$order->elements->set('commissions.accounts.'.$_oem->id, $this->getItemPrice($item->sku)*$_oem->elements->get('commission'));
+				if($item_cat->id == $oem->elements->get('category')) {
+					$this->elements->set('commissions.accounts.'.$oem->id, $this->getItemPrice($item->sku)*$oem->elements->get('commission'));
 				}
 			}
 			

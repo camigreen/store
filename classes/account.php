@@ -172,6 +172,14 @@ class Account {
         return $this->OEMs;
 
     }
+    public function getOEMCategories() {
+        $oems = $this->getOEMs();
+        $categories = array();
+        foreach($oems as $oem) {
+            $categories[] = $oem->elements->get('category');
+        }
+        return $categories;
+    }
     public function getParentAccounts() {
 
         if(!empty($this->parents)) {

@@ -58,12 +58,12 @@
 					<title align="L" text-align="R" text="Taxes"  font-size="10"/>
 				</field>
 				<field name="total" type="textbox" x="176" y="257" h="5" w="29" align="C" font-size="10">
-					<title align="L" text-align="R" text="Total"  font-size="10"/>
+					<title align="L" text-align="R" text="Total"  font-size="10" mask="currency"/>
 				</field>
 				<field name="order_details" type="table" x="10" y="80" rows="1" w="195">
 					<columns>
-						<column name="ordered_by" w=".25" align="C">
-							<header font-style="B" text="Ordered By" />
+						<column name="account_name" w=".25" align="C">
+							<header font-style="B" text="Account Name" />
 						</column>
 						<column name="order_number" w=".25" align="C">
 							<header font-style="B" text="Order Number" />
@@ -117,8 +117,8 @@
 				</field>
 				<field name="order_details" type="table" x="10" y="40" rows="1" w="195">
 					<columns>
-						<column name="ordered_by" w=".25" align="C">
-							<header font-style="B" text="Ordered By" />
+						<column name="account_name" w=".25" align="C">
+							<header font-style="B" text="Account Name" />
 						</column>
 						<column name="order_number" w=".25" align="C">
 							<header font-style="B" text="Order Number" />
