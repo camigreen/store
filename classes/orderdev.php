@@ -72,12 +72,32 @@ class OrderDev {
 	}
 
 	public function getTaxTotal() {
-		if($this->taxTotal += ($item->taxable ? ($item->total*$this->taxRate) : 0);)
-	}
-	public function getTotal() {
-		return $this->getSubtotal() + $this->tax_total + $this->ship_total;
-	}
+		$taxtotal = 0;
+		$taxrate = 0.07;
 
+		$account = $this->app->account->get($this->account);
+		if(!$account->elements->get('taxable', false)) {
+			$this->tax_total = 0;
+			return $this->tax_total;
+		}
+
+		$items = $this->elements->get('items.');
+		foreach($items as $item) {
+			$taxtotal += ($item->taxable ? ($order->getItemPrice($item->sku)*$taxrate) : 0);
+		}
+		
+		$this->tax_total = $taxtotal;
+		return $this->tax_total;
+	}
+	public function getTotals() {
+		$totals['subtotal'] = $this->getSubtotal();
+		$totals['taxtotal'] = $this->getTaxTotal();
+		$totals['shiptotal'] = $this->ship_total;
+		$this->total = $this->subtotal + $this->tax_total + $this->ship_total;
+		$totals['total'] = $this->total;
+
+		return $totals;
+	}
 	public function calculateCommissions() {
 		$application = $this->app->zoo->getApplication();
 		$application->getCategoryTree();

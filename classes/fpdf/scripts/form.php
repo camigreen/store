@@ -88,10 +88,11 @@ class FormPDF extends GridPDF {
         );
     }
     $data['order_date'] = $order->getOrderDate();
-    $data['subtotal'] = '$'.number_format($order->getSubtotal(),2,'.','');
-    $data['shipping'] = '$'.number_format($order->ship_total,2,'.','');
-    $data['taxes'] = '$'.number_format($order->tax_total,2,'.','');
-    $data['total'] = '$'.number_format($order->getTotal(),2,'.','');
+    $totals = $order->getTotals();
+    $data['subtotal'] = $this->app->number->currency($totals['subtotal'], array('currency', 'USD'));
+    $data['shipping'] = $this->app->number->currency($totals['shiptotal'], array('currency', 'USD'));
+    $data['taxes'] = $this->app->number->currency($totals['taxes'], array('currency', 'USD'));
+    $data['total'] = $this->app->number->currency($totals['total'], array('currency', 'USD'));
     foreach($order->elements->get('items.') as $item) {
     	$options = array();
     	foreach($item->options as $option) {
