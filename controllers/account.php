@@ -146,6 +146,7 @@ class AccountController extends AppController {
             $type = $this->app->request->get('type', 'string');
             $this->account->type = $type;
             $this->title = $type == 'default' ? "Create a New $template Account" : "Create a New $type Account";
+
         }
 
         $this->form = $this->app->form->create(array($this->template->getPath().'/accounts/config.xml', compact('type')));

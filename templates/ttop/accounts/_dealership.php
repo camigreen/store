@@ -1,4 +1,5 @@
 <?php $this->form->setValues($this->account); ?>
+<?php $this->form->setValue('number', $this->account->elements->get('account_number.number')); ?>
 <?php if($this->form->checkGroup('details')) : ?>
 	<div class="uk-form-row">
 		<fieldset id="details">
