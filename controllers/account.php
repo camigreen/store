@@ -34,7 +34,7 @@ class AccountController extends AppController {
         // set base url
         $this->baseurl = $this->app->link(array('controller' => $this->controller), false);
 
-        var_dump($this->app->account->getCurrent());
+        //var_dump($this->app->account->getCurrent());
 
         // registers tasks
         $this->registerTask('apply', 'save');
