@@ -19,7 +19,7 @@ foreach($item->getElementsByType('itemoptions') as $element) {
         $priceOptions->set('options.fabric', $element->config->get('default'));
     }
 }
-var_dump($this->app->cart->create());
+//var_dump($this->app->cart->create());
 $category = $item->getPrimaryCategory()->getParent();
 $data_item = array('id' => $item->id, 'name' => 'T-Top Boat Cover', 'priceGroup' => 't-top-boat-cover');
 ?>

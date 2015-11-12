@@ -152,6 +152,14 @@ class Account {
      */
     public function getOEMs() {
 
+        if(!empty($this->OEMs)) {
+            return $this->OEMs;
+        }
+
+        if(!$this->id) {
+            return $this->OEMs;
+        }
+
         $query = 'SELECT * FROM #__zoo_account_map WHERE parent = '.$this->id;
 
         $rows = $this->app->database->queryObjectList($query);
@@ -164,7 +172,23 @@ class Account {
         return $this->OEMs;
 
     }
+    public function getOEMCategories() {
+        $oems = $this->getOEMs();
+        $categories = array();
+        foreach($oems as $oem) {
+            $categories[] = $oem->elements->get('category');
+        }
+        return $categories;
+    }
     public function getParentAccounts() {
+
+        if(!empty($this->parents)) {
+            return $this->parents;
+        }
+
+        if(!$this->id) {
+            return $this->parents;
+        }
 
         $query = 'SELECT * FROM #__zoo_account_map WHERE child = '.$this->id;
 
@@ -180,6 +204,14 @@ class Account {
     }
 
     public function getAssignedProfiles() {
+
+        if(!empty($this->users)) {
+            return $this->users;
+        }
+
+        if(!$this->id) {
+            return $this->users;
+        }
 
         $query = 'SELECT child FROM #__zoo_account_user_map WHERE parent = '.$this->id;
 
@@ -199,11 +231,20 @@ class Account {
     }
 
     public function removeParentMap($aid) {
+
+        if(!$this->id) {
+            return;
+        }
+
         $query = 'DELETE FROM #__zoo_account_map WHERE parent = '.$aid.' AND child = '.$this->id;
         $this->app->database->query($query);
     }
 
     public function mapProfilesToAccount($map = array()) {
+
+        if(!$this->id) {
+            return;
+        }
         
         $query = 'DELETE FROM #__zoo_account_user_map WHERE parent = '.$this->id;
         $this->app->database->query($query);
@@ -221,6 +262,10 @@ class Account {
     }
 
     public function mapOEMsToAccount($map = array()) {
+
+        if(!$this->id) {
+            return;
+        }
         
         $query = 'DELETE FROM #__zoo_account_map WHERE parent = '.$this->id;
         $this->app->database->query($query);
@@ -238,6 +283,10 @@ class Account {
     }
 
     public function mapToParents($map) {
+
+        if(!$this->id) {
+            return;
+        }
         $query = 'DELETE FROM #__zoo_account_map WHERE child = '.$this->id;
         $this->app->database->query($query);
 

@@ -26,7 +26,7 @@ class OrderDevHelper extends AppHelper {
     public function get($id) {
 
         if (isset($this->_order[$id])) {
-            return $this->order[$id];
+            return $this->_order[$id];
         } 
         
         $order = $this->table->get($id);

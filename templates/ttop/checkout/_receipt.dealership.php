@@ -7,6 +7,7 @@
  */
 $elements = $order->elements;
 $items = $order->elements->get('items.');
+$totals = $order->getTotals();
 ?>
 <div class='ttop-receipt'>
     <div class="uk-width-1-1 uk-container-center uk-text-right uk-margin-bottom">
@@ -139,7 +140,7 @@ $items = $order->elements->get('items.');
                                 Subtotal:
                             </td>
                             <td class="uk-text-right">
-                                <?php echo '$'.number_format($order->getSubtotal(),2,'.',''); ?>
+                                <?php echo $this->app->number->currency($totals['subtotal'], array('currency' => 'USD')); ?>
                             </td>
                         </tr>
                         <tr>
@@ -150,7 +151,7 @@ $items = $order->elements->get('items.');
                                 Shipping:
                             </td>
                             <td class="uk-text-right">
-                                <?php echo '$'.number_format($order->ship_total,2,'.',''); ?>
+                                <?php echo $this->app->number->currency($totals['shiptotal'], array('currency' => 'USD')); ?>
                             </td>
                         </tr>
                         <tr>
@@ -161,7 +162,7 @@ $items = $order->elements->get('items.');
                                 Sales Tax:
                             </td>
                             <td class="uk-text-right">
-                                <?php echo '$'.number_format($order->tax_total,2,'.',''); ?>
+                                <?php echo $this->app->number->currency($totals['taxtotal'], array('currency' => 'USD')); ?>
                             </td>
                         </tr>
                         <tr>
@@ -172,7 +173,7 @@ $items = $order->elements->get('items.');
                                 <p>Total:</p>
                             </td>
                             <td>
-                                <p class="ttop-checkout-total uk-text-right"><?php echo '$'.number_format($order->getTotal(),2,'.',''); ?></p>
+                                <p class="ttop-checkout-total uk-text-right"><?php echo $this->app->number->currency($totals['total'], array('currency' => 'USD')); ?></p>
                             </td>
                         </tr>
                     </tfoot>

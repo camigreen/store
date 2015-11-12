@@ -72,35 +72,45 @@ class OrderDev {
 	}
 
 	public function getTaxTotal() {
-		if(!$items = $this->elements->get('items.')) {
-			$items = $this->app->cart->create()->getAllItems();
-		}
-		$tax_rate = 0.07;
-		$this->tax_total = 0;
-		foreach($items as $item) {
-			$this->tax_total += ($item->taxable ? $order->getItemPrice($item->sku)*$tax_rate : 0);
+
+		$taxtotal = 0;
+		$taxrate = 0.07;
+
+		$account = $this->app->account->get($this->account);
+		if(!$account->elements->get('taxable', false)) {
+			$this->tax_total = 0;
+			return $this->tax_total;
 		}
 
+		$items = $this->elements->get('items.');
+		foreach($items as $item) {
+			$taxtotal += ($item->taxable ? ($order->getItemPrice($item->sku)*$taxrate) : 0);
+		}
+		
+		$this->tax_total = $taxtotal;
 		return $this->tax_total;
 	}
+	public function getTotals() {
+		$totals['subtotal'] = $this->getSubtotal();
+		$totals['taxtotal'] = $this->getTaxTotal();
+		$totals['shiptotal'] = $this->ship_total;
+		$this->total = $this->subtotal + $this->tax_total + $this->ship_total;
+		$totals['total'] = $this->total;
 
-	public function getTotal() {
-		return $this->getSubtotal() + $this->tax_total + $this->ship_total;
+		return $totals;
 	}
-
 	public function calculateCommissions() {
 		$application = $this->app->zoo->getApplication();
 		$application->getCategoryTree();
 		$items = $this->elements->get('items.');
 		$account = $this->app->account->get($this->account);
-		$acct_oems = $account->getOEMs();
+		$oems = $account->getOEMs();
 		foreach($items as $item) {
 			$_item = $this->app->table->item->get($item->id);
-			$oems = $_item->getRelatedCategoryIds();
+			$item_cat = $_item->getPrimaryCategory();
 			foreach($oems as $oem) {
-				if(in_array($oem, $acct_oems)) {
-					$_oem = $this->app->account->get($oem);
-					$order->elements->set('commissions.accounts.'.$_oem->id, $this->getItemPrice($item->sku)*$_oem->elements->get('commission'));
+				if($item_cat->id == $oem->elements->get('category')) {
+					$this->elements->set('commissions.accounts.'.$oem->id, $this->getItemPrice($item->sku)*$oem->elements->get('commission'));
 				}
 			}
 			

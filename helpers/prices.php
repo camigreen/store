@@ -15,6 +15,7 @@ class PricesHelper extends AppHelper {
 
     
     public function getRetail($group, $options = array(), $default = null, $formatCurrency = false) {
+        $markup = $this->app->account->getCurrent()->elements->get('pricing.dealer_markup', 0);
     	include $this->app->path->path('prices:prices.php');
         $prices = $item;
         $prices = $this->app->parameter->create($prices);
@@ -23,6 +24,7 @@ class PricesHelper extends AppHelper {
         if(!$result = $prices->get($search)) {
             $result = $default;
         }
+        $result += $result*$markup;
         if($formatCurrency) {
             $result = $this->app->number->currency($result ,array('currency' => 'USD'));
         }

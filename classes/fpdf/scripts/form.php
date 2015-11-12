@@ -88,10 +88,11 @@ class FormPDF extends GridPDF {
         );
     }
     $data['order_date'] = $order->getOrderDate();
-    $data['subtotal'] = '$'.number_format($order->getSubtotal(),2,'.','');
-    $data['shipping'] = '$'.number_format($order->ship_total,2,'.','');
-    $data['taxes'] = '$'.number_format($order->tax_total,2,'.','');
-    $data['total'] = '$'.number_format($order->getTotal(),2,'.','');
+    $totals = $order->getTotals();
+    $data['subtotal'] = $this->app->number->currency($totals['subtotal'], array('currency' => 'USD'));
+    $data['shipping'] = $this->app->number->currency($totals['shiptotal'], array('currency' => 'USD'));
+    $data['taxes'] = $this->app->number->currency($totals['taxtotal'], array('currency' => 'USD'));
+    $data['total'] = $this->app->number->currency($totals['total'], array('currency' => 'USD'));
     foreach($order->elements->get('items.') as $item) {
     	$options = array();
     	foreach($item->options as $option) {
@@ -120,8 +121,9 @@ class FormPDF extends GridPDF {
     		$data['order_details'][0]['payment_information'] = array('text' => $order->creditCard->card_name.' ending in '.substr($order->creditCard->cardNumber, -4));
     		$data['order_details'][0]['transaction_id'] = array('text' => $order->transaction_id);
     		break;
+    	case 'workorder':	
     	case 'invoice':
-    		$data['order_details'][0]['ordered_by'] = array('text' => $this->app->user->get($order->created_by)->name);
+    		$data['order_details'][0]['account_name'] = array('text' => $order->elements->get('payment.account_name'));
     		$data['order_details'][0]['po_number'] = array('text' => $order->elements->get('payment.po_number'));
     		break;
     }

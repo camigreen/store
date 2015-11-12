@@ -26,7 +26,7 @@
 				</thead>
 				<tbody>
 					<?php if($this->record_count <= 0) : ?>
-						<tr><td colspan="7" class="uk-text-center">No Orders Found!</td></tr>
+						<tr><td colspan="7" class="uk-text-center">No Accounts Found!</td></tr>
 					<?php endif; ?>
 					<?php foreach($this->accounts as $account) : ?>
 					<tr>
@@ -36,7 +36,7 @@
 						</td>
 						<td><?php echo $account->id; ?></td>
 						<td><?php echo $account->name; ?></td>
-						<td><?php echo $account->number; ?></td>
+						<td><?php echo $account->elements->get('account_number.number'); ?></td>
 						<td><?php echo $account->getType(); ?></td>
 						<td><?php echo $account->getState(); ?></td>
 					</tr>

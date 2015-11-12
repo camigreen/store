@@ -10,6 +10,7 @@ $elements = $order->elements;
 $article = JTable::getInstance("content"); 
 $article->load(22); // Get Article ID  
 $salesperson = null;
+$totals = $order->getTotals();
 ?>
 <div class="uk-width-2-3 uk-container-center ttop-receipt">
     <div class="uk-grid">
@@ -81,7 +82,7 @@ $salesperson = null;
                                 <?php echo $item->qty; ?>
                             </td>
                             <td class="ttop-checkout-item-total">
-                                <?php echo $item->getTotal(); ?>
+                                <?php echo $this->app->number->currency($order->getItemPrice($item->sku), array('currency' => 'USD')); ?>
                             </td>
                         </tr>
             <?php endforeach; ?>
@@ -95,7 +96,7 @@ $salesperson = null;
                             Subtotal:
                         </td>
                         <td>
-                            <?php echo $this->app->number->currency($order->subtotal,array('currency' => 'USD')); ?>
+                            <?php echo $this->app->number->currency($totals['subtotal'],array('currency' => 'USD')); ?>
                         </td>
                     </tr>
                     <tr>
@@ -106,7 +107,7 @@ $salesperson = null;
                             Shipping:
                         </td>
                         <td>
-                            <?php echo $this->app->number->currency($order->ship_total,array('currency' => 'USD')); ?>
+                            <?php echo $this->app->number->currency($totals['shiptotal'],array('currency' => 'USD')); ?>
                         </td>
                     </tr>
                     <tr>
@@ -117,7 +118,7 @@ $salesperson = null;
                             Sales Tax:
                         </td>
                         <td>
-                            <?php echo $this->app->number->currency($order->tax_total,array('currency' => 'USD')); ?>
+                            <?php echo $this->app->number->currency($totals['taxtotal'],array('currency' => 'USD')); ?>
                         </td>
                     </tr>
                     <tr>
@@ -128,14 +129,14 @@ $salesperson = null;
                             Total:
                         </td>
                         <td>
-                            <?php echo $this->app->number->currency($order->total,array('currency' => 'USD')); ?>
+                            <?php echo $this->app->number->currency($totals['total'],array('currency' => 'USD')); ?>
                         </td>
                     </tr>
                 </tfoot>
             </table>
         </div>
         <div class="uk-width-1-1">
-            <?php if($elements->get('localPickup')) : ?>
+            <?php if($elements->get('shipping_method') == 'LP') : ?>
                 You have chosen the Local Pickup option.  Your item will be available for pickup at our warehouse in North Charleston, SC.  It is located at
                 4651 Franchise Street, North Charleston, SC  29418.  Please call ahead during our normal business hours to ensure your items are ready for pickup.
             <?php endif; ?>

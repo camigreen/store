@@ -135,6 +135,8 @@ class UserController extends AppController {
         // var_dump($post);
         // return;
 
+        $profile->save();
+
         if(isset($post['assigned']['account'])) {
             if($post['assigned']['account'] != 0) {
                 $map[] = $profile->id;
