@@ -330,7 +330,7 @@
             $.ajax({
                 type: 'POST',
                 url: "?option=com_zoo&controller=store&task=getPrice&format=json",
-                data: self.priceData,
+                data: priceData,
                 success: function(data){
                     var elem = $('#'+self.item.id+'-price span');
                     price = self.trigger('onPublishPrice', data.price);

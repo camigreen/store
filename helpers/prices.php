@@ -13,6 +13,11 @@
  */
 class PricesHelper extends AppHelper {
 
+    public function test() {
+        include $this->app->path->path('prices:prices.php');
+        $output = implode(', ', array_map(function ($v, $k) { return $k . '=' . $v; }, $prices['ubsk'], array_keys($prices['ubsk'])));
+    }
+
     
     public function getRetail($group, $options = array(), $default = null, $formatCurrency = false) {
         $markup = $this->app->account->getCurrent()->elements->get('pricing.dealer_markup', 0);
@@ -45,20 +50,7 @@ class PricesHelper extends AppHelper {
         return $result;
     }
 
-    public function looper ($array = array(), $key = null) {
-    	foreach($array as $k => $value) {
-    		$key = $key ? $key.'.'.$k : $k;
-    		if(is_array($value)) {
-    			$final = $this->looper($value, $key);
-    			continue;
-    		} else {
-    			$final[] = $key;
-    			$key = null;
-    		}
-    		
-    		
-    	}
-    	return $final;
+    public function looper ($key = null, $array = array()) {
 
     }
 }
