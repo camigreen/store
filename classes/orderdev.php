@@ -72,8 +72,18 @@ class OrderDev {
 	}
 
 	public function getTaxTotal() {
-		if($this->taxTotal += ($item->taxable ? ($item->total*$this->taxRate) : 0);)
+		if(!$items = $this->elements->get('items.')) {
+			$items = $this->app->cart->create()->getAllItems();
+		}
+		$tax_rate = 0.07;
+		$this->tax_total = 0;
+		foreach($items as $item) {
+			$this->tax_total += ($item->taxable ? $order->getItemPrice($item->sku)*$tax_rate : 0);
+		}
+
+		return $this->tax_total;
 	}
+
 	public function getTotal() {
 		return $this->getSubtotal() + $this->tax_total + $this->ship_total;
 	}
