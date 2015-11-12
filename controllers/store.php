@@ -197,9 +197,10 @@ class StoreController extends AppController {
 
         $pdf = $this->app->pdf->$type;
         $id = $this->app->request->get('id','int');
-        $order = $this->app->order->create($id);
+        $order = $this->app->orderdev->get($id);
+        var_dump($order);
 
-        $pdf->setData($order)->generate()->toBrowser();
+        //$pdf->setData($order)->generate()->toBrowser();
     }
     
     public function checkout() {

@@ -11,7 +11,7 @@ $totals = $order->getTotals();
 ?>
 <div class='ttop-receipt'>
     <div class="uk-width-1-1 uk-container-center uk-text-right uk-margin-bottom">
-        <a href="/store/checkout?task=getPDF&type=invoice&id=<?php echo $order->id; ?>" class="uk-button uk-button-primary" target="_blank"><i class="uk-icon-print"></i> Print Inovice</a>
+        <a href="/store/checkout?task=getPDF&type=invoice&id=<?php echo $order->id; ?>&format=raw" class="uk-button uk-button-primary" target="_blank"><i class="uk-icon-print"></i> Print Inovice</a>
     </div>
     <div class="uk-width-1-1 uk-container-center">
         <table class="uk-table uk-table-condensed">

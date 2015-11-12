@@ -102,7 +102,7 @@ $totals = $order->getTotals();
                         <label>Customer Name</label>
                         <input type="text" name="elements[payment][customer_name]" class="ttop-checkout-field required" value='<?php echo $elements->get('payment.customer_name') ?>'/>
                         <label>P.O. Number:</label>
-                        <input type="text" name="elements[payment][po_number]" class="ttop-checkout-field required" value='<?php echo $elements->get('payment.po_number') ?>'/>
+                        <input type="text" name="elements[payment][po_number]" class="ttop-checkout-field" value='<?php echo $elements->get('payment.po_number') ?>'/>
                     </div>
                     <div class="uk-width-1-1">
 

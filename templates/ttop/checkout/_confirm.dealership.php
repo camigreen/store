@@ -58,6 +58,7 @@ $totals = $order->getTotals();
             <h3>Payment</h3>
             <div>Account Name:  <?php echo $elements->get('payment.account_name'); ?></div>
             <div>Account Number:  <?php echo $elements->get('payment.account_number'); ?></div>
+            <div>Customer Name:  <?php echo $elements->get('payment.customer_name'); ?></div>
             <div>Purchase Order Number:  <?php echo $elements->get('payment.po_number'); ?></div>
         </div>
         <div class='uk-width1-1 items-table uk-margin-top'>
