@@ -9,14 +9,13 @@ $embed = $this->app->request->get('embed','bool');
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 $class = $item->type.'-full';
-$priceOptions = $this->app->parameter->create();
-$priceOptions->set('group', 't-top-boat-cover');
+$pricing = 't-top-boat-cover';
 foreach($item->getElementsByType('itemoptions') as $element) {
     if($element->config->get('field_name') == 'boat_length')  {
-        $priceOptions->set('options.boat_length', $element->get('option'));
+        $pricing .= '.'.$element->get('option');
     }
     if($element->config->get('field_name') == 'fabric')  {
-        $priceOptions->set('options.fabric', $element->config->get('default'));
+        $pricing .= '.'.$element->config->get('default');
     }
 }
 //var_dump($this->app->cart->create());
@@ -160,7 +159,7 @@ $data_item = array('id' => $item->id, 'name' => 'T-Top Boat Cover', 'priceGroup'
             <div class="uk-width-1-3">
                 <div class="uk-width-1-1 uk-grid price-container">
                     <?php if ($this->checkPosition('pricing')) : ?>
-                            <?php echo $this->renderPosition('pricing', array('id' => $item->id, 'priceOptions' => $priceOptions)); ?>
+                            <?php echo $this->renderPosition('pricing', array('id' => $item->id, 'pricing' => $pricing)); ?>
                     <?php endif; ?>
                 </div>
                 <div class="uk-width-1-1 options-container uk-margin-top">
@@ -193,6 +192,7 @@ $data_item = array('id' => $item->id, 'name' => 'T-Top Boat Cover', 'priceGroup'
                     <div class="uk-width-1-1 uk-margin-top item-attribute-container">
                         <fieldset id="<?php echo $item->id; ?>-item-attributes">
                             <input type="hidden" name="option-set" data-name="Option Set" value="ttopboatcover" />
+                            <input type="hidden" name="pricing" data-name="Pricing" value="t-top-boat-cover" />
                             <input type="hidden" name="item" data-name="Item Name" value="<?php echo $category->name; ?>" />
                             <input type="hidden" name="manufacturer" data-name="Item Manufacturer" value="Laporte's T-Top Boat Covers" />
                             <input type="hidden" name="boat_make" data-name="Boat Make" value="<?php echo $item->getPrimaryCategory()->name; ?>" />

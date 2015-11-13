@@ -72,7 +72,7 @@
             closeMessage: function () {
                 if(this.message) {
                     this.message.close();
-                    this.message.null;
+                    this.message = null;
                 }
             }
         },
@@ -128,7 +128,6 @@
             beforeAddToCart: [
                 function (e, args) {
                     this._debug('beforeAddToCart Callback');
-                    console.log(args[0])
                     return args[0];
                 }
             ],
@@ -143,7 +142,7 @@
             onChanged: [
                 function (e) {
                     this._debug('onChanged Callback', true);
-                    this._refresh();
+                    this._refresh(e);
                     this._debug(this.item.name + ' StoreItem Plugin Change Detected.');
                     this._debug('Field {' + $(e.target).prop("name") + '} changed to ' + $(e.target).val() + '.');
                 }            
@@ -201,12 +200,10 @@
                         
                             var self = this, container;
                             var items = args[0];
-                            console.log(items);
                             $.each(items, function(k,item) {
                                 container = $('<div id="'+item.id+'" class="uk-width-1-1"></div>').append('<div class="item-name uk-width-1-1 uk-margin-top uk-text-large">'+item.name+'</div>').append('<div class="item-options uk-width-1-1 uk-margin-top"><table class="uk-width-1-1"></table></div>');
                                 
                                 $.each(item.options, function(k, option){
-                                    console.log(items);
                                     if (typeof option.visible === 'undefined' || option.visible) {
                                         container.find('.item-options table').append('<tr><td class="item-options-name">'+option.name+'</td><td class="item-options-text">'+option.text+'</td></tr>');
                                     }
@@ -218,7 +215,6 @@
                             this.confirm.modal.show();
                             return false;
                     }
-                    console.log('stopped 2');
                     return true;
                 }
             ],
@@ -263,7 +259,7 @@
             var items = [{
                 id: this.item.id,
                 name: this.item.name,
-                price: this._getPriceData(),
+                pricing: this._getPricing(),
                 qty: this.qty,
                 shipping: this.shipping,
                 attributes: this._getAttributes(),
@@ -309,40 +305,41 @@
         _cartItemID: function () {
             return $.md5(JSON.stringify(this.item));
         },
-        _getPriceData: function() {
-            var priceData = {group: this.item.priceGroup, options: []};
+        _getPricing: function() {
+            var pricing;
             var opts = this._getOptions();
             var attributes = this._getAttributes();
+            pricing = attributes.pricing.value;
             $.each(this.settings.pricePoints, function(k,v) {
-                console.log(v);
                 if($.type(opts[v]) !== 'undefined') {
-                    priceData['options'].push(opts[v].value);
+                    pricing += '.'+opts[v].value;
+                    return false;
                 }
                 if($.type(attributes[v]) !== 'undefined') {
-                    priceData['options'].push(attributes[v].value);
+                    pricing += '.'+attributes[v].value;
                 }
-            })
-            return priceData;
+            });
+            return pricing;
         },
         _publishPrice: function () {
+            this._debug('Publishing Price');
             var self = this;
-            var priceData = this._getPriceData();
+            var pricing = this._getPricing();
             $.ajax({
                 type: 'POST',
                 url: "?option=com_zoo&controller=store&task=getPrice&format=json",
-                data: priceData,
+                data: {pricing: pricing},
                 success: function(data){
                     var elem = $('#'+self.item.id+'-price span');
                     price = self.trigger('onPublishPrice', data.price);
-                    console.log(price);
                     elem.html(price.toFixed(2));
                 },
                 error: function(data, status, error) {
                     var elem = $('#'+self.item.id+'-price span');
                     elem.html('ERROR');
-                    console.log('Error');
-                    console.log(status);
-                    console.log(error);
+                    this._debug('Error');
+                    this._debug(status);
+                    this._debug(error);
                 },
                 dataType: 'json'
             });
@@ -360,7 +357,7 @@
             $.each(this.fields, function() {   
                 if($(this).prop('name') === name) {
                     result = $(this).val();
-                } 
+                };
             });
             return result;
         },
@@ -402,9 +399,12 @@
         _updateQuantity: function () {
             this.qty = parseInt(this.$qty.val());
         },
-        _refresh: function () {
+        _refresh: function (e) {
             this._updateQuantity();
-            this._publishPrice();
+            if($.inArray($(e.target).prop("name"), this.settings.pricePoints) != -1) {
+                this._publishPrice();
+            }
+            
             if (this.validation.status === 'failed') {
                 this._validate();
             }

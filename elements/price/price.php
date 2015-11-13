@@ -34,11 +34,10 @@ class ElementPrice extends ElementStore {
     public function render($params = array())
     {
 
-        $priceOptions = $params['priceOptions'];
-        $price = $this->app->prices->getRetail($priceOptions->get('group'), $priceOptions->get('options.'));
-        $price = number_format($price, 2);
+        $pricing = $params['pricing'];
+        $price = $this->app->prices->getRetail($pricing, 0);
     
-        return '<div id="'.$params['id'].'-price"><i class="currency"></i><span class="price">'.$price.'</span></div>';
+        return '<div id="'.$params['id'].'-price"><i class="currency"></i><span class="price">'.number_format($price, 2, '.', '').'</span></div>';
 
     }
     
