@@ -152,7 +152,11 @@ class CartItem {
         }
         
         $this->app = $app;
-        $this->options = $app->parameter->create($this->options);
+        $options = $this->options;
+        $this->options = array();
+        foreach($options as $key => $option) {
+            $this->options[$key] = $this->app->parameter->create($option);
+        }
         $this->attributes = $app->parameter->create($this->attributes);
         $this->shipping = $app->parameter->create($this->shipping);
         //var_dump($this->options);
@@ -182,6 +186,7 @@ class CartItem {
     public function generateSKU() {
         $options = '';
         foreach($this->options as $key => $value) {
+            var_dump($key);
             $options .= $key.$value['text'];
         }
         
@@ -209,6 +214,18 @@ class CartItem {
 
             return implode('',$html);
         }
+    }
+
+    public function export() {
+        $result = $this->app->parameter->create();
+        foreach($this as $key => $value) {
+            if(is_array($value)) {
+                $result->set($key.'.', $value);
+            } else {
+                $result->set($key, $value);
+            }
+        }
+        return $result;
     }
 
     public function toLog() {

@@ -81,5 +81,13 @@ class CartController extends AppController {
         echo json_encode($result);
     }
 
+    public function getCart() {
+        $items = $this->cart->getAllItems();
+
+        foreach($items as $item) {
+            var_dump($item->export());
+        }
+    }
+
     
 }

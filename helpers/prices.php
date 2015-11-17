@@ -20,16 +20,20 @@ class PricesHelper extends AppHelper {
 
     
     public function getRetail($group, $default = null, $formatCurrency = false) {
-        $markup = $this->app->account->getCurrent()->elements->get('pricing.dealer_markup', 0);
+        $account = $this->app->account->getCurrent();
+        $markup = $account->elements->get('pricing.dealer_markup', 0);
+        $discount = $account->elements->get('pricing.discount', 0);
     	include $this->app->path->path('prices:prices.php');
-        $prices = $item;
-        $prices = $this->app->parameter->create($prices);
+        $prices = $this->app->parameter->create($item);
         $search = $group;
         $search .= !empty($options) ? '.'.implode('.', $options) : '';
-        if(!$result = $prices->get($search)) {
-            $result = $default;
+        if(!$retail = $prices->get($search)) {
+            $retail = $default;
         }
-        $result += $result*$markup;
+        $result = $this->app->parameter->create();
+        $result->set('retail', $retail);
+        $result->set('markup', $retail += ($retail*$markup));
+        $result->set('discount', $retail -= ($retail*$discount));
         if($formatCurrency) {
             $result = $this->app->number->currency($result ,array('currency' => 'USD'));
         } 

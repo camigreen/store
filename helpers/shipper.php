@@ -133,6 +133,7 @@ class ShipperHelper extends AppHelper {
     }
 
     public function assemblePackages ($items) {
+
         $newpackage = $this->app->parameter->create();
         $count = 1;
         foreach($items as $item) {
@@ -155,6 +156,8 @@ class ShipperHelper extends AppHelper {
         $package = new \SimpleUPS\Rates\Package();
         $package->setWeight($newpackage->get('weight'))->setDeclaredValue($newpackage->get('insurance'), 'USD');
         $this->packages[] = $package;
+        var_dump($items);
+        return;
         return $this;
     }
 
