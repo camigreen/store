@@ -27,9 +27,11 @@ class OrderEvent {
         $order->table = $app->table->orderdev;
         $order->params = $app->parameter->create($order->params);
         $order->elements = $app->parameter->create($order->elements);
+       	$app->loader->register('StoreItem', 'classes:storeitem.php');
         $items = $order->elements->get('items', array());
         foreach($items as $key => $item) {
-         	$order->elements->set('items.'.$key, $app->parameter->create($item));
+        	$item = new StoreItem($app, $item);
+         	$order->elements->set('items.'.$key, $item);
          }
         //$order->elements->set('items', $app->parameter->create($items));
         $order->subtotal = (float) $order->subtotal;

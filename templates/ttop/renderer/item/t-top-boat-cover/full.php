@@ -9,18 +9,22 @@ $embed = $this->app->request->get('embed','bool');
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 $class = $item->type.'-full';
-$pricing = 't-top-boat-cover';
+$pricing = $this->app->parameter->create();
+$group = 't-top-boat-cover';
+$pricing->set('options', array('fabric'));
+$option_values = '';
 foreach($item->getElementsByType('itemoptions') as $element) {
     if($element->config->get('field_name') == 'boat_length')  {
-        $pricing .= '.'.$element->get('option');
+        $group .= '.'.$element->get('option');
     }
     if($element->config->get('field_name') == 'fabric')  {
-        $pricing .= '.'.$element->config->get('default');
+        $option_values .= '.'.$element->config->get('default');
     }
 }
-//var_dump($this->app->cart->create());
+$pricing->set('group', $group);
+$pricing->set('option_values', $option_values);
 $category = $item->getPrimaryCategory()->getParent();
-$data_item = array('id' => $item->id, 'name' => 'T-Top Boat Cover', 'priceGroup' => 't-top-boat-cover');
+$data_item = array('id' => $item->id, 'name' => 'T-Top Boat Cover');
 ?>
 <div id="<?php echo $item->id ?>" class="<?php echo $item->type; ?>" data-item='<?php echo json_encode($data_item); ?>'>
     <div class="uk-grid <?php echo $class; ?>">
@@ -192,7 +196,6 @@ $data_item = array('id' => $item->id, 'name' => 'T-Top Boat Cover', 'priceGroup'
                     <div class="uk-width-1-1 uk-margin-top item-attribute-container">
                         <fieldset id="<?php echo $item->id; ?>-item-attributes">
                             <input type="hidden" name="option-set" data-name="Option Set" value="ttopboatcover" />
-                            <input type="hidden" name="pricing" data-name="Pricing" value="t-top-boat-cover" />
                             <input type="hidden" name="item" data-name="Item Name" value="<?php echo $category->name; ?>" />
                             <input type="hidden" name="manufacturer" data-name="Item Manufacturer" value="Laporte's T-Top Boat Covers" />
                             <input type="hidden" name="boat_make" data-name="Boat Make" value="<?php echo $item->getPrimaryCategory()->name; ?>" />
@@ -439,7 +442,7 @@ jQuery(function($){
                     ]
                 },
                 removeValues: true,
-                pricePoints: ['boat_length', 'fabric']
+                pricePoints: <?php echo $pricing; ?>
 
 
 

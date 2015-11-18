@@ -113,7 +113,7 @@ $totals = $order->getTotals();
                             <tr>
                                 <td>
                                     <?php echo $item->name; ?>
-                                    <div class="ttop-checkout-item-description"><?php echo $item->description; ?></div>
+                                    <div class="ttop-checkout-item-description"><?php echo $item->getDescription(); ?></div>
                                     <div class="ttop-checkout-item-options">
                                         <ul class="uk-list">
                                         <?php foreach($item->options as $option) : ?>

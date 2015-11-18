@@ -54,6 +54,7 @@ class OrderDev {
 	public function getItemPrice($sku) {
 		if(!$item = $this->elements->get('items.'.$sku)) {
 			$item = $this->app->cart->create()->get($sku);
+			$item->getTotal();
 		}
 		$discount = $this->app->account->get($this->account)->elements->get('pricing.discount', 0);
 		return $item->total - ($item->total*$discount);
@@ -77,14 +78,17 @@ class OrderDev {
 		$taxrate = 0.07;
 
 		$account = $this->app->account->get($this->account);
-		if(!$account->elements->get('taxable', false)) {
+		if($account->elements->get('pricing.tax_exempt', true)) {
 			$this->tax_total = 0;
 			return $this->tax_total;
 		}
 
-		$items = $this->elements->get('items.');
+		if(!$items = $this->elements->get('items.')) {
+			$items = $this->app->cart->create()->getAllItems();
+		}
+
 		foreach($items as $item) {
-			$taxtotal += ($item->taxable ? ($order->getItemPrice($item->sku)*$taxrate) : 0);
+			$taxtotal += ($item->taxable ? ($this->getItemPrice($item->sku)*$taxrate) : 0);
 		}
 		
 		$this->tax_total = $taxtotal;

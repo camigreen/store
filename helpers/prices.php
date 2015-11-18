@@ -13,49 +13,65 @@
  */
 class PricesHelper extends AppHelper {
 
+    protected $items;
+    protected $shipping;
+
+    public function __construct($app) {
+        parent::__construct($app);
+        include $this->app->path->path('prices:prices.php');
+        $this->items = $this->app->parameter->create($item);
+        $this->shipping = $this->app->parameter->create($shipping);
+    }
+
     public function test() {
         include $this->app->path->path('prices:prices.php');
         $output = implode(', ', array_map(function ($v, $k) { return $k . '=' . $v; }, $prices['ubsk'], array_keys($prices['ubsk'])));
     }
 
     
-    public function getRetail($group, $default = null, $formatCurrency = false) {
-        $account = $this->app->account->getCurrent();
-        $markup = $account->elements->get('pricing.dealer_markup', 0);
-        $discount = $account->elements->get('pricing.discount', 0);
-    	include $this->app->path->path('prices:prices.php');
-        $prices = $this->app->parameter->create($item);
+    public function get($group, $type = 'retail', $default = null, $formatCurrency = false, $currency = 'USD') {   
         $search = $group;
         $search .= !empty($options) ? '.'.implode('.', $options) : '';
-        if(!$retail = $prices->get($search)) {
-            $retail = $default;
+        $retail = $this->items->get($search, $default);
+        $account = $this->app->account->getCurrent();
+        switch ($type) {
+            case 'retail':
+                $result = $retail;
+                break;
+            case 'discount':
+                $discount = (float) $account->elements->get('pricing.discount', 0);
+                $retail -= $retail*$discount;
+                $result = $retail;
+                break;
+            case 'markup':
+                $markup = $account->elements->get('pricing.markup', 0);
+                $retail += $retail*$markup;
+                $result = $retail;
+                break;
         }
-        $result = $this->app->parameter->create();
-        $result->set('retail', $retail);
-        $result->set('markup', $retail += ($retail*$markup));
-        $result->set('discount', $retail -= ($retail*$discount));
+
         if($formatCurrency) {
-            $result = $this->app->number->currency($result ,array('currency' => 'USD'));
+            return $this->formatCurrency($result, $currency);
         } 
+
         return $result;
 	
     }
 
-    public function getShipping($group, $options = array(), $default = array()) {
-        include $this->app->path->path('prices:prices.php');
-        $prices = $shipping;
-        $prices = $this->app->parameter->create($prices);
-        $search = $group;
-        $search .= !empty($options) ? '.'.implode('.', $options).'.' : '.';
-        if(!$result = $prices->get($search)) {
-            $result = $default;
+    public function getShipping($group, $type = 'weight', $default = null, $formatCurrency = false, $currency = 'USD') {
+        $search = $group.'.'.$type;
+        $result = $this->shipping->get($search);
+
+        if($formatCurrency) {
+            return $this->formatCurrency($result, $currency);
         }
-        $result = $this->app->parameter->create($result);
+
         return $result;
     }
 
-    public function looper ($key = null, $array = array()) {
-
+    public function formatCurrency ($value, $currency = 'USD') {
+        $value = (float) $value;
+        return $this->app->number->currency($value ,array('currency' => $currency));
     }
 }
 

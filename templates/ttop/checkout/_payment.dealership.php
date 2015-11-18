@@ -35,7 +35,7 @@ $totals = $order->getTotals();
                                 <button class="uk-button uk-button-primary update-qty">Update</button>                
                             </td>
                             <td class="ttop-checkout-item-total">
-                                <?php echo $this->app->number->currency($order->getItemPrice($item->sku), array('currency' => 'USD')); ?>
+                                <?php echo $item->getTotal('discount', true); ?>
                             </td>
                             <td class="ttop-checkout-item-total">
                                 <div id="<?php echo $sku; ?>" class="uk-icon-button uk-icon-trash trash-item"></div>

@@ -60,13 +60,18 @@
 				<option value=".20">20%</option>
 				<option value=".25">25%</option>
 			</field>
-			<field name="dealer_markup" type="dropdown" width="1-4" default="" label="Dealer Markup" description="The dealer's additional markup to an item.">
+			<field name="markup" type="dropdown" width="1-4" default="" label="Dealer Markup" description="The dealer's additional markup to an item.">
 				<option value=".00">No Markup</option>
 				<option value=".05">5%</option>
 				<option value=".10">10%</option>
 				<option value=".15">15%</option>
 			</field>
-			<field name="taxable" type="dropdown" width="1-4" default="0" label="Sales Tax" description="Is the dealer charged sales tax?">
+			<field name="display" type="dropdown" width="1-4" default="retail" label="Price Display" description="Choose the prices to display for items.">
+				<option value="retail">Retail</option>
+				<option value="discount">Discount</option>
+				<option value="markup">Markup</option>
+			</field>
+			<field name="tax_exempt" type="dropdown" width="1-4" default="1" label="Tax Exemption" description="Is the dealer tax exempt?">
 				<option value="0">No</option>
 				<option value="1">Yes</option>
 			</field>

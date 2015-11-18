@@ -74,11 +74,11 @@ class CartHelper extends AppHelper {
         return $count;
     }
 
-    public function getCartTotal() {
+    public function getCartTotal($display = 'retail') {
         $total = 0.00;
         foreach($this->_items as $item) {
             
-            $total += $item->getTotal();
+            $total += $item->getTotal($display);
         }
         return $total;
     }
@@ -120,8 +120,6 @@ class CartItem {
     
     public $qty;
     
-    public $price;
-    
     public $total = 0;
     
     public $shipping;
@@ -153,15 +151,15 @@ class CartItem {
         
         $this->app = $app;
         $options = $this->options;
-        $this->options = array();
+        $this->options = $this->app->parameter->create();
         foreach($options as $key => $option) {
-            $this->options[$key] = $this->app->parameter->create($option);
+            $opt = $this->app->parameter->create($option);
+            $this->options->set($key, $opt);
         }
         $this->attributes = $app->parameter->create($this->attributes);
         $this->shipping = $app->parameter->create($this->shipping);
         //var_dump($this->options);
         $this->generateSKU();
-        $this->getTotal();
         
     }
 
@@ -186,21 +184,23 @@ class CartItem {
     public function generateSKU() {
         $options = '';
         foreach($this->options as $key => $value) {
-            var_dump($key);
-            $options .= $key.$value['text'];
+            $options .= $key.$value->get('text');
         }
         
         $this->sku = hash('md5', $this->id.$options);
         return $this->sku;
     }
 
-    public function getPrice() {
-        return $this->app->prices->getRetail($this->pricing, 0);
+    public function getPrice($type = 'retail') {
+        return (float) $this->app->prices->get($this->pricing, $type);
     }
     
-    public function getTotal() {
-        $price = (float) $this->getPrice();
+    public function getTotal($type = 'retail', $formatCurrency = false, $currency = 'USD') {
+        $price = $this->getPrice($type);
         $this->total = $price*$this->qty;
+        if($formatCurrency) {
+            return $this->app->number->currency($this->total, array('currency' => $currency));
+        }
         return $this->total;
     }
 
@@ -208,7 +208,7 @@ class CartItem {
         if (count($this->options) > 0) {
             $html[] = "<ul class='uk-list options-list'>";
             foreach($this->options as $option) {
-                $html[] = '<li><span class="option-name">'.$option['name'].':</span><span class="option-text">'.$option['text'].'</span></li>';
+                $html[] = '<li><span class="option-name">'.$option->get('name').':</span><span class="option-text">'.$option->get('text').'</span></li>';
             }
             $html[] = "</ul>";
 

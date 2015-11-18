@@ -35,6 +35,8 @@ class CartController extends AppController {
 
         // registers tasks
         $this->registerTask('init', 'output');
+
+        $this->account = $this->app->account->getCurrent();
     }
     
     /*
@@ -76,17 +78,13 @@ class CartController extends AppController {
             'result' => true,
             'items' => $this->cart->getAllItems(),
             'item_count' => $this->cart->getItemCount(),
-            'total' => $this->cart->getCartTotal()
+            'total' => $this->cart->getCartTotal($this->account->elements->get('pricing.display', 'retail'))
         );
         echo json_encode($result);
     }
 
     public function getCart() {
-        $items = $this->cart->getAllItems();
-
-        foreach($items as $item) {
-            var_dump($item->export());
-        }
+        var_dump($this->app->prices->getShipping('t-top-boat-cover.24'));
     }
 
     

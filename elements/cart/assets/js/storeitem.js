@@ -309,14 +309,15 @@
             var pricing;
             var opts = this._getOptions();
             var attributes = this._getAttributes();
-            pricing = attributes.pricing.value;
-            $.each(this.settings.pricePoints, function(k,v) {
+            pricing = this.settings.pricePoints.group;
+            $.each(this.settings.pricePoints.options, function(k,v) {
                 if($.type(opts[v]) !== 'undefined') {
                     pricing += '.'+opts[v].value;
                     return false;
                 }
                 if($.type(attributes[v]) !== 'undefined') {
                     pricing += '.'+attributes[v].value;
+                    return false;
                 }
             });
             return pricing;
@@ -401,9 +402,12 @@
         },
         _refresh: function (e) {
             this._updateQuantity();
-            if($.inArray($(e.target).prop("name"), this.settings.pricePoints) != -1) {
-                this._publishPrice();
-            }
+            var self = this;
+            $.each(this.settings.pricePoints.options, function(k,v) {
+                if($(e.target).prop("name") == v) {
+                    self._publishPrice();
+                }
+            });
             
             if (this.validation.status === 'failed') {
                 this._validate();
