@@ -88,11 +88,10 @@ class FormPDF extends GridPDF {
         );
     }
     $data['order_date'] = $order->getOrderDate();
-    $totals = $order->getTotals();
-    $data['subtotal'] = $this->app->number->currency($totals['subtotal'], array('currency' => 'USD'));
-    $data['shipping'] = $this->app->number->currency($totals['shiptotal'], array('currency' => 'USD'));
-    $data['taxes'] = $this->app->number->currency($totals['taxtotal'], array('currency' => 'USD'));
-    $data['total'] = $this->app->number->currency($totals['total'], array('currency' => 'USD'));
+    $data['subtotal'] = $this->app->number->currency($order->getSubtotal(), array('currency' => 'USD'));
+    $data['shipping'] = $this->app->number->currency($order->ship_total, array('currency' => 'USD'));
+    $data['taxes'] = $this->app->number->currency($order->getTaxTotal(), array('currency' => 'USD'));
+    $data['total'] = $this->app->number->currency($order->total, array('currency' => 'USD'));
     foreach($order->elements->get('items.') as $item) {
     	$options = array();
     	foreach($item->options as $option) {
@@ -104,7 +103,7 @@ class FormPDF extends GridPDF {
     			array('format' => 'item-options','text' => implode("\n",$options))
     		),
     		'qty' => array('text' => $item->qty),
-    		'price' => array('text' => $order->getItemPrice($item->sku))
+    		'price' => array('text' => $item->getTotal())
     	);
     	$options = array();
     }

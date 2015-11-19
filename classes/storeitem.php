@@ -51,9 +51,9 @@ class StoreItem {
         }
         $this->attributes = $app->parameter->create($this->attributes);
         $this->shipping = $app->parameter->create($this->shipping);
-        //var_dump($this->options);
+        $this->params = $this->app->parameter->create();
         $this->generateSKU();
-        
+        $this->getTotal('discount');
     }
 
 
@@ -70,8 +70,15 @@ class StoreItem {
     public function getPrice($type = 'retail') {
         return (float) $this->app->prices->get($this->pricing, $type);
     }
+
+    public function isProcessed() {
+        return $this->params->get('processed', false);
+    }
     
     public function getTotal($type = 'retail', $formatCurrency = false, $currency = 'USD') {
+        if($this->isProcessed()) {
+            return $this->total;
+        }
         $price = $this->getPrice($type);
         $this->total = $price*$this->qty;
         if($formatCurrency) {

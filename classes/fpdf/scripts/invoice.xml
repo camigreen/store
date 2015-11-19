@@ -65,14 +65,14 @@
 						<column name="account_name" w=".25" align="C">
 							<header font-style="B" text="Account Name" />
 						</column>
-						<column name="order_number" w=".25" align="C">
-							<header font-style="B" text="Order Number" />
+						<column name="salesperson" w=".25" align="C">
+							<header font-style="B" text="Salesperson" />
 						</column>
 						<column name="delivery_method" w=".25" align="C">
 							<header font-style="B" text="Delivery Method" />
 						</column>
-						<column name="po_number" w=".25" align="C">
-							<header font-style="B" text="Purchase Order Number" /> 
+						<column name="order_number" w=".25" align="C">
+							<header font-style="B" text="Order Number" /> 
 						</column>
 					</columns>
 				</field>

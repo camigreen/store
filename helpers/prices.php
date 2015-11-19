@@ -29,7 +29,7 @@ class PricesHelper extends AppHelper {
     }
 
     
-    public function get($group, $type = 'retail', $default = null, $formatCurrency = false, $currency = 'USD') {   
+    public function get($group, $type = 'discount', $default = null, $formatCurrency = false, $currency = 'USD') {   
         $search = $group;
         $search .= !empty($options) ? '.'.implode('.', $options) : '';
         $retail = $this->items->get($search, $default);

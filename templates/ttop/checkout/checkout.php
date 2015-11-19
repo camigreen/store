@@ -13,7 +13,7 @@ $this->app->document->addScript('assets:js/jquery-validation-1.13.1/dist/jquery.
     <div class="uk-width-1-1 uk-text-center">
         <span class="uk-text-danger uk-text-large testing-mode">TESTING MODE</span>
     </div>
-    <?php var_dump($order->elements); ?>
+    <?php var_dump($order->elements->get('items.')); ?>
 </div>
 <?php endif; ?>
 <div class="uk-clearfix ttop-checkout-title">

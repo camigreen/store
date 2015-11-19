@@ -31,13 +31,11 @@ class OrderEvent {
         $items = $order->elements->get('items', array());
         foreach($items as $key => $item) {
         	$item = new StoreItem($app, $item);
+        	$item->params->set('processed', true);
          	$order->elements->set('items.'.$key, $item);
          }
         //$order->elements->set('items', $app->parameter->create($items));
-        $order->subtotal = (float) $order->subtotal;
-        $order->tax_total = (float) $order->tax_total;
-        $order->ship_total = (float) $order->ship_total;
-        $order->total = (float) $order->total;
+        $order->calculateTotals();
 
 	}
 

@@ -7,7 +7,6 @@
 $order = $this->order;
 $items = $this->cart->getAllItems();
 $elements = $order->elements;
-$totals = $order->getTotals();
 ?>
 <div class="uk-width-1-1 uk-container-center ttop-checkout-payment">
     <div class="uk-grid">
@@ -15,10 +14,9 @@ $totals = $order->getTotals();
             <table class="uk-table">
                 <thead>
                     <tr>
-                        <th class="uk-width-3-10">Item Name</th>
+                        <th class="uk-width-6-10">Item Name</th>
                         <th class="uk-width-2-10">Quantity</th>
-                        <th class="uk-width-1-10">Price</th>
-                        <th class="uk-width-1-10">Remove</th>
+                        <th class="uk-width-2-10">Price</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -37,23 +35,20 @@ $totals = $order->getTotals();
                             <td class="ttop-checkout-item-total">
                                 <?php echo $item->getTotal('discount', true); ?>
                             </td>
-                            <td class="ttop-checkout-item-total">
-                                <div id="<?php echo $sku; ?>" class="uk-icon-button uk-icon-trash trash-item"></div>
-                            </td>
                         </tr>
             <?php endforeach; ?>
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="3" class="uk-text-right">
+                        <td colspan="2" class="uk-text-right">
                             Subtotal:
                         </td>
                         <td>
-                            <?php echo $this->app->number->currency($totals['subtotal'],array('currency' => 'USD')); ?>
+                            <?php echo $this->app->number->currency($order->subtotal,array('currency' => 'USD')); ?>
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="3" class="uk-text-right">
+                        <td colspan="2" class="uk-text-right">
                             Shipping:
                         </td>
                         <td>
@@ -61,7 +56,7 @@ $totals = $order->getTotals();
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="3" class="uk-text-right">
+                        <td colspan="2" class="uk-text-right">
                             Sales Tax:
                         </td>
                         <td>
@@ -69,7 +64,7 @@ $totals = $order->getTotals();
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="3" class="uk-text-right">
+                        <td colspan="2" class="uk-text-right">
                             Total:
                         </td>
                         <td>

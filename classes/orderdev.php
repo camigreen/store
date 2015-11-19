@@ -47,7 +47,8 @@ class OrderDev {
 	}
 
 	public function getOrderDate() {
-		$date = $this->app->date->create($this->created);
+		$tzoffset   = $this->app->date->getOffset();
+		$date = $this->app->date->create($this->created, $tzoffset);
 		return $date->format('m/d/Y g:i a');
 	}
 
@@ -61,15 +62,19 @@ class OrderDev {
 	}
 
 	public function getSubtotal() {
+
 		if(!$items = $this->elements->get('items.')) {
 			$items = $this->app->cart->create()->getAllItems();
 		}
 		$this->subtotal = 0;
 		foreach($items as $item) {
-			$this->subtotal += $this->getItemPrice($item->sku);
+			$this->subtotal += $item->getTotal('discount');
 		}
-
 		return $this->subtotal;
+	}
+
+	public function isProcessed() {
+		return $this->id ? true : false;
 	}
 
 	public function getTaxTotal() {
@@ -94,11 +99,17 @@ class OrderDev {
 		$this->tax_total = $taxtotal;
 		return $this->tax_total;
 	}
-	public function getTotals() {
-		$totals['subtotal'] = $this->getSubtotal();
-		$totals['taxtotal'] = $this->getTaxTotal();
-		$totals['shiptotal'] = $this->ship_total;
+	public function calculateTotals() {
+
+		if(!$this->isProcessed()) {
+			$this->getSubtotal();
+			$this->getTaxTotal();
+		}
+
 		$this->total = $this->subtotal + $this->tax_total + $this->ship_total;
+		$totals['subtotal'] = $this->subtotal;
+		$totals['taxtotal'] = $this->tax_total;
+		$totals['shiptotal'] = $this->ship_total;
 		$totals['total'] = $this->total;
 
 		return $totals;

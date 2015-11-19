@@ -7,7 +7,6 @@
  */
 $elements = $order->elements;
 $items = $order->elements->get('items.');
-$totals = $order->getTotals();
 ?>
 <div class='ttop-receipt'>
     <div class="uk-width-1-1 uk-container-center uk-text-right uk-margin-bottom">
@@ -17,10 +16,10 @@ $totals = $order->getTotals();
         <table class="uk-table uk-table-condensed">
             <thead>
                 <tr>
-                    <th class="uk-text-center">Salesperson</th>
-                    <th class="uk-text-center">Order Number</th>
-                    <th>Order Date</th>
-                    <th>Delivery Method</th>
+                    <th class="uk-width-3-10 uk-text-center">Salesperson</th>
+                    <th class="uk-width-2-10 uk-text-center">Order Number</th>
+                    <th class="uk-width-3-10">Order Date</th>
+                    <th class="uk-width-2-10">Delivery Method</th>
                 </tr>
             </thead>
             <tfoot>
@@ -30,7 +29,7 @@ $totals = $order->getTotals();
                 <tr>
                     <td class="uk-text-center"><?php echo $this->app->user->get($order->created_by)->name ?></td>
                     <td class="uk-text-center"><?php echo $order->id; ?></td>
-                    <td class="uk-text-center"><?php echo $order->getOrderDate(); ?></td>
+                    <td class="uk-text-center"><?php echo $this->app->html->_('date', $order->created, JText::_('DATE_FORMAT_STORE_ORDER'), $this->app->date->getOffset()); ?></td>
                     <td class="uk-text-center"><?php echo $elements->get('localPickup') ? 'Local Pickup' : 'UPS Ground'; ?></td>
                 </tr>
             </tbody>
@@ -113,20 +112,14 @@ $totals = $order->getTotals();
                             <tr>
                                 <td>
                                     <?php echo $item->name; ?>
-                                    <div class="ttop-checkout-item-description"><?php echo $item->getDescription(); ?></div>
-                                    <div class="ttop-checkout-item-options">
-                                        <ul class="uk-list">
-                                        <?php foreach($item->options as $option) : ?>
-                                            <li><?php echo $option['name'].': '.$option['text']; ?></li>
-                                        <?php endforeach; ?>
-                                        </ul>
-                                    </div>
+                                    <div class="ttop-checkout-item-description"><?php echo $item->description; ?></div>
+                                    <div class="ttop-checkout-item-options"><?php echo $item->getOptions(); ?></div>
                                 </td>
                                 <td class="ttop-checkout-item-qty">
                                     <?php echo $item->qty; ?>
                                 </td>
                                 <td class="ttop-checkout-item-total">
-                                    <?php echo $this->app->number->currency($order->getItemPrice($item->sku), array('currency' => 'USD')); ?>
+                                    <?php echo $item->getTotal('discount', array('currency' => 'USD')); ?>
                                 </td>
                             </tr>
                 <?php endforeach; ?>
@@ -140,7 +133,7 @@ $totals = $order->getTotals();
                                 Subtotal:
                             </td>
                             <td class="uk-text-right">
-                                <?php echo $this->app->number->currency($totals['subtotal'], array('currency' => 'USD')); ?>
+                                <?php echo $this->app->number->currency($order->getSubtotal(), array('currency' => 'USD')); ?>
                             </td>
                         </tr>
                         <tr>
@@ -151,7 +144,7 @@ $totals = $order->getTotals();
                                 Shipping:
                             </td>
                             <td class="uk-text-right">
-                                <?php echo $this->app->number->currency($totals['shiptotal'], array('currency' => 'USD')); ?>
+                                <?php echo $this->app->number->currency($order->ship_total, array('currency' => 'USD')); ?>
                             </td>
                         </tr>
                         <tr>
@@ -162,7 +155,7 @@ $totals = $order->getTotals();
                                 Sales Tax:
                             </td>
                             <td class="uk-text-right">
-                                <?php echo $this->app->number->currency($totals['taxtotal'], array('currency' => 'USD')); ?>
+                                <?php echo $this->app->number->currency($order->getTaxTotal(), array('currency' => 'USD')); ?>
                             </td>
                         </tr>
                         <tr>
@@ -173,7 +166,7 @@ $totals = $order->getTotals();
                                 <p>Total:</p>
                             </td>
                             <td>
-                                <p class="ttop-checkout-total uk-text-right"><?php echo $this->app->number->currency($totals['total'], array('currency' => 'USD')); ?></p>
+                                <p class="ttop-checkout-total uk-text-right"><?php echo $this->app->number->currency($order->total, array('currency' => 'USD')); ?></p>
                             </td>
                         </tr>
                     </tfoot>

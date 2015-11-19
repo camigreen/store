@@ -57,9 +57,6 @@ class CashRegister {
         $this->application = $this->app->zoo->getApplication();
 
         $this->account = $this->app->account->getCurrent();
-        // var_dump($this->account);
-        // var_dump($this->account->isTaxable());
-        // var_dump($this->isTaxable());
         $this->setNotificationEmails();
         $this->calculateTotals();
     }
@@ -195,64 +192,8 @@ class CashRegister {
     }
     
     public function calculateTotals() {
-        $items = $this->app->cart->create()->getAllItems();
-        $this->clearTotals();
-        foreach ($items as $item) {
-            $this->subtotal += $item->getTotal();
-            $this->taxTotal += ($item->taxable ? ($item->total*$this->taxRate) : 0);
-        }
-        
-        if(!$this->isTaxable()) {
-            $this->taxTotal = 0;
-        }
-
-        // if($this->order->discount > 0) {
-        //     $this->subtotal -= $this->subtotal*$this->order->discount;
-        //     $this->taxTotal -= $this->taxTotal*$this->order->discount;
-        // }
-
-        // if($this->order->service_fee > 0) {
-        //     $this->subtotal += $this->subtotal*$this->order->service_fee;
-        //     $this->taxTotal += $this->taxTotal*$this->order->service_fee;
-        // }
-
-        $this->shipping = $this->getShippingRate($this->order->elements->get('shipping_method'));
-
-        $this->total = $this->subtotal + $this->taxTotal + $this->shipping;
-
-        $this->order->ship_total = $this->shipping;
-        $this->order->subtotal = $this->subtotal;
-        $this->order->tax_total = $this->taxTotal;
-        $this->order->total = $this->total;
-    }
-
-    public function isTaxable() {
-
-        $state = $this->order->elements->get('billing.state');
-        $taxable = false;
-        if ($state) {
-            $taxable = (!in_array($state,$this->taxableStates) && !$this->order->get('localPickup'));
-        }
-
-        if($this->account) {
-            $taxable = $this->account->isTaxable();
-        }
-
-        return $taxable;
-    }
-
-    public function getCurrency($key) {
-        if(property_exists($this, $key)) {
-            return '$'.number_format(floatVal($this->$key),2,'.','');
-        }
-        return null;
-    }
-
-    public function import() {
-        $this->order->setSalesPerson(); 
-        $this->scanItems();
-        //$this->setFormData();
-        $this->calculateTotals();
+        $this->order->ship_total = $this->getShippingRate($this->order->elements->get('shipping_method'));
+        $this->order->calculateTotals();
     }
 
     public function processPayment($method) {
@@ -290,6 +231,7 @@ class CashRegister {
         $this->order->transaction_id = "Purchase Order";
         $this->order->elements->set('items', $items->getAllItems());
         $this->order->account = $this->app->account->getCurrent()->id;
+        $this->order->calculateCommissions();
         $this->app->table->orderdev->save($this->order);
         $result = array(
             'approved' => true,
