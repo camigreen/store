@@ -106,7 +106,7 @@ class CashRegister {
                 $email->setSubject("Thank you for your order.");
                 $email->setBodyFromTemplate($this->application->getTemplate()->resource.'mail.checkout.receipt.php');
                 $email->addRecipient($order->elements->get('email'));
-                $email->addAttachment($path,'Receipt'.$this->order->id.'.pdf');
+                $email->addAttachment($path,'Receipt-'.$this->order->id.'.pdf');
                 $email->Send();
                 unlink($path);
             } 
@@ -114,9 +114,9 @@ class CashRegister {
                 $filename = $this->app->pdf->invoice->setData($order)->generate()->toFile();
                 $path = $this->app->path->path('assets:pdfs/'.$filename);
                 $email->setSubject("Thank you for your order.");
-                $email->setBodyFromTemplate($this->application->getTemplate()->resource.'mail.checkout.receipt.php');
-                $email->addRecipient($order->elements->get('billing.email'));
-                $email->addAttachment($path,'Receipt'.$this->order->id.'.pdf');
+                $email->setBodyFromTemplate($this->application->getTemplate()->resource.'mail.checkout.invoice.php');
+                $email->addRecipient($order->elements->get('email'));
+                $email->addAttachment($path,'Invoice-'.$this->order->id.'.pdf');
                 $email->Send();
                 unlink($path);
             } 

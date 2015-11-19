@@ -27,10 +27,10 @@ class OrderEvent {
         $order->table = $app->table->orderdev;
         $order->params = $app->parameter->create($order->params);
         $order->elements = $app->parameter->create($order->elements);
-       	$app->loader->register('StoreItem', 'classes:storeitem.php');
+       	$app->loader->register('OrderItem', 'classes:orderitem.php');
         $items = $order->elements->get('items', array());
         foreach($items as $key => $item) {
-        	$item = new StoreItem($app, $item);
+        	$item = new OrderItem($app, $item);
         	$item->params->set('processed', true);
          	$order->elements->set('items.'.$key, $item);
          }
