@@ -68,7 +68,7 @@ define('UPS_SHIPPER_COUNTRY_CODE', 'US');
  */
 class ShipperHelper extends AppHelper {
 
-    private $destination;
+    public $destination;
     protected $shipper;
     private $packages = array();
     public $packageWeightMax = 50;
@@ -82,11 +82,16 @@ class ShipperHelper extends AppHelper {
         $destination = new \SimpleUPS\Address();
         $destination->setStreet($address->get('street1'));
         $destination->setCity($address->get('city'));
-        //$destination->setStateProvinceCode($address->get('state'));
-        $destination->setStateProvinceCode('SC');
-        $destination->setPostalCode($address->get('postal_code'));
+        $destination->setStateProvinceCode($address->get('state'));
+        $destination->setPostalCode($address->get('postalCode'));
         $destination->setCountryCode('US');
 
+        if(UPS::isValidRegion($destination)) {
+           
+        }
+        if(UPS::isValidAddress($destination)) {
+            
+        } 
         $destination = UPS::getCorrectedAddress($destination);
 
         $this->destination = new \SimpleUPS\InstructionalAddress($destination);
@@ -163,7 +168,7 @@ class ShipperHelper extends AppHelper {
 
     public function getRates() {
 
-        try {
+        //try {
             //define a package, we could specify the dimensions of the box if we wanted a more accurate estimate
             //$this->setShipper();
             //$shipper = $this->getShipper();
@@ -173,22 +178,22 @@ class ShipperHelper extends AppHelper {
             foreach($this->packages as $package) {
                 $shipment->addPackage($package);
             }
-            $service = new \SimpleUPS\Service();
-            $service->setCode('03');
-            $shipment->setService($service);
+            //$service = new \SimpleUPS\Service();
+            //$service->setCode('03');
+            //$shipment->setService($service);
             //$shipment->setShipper($shipper);
             $rates = UPS::getRates($shipment);
             foreach ($rates as $shippingMethod) {
                 $this->_rates[$shippingMethod->getService()->getCode()] = $shippingMethod;
             }
-            return $rates;
+            return $this->_rates;
                     
 
-        } catch (ShipperException $e) {
+        //} catch (ShipperException $e) {
             //doh, something went wrong
             echo 'Failed: ('.get_class($e).') '.$e->getMessage().'<br/>';
            echo 'Stack trace:<br/><pre>'.$e->getTraceAsString().'</pre>';
-        }
+        //}
         if (UPS::getDebug()) {
             UPS::getDebugOutput();
         }
