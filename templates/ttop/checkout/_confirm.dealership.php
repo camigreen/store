@@ -10,7 +10,6 @@ $elements = $order->elements;
 $article = JTable::getInstance("content"); 
 $article->load(22); // Get Article ID  
 $salesperson = null;
-$totals = $order->getTotals();
 ?>
 <div class="uk-width-2-3 uk-container-center ttop-receipt">
     <div class="uk-grid">
@@ -83,7 +82,7 @@ $totals = $order->getTotals();
                                 <?php echo $item->qty; ?>
                             </td>
                             <td class="ttop-checkout-item-total">
-                                <?php echo $this->app->number->currency($order->getItemPrice($item->sku), array('currency' => 'USD')); ?>
+                                <?php echo $this->app->number->currency($item->getTotal('discount'), array('currency' => 'USD')); ?>
                             </td>
                         </tr>
             <?php endforeach; ?>
@@ -97,7 +96,7 @@ $totals = $order->getTotals();
                             Subtotal:
                         </td>
                         <td>
-                            <?php echo $this->app->number->currency($totals['subtotal'],array('currency' => 'USD')); ?>
+                            <?php echo $this->app->number->currency($order->subtotal,array('currency' => 'USD')); ?>
                         </td>
                     </tr>
                     <tr>
@@ -108,7 +107,7 @@ $totals = $order->getTotals();
                             Shipping:
                         </td>
                         <td>
-                            <?php echo $this->app->number->currency($totals['shiptotal'],array('currency' => 'USD')); ?>
+                            <?php echo $this->app->number->currency($order->ship_total,array('currency' => 'USD')); ?>
                         </td>
                     </tr>
                     <tr>
@@ -119,7 +118,7 @@ $totals = $order->getTotals();
                             Sales Tax:
                         </td>
                         <td>
-                            <?php echo $this->app->number->currency($totals['taxtotal'],array('currency' => 'USD')); ?>
+                            <?php echo $this->app->number->currency($order->tax_total,array('currency' => 'USD')); ?>
                         </td>
                     </tr>
                     <tr>
@@ -130,7 +129,7 @@ $totals = $order->getTotals();
                             Total:
                         </td>
                         <td>
-                            <?php echo $this->app->number->currency($totals['total'],array('currency' => 'USD')); ?>
+                            <?php echo $this->app->number->currency($order->total,array('currency' => 'USD')); ?>
                         </td>
                     </tr>
                 </tfoot>
