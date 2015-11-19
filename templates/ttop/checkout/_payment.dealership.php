@@ -52,7 +52,7 @@ $elements = $order->elements;
                             Shipping:
                         </td>
                         <td>
-                            <?php echo $this->app->number->currency($totals['shiptotal'],array('currency' => 'USD')); ?>
+                            <?php echo $this->app->number->currency($order->ship_total,array('currency' => 'USD')); ?>
                         </td>
                     </tr>
                     <tr>
@@ -60,7 +60,7 @@ $elements = $order->elements;
                             Sales Tax:
                         </td>
                         <td>
-                            <?php echo $this->app->number->currency($totals['taxtotal'],array('currency' => 'USD')); ?>
+                            <?php echo $this->app->number->currency($order->tax_total,array('currency' => 'USD')); ?>
                         </td>
                     </tr>
                     <tr>
@@ -68,7 +68,7 @@ $elements = $order->elements;
                             Total:
                         </td>
                         <td>
-                            <?php echo $this->app->number->currency($totals['total'],array('currency' => 'USD')); ?>
+                            <?php echo $this->app->number->currency($order->total,array('currency' => 'USD')); ?>
                         </td>
                     </tr>
                 </tfoot>
