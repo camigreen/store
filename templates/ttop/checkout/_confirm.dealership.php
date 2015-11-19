@@ -66,6 +66,7 @@ $salesperson = null;
                     <tr>
                         <th>Item Name</th>
                         <th>Quantity</th>
+                        <th>Dealer Markup Price</th>
                         <th>Price</th>
                     </tr>
                 </thead>
@@ -80,6 +81,9 @@ $salesperson = null;
                             </td>
                             <td class="ttop-checkout-item-qty">
                                 <?php echo $item->qty; ?>
+                            </td>
+                            <td class="ttop-checkout-item-qty">
+                                <?php echo $this->app->number->currency($item->getTotal('markup'), array('currency' => 'USD')); ?>
                             </td>
                             <td class="ttop-checkout-item-total">
                                 <?php echo $this->app->number->currency($item->getTotal('discount'), array('currency' => 'USD')); ?>

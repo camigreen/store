@@ -192,7 +192,7 @@ class CashRegister {
     }
     
     public function calculateTotals() {
-        $this->order->ship_total = $this->getShippingRate($this->order->elements->get('shipping_method'));
+        //$this->order->ship_total = $this->getShippingRate($this->order->elements->get('shipping_method'));
         $this->order->calculateTotals();
     }
 
