@@ -11,7 +11,7 @@ $article = JTable::getInstance("content");
 $article->load(22); // Get Article ID  
 $salesperson = null;
 ?>
-<div class="uk-width-2-3 uk-container-center ttop-receipt">
+<div class="uk-width-1-1 uk-container-center ttop-receipt">
     <div class="uk-grid">
         <div class='uk-width-1-1'>
             <p class='uk-text-center'>Orders are shipped within 5-15 business days.</p>
