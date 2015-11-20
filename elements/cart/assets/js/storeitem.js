@@ -325,7 +325,13 @@
         _publishPrice: function () {
             this._debug('Publishing Price');
             var self = this;
-            var pricing = this._getPricing();
+            var pricing = {};
+            pricing.group = this._getPricing();
+            if($('[name="price_display"]').val()) {
+                pricing.display = $('[name="price_display"]').val();
+            }
+            var data = {};
+            console.log(pricing);
             $.ajax({
                 type: 'POST',
                 url: "?option=com_zoo&controller=store&task=getPrice&format=json",
@@ -338,9 +344,9 @@
                 error: function(data, status, error) {
                     var elem = $('#'+self.item.id+'-price span');
                     elem.html('ERROR');
-                    this._debug('Error');
-                    this._debug(status);
-                    this._debug(error);
+                    self._debug('Error');
+                    self._debug(status);
+                    self._debug(error);
                 },
                 dataType: 'json'
             });
