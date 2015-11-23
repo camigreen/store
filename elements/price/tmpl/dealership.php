@@ -11,7 +11,7 @@
 ?>
 <div id="<?php echo $params['id']; ?>-price">
 	<i class="currency"></i>
-	<span class="price"><?php echo number_format($prices[$display], 2, '.', ''); ?></span>
+	<span class="price"><?php echo number_format($prices['markup'], 2, '.', ''); ?></span>
 	<a id="price_display" href="#"class="uk-icon-button uk-icon-info-circle uk-text-top" style="margin-left:10px;" data-uk-tooltip title="Click here for pricing info!"></a>
 </div>
 
