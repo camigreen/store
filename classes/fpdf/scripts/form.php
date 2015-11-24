@@ -103,9 +103,11 @@ class FormPDF extends GridPDF {
     			array('format' => 'item-options','text' => implode("\n",$options))
     		),
     		'qty' => array('text' => $item->qty),
+    		'markup_price' => array('text' => $this->app->prices->get($item->pricing, 'markup')),
     		'price' => array('text' => $item->getTotal())
     	);
     	$options = array();
+
     }
     $data['items'] = $item_array;
 	$data['order_details'][0] = array(
