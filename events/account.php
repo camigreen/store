@@ -34,8 +34,9 @@ class AccountEvent {
             $account->elements = $app->parameter->create($account->elements);
         }
 
-        
-
+        if($account->type == 'user') {
+        	$account->loadUser();
+        }
 
 	}
 

@@ -21,6 +21,8 @@ class Account {
 
     public $type = 'default';
 
+    public $kind;
+
     public $created;
 
     public $created_by;
@@ -39,18 +41,11 @@ class Account {
 
     public $app;
 
-    public $OEMs = array();
+    protected $_mappedAccounts;
 
-    public $parents = array();
-
-    public $users;
+    protected $_mappedAccountsLoaded = false;
 
     public function __construct() {
-
-        $app = App::getInstance('zoo');
-
-        $this->params = $app->parameter->create($this->params);
-        $this->elements = $app->parameter->create($this->elements);
 
     }
 
@@ -62,7 +57,8 @@ class Account {
      * @since 2.0
      */
     public function getType() {
-        return JText::_('ACCOUNT_TYPE_'.$this->type);
+        $type = $this->kind ? $this->type.'.'.$this->kind : $this->type;
+        return JText::_('ACCOUNT_TYPE_'.$type);
     }
 
     /**
@@ -142,163 +138,191 @@ class Account {
     }
 
     /**
-     * Get the sub-account for the account
+     * Get a sub-account for the account
      *
-     * @param  int $id The id of the subaccount to retrieve. Default is NULL
+     * @param  int $id The id of the subaccount to retrieve.
      *
-     * @return mixed  Account Object or array of Account Objects
+     * @return mixed  Returns an Account Object if it exists.  If not, returns null
      *
      * @since 1.0
      */
-    public function getOEMs() {
+    public function getChild($id) {
 
-        if(!empty($this->OEMs)) {
-            return $this->OEMs;
-        }
-
-        if(!$this->id) {
-            return $this->OEMs;
-        }
-
-        $query = 'SELECT * FROM #__zoo_account_map WHERE parent = '.$this->id;
-
-        $rows = $this->app->database->queryObjectList($query);
-
-        foreach($rows as $row) {
-                $this->OEMs[$row->child] = $this->app->account->get($row->child);
-            
-        }
-
-        return $this->OEMs;
-
-    }
-    public function getOEMCategories() {
-        $oems = $this->getOEMs();
-        $categories = array();
-        foreach($oems as $oem) {
-            $categories[] = $oem->elements->get('category');
-        }
-        return $categories;
-    }
-    public function getParentAccounts() {
-
-        if(!empty($this->parents)) {
-            return $this->parents;
-        }
-
-        if(!$this->id) {
-            return $this->parents;
-        }
-
-        $query = 'SELECT * FROM #__zoo_account_map WHERE child = '.$this->id;
-
-        $rows = $this->app->database->queryObjectList($query);
-
-        foreach($rows as $row) {
-                $this->parents[$row->parent] = $this->app->account->get($row->parent);
-            
-        }
-
-        return $this->parents;
-
-    }
-
-    public function getAssignedProfiles() {
-
-        if(!empty($this->users)) {
-            return $this->users;
-        }
-
-        if(!$this->id) {
-            return $this->users;
-        }
-
-        $query = 'SELECT child FROM #__zoo_account_user_map WHERE parent = '.$this->id;
-
-        $rows = $this->app->database->queryResultArray($query);
-
-        foreach($rows as $row) {
-                $this->users[$row] = $this->app->userprofile->get($row);
-            
-        }
-
-        return $this->users;
-
-    }
-
-    public function getUser($id) {
-        return $this->_users[$id];
-    }
-
-    public function removeParentMap($aid) {
-
-        if(!$this->id) {
-            return;
-        }
-
-        $query = 'DELETE FROM #__zoo_account_map WHERE parent = '.$aid.' AND child = '.$this->id;
-        $this->app->database->query($query);
-    }
-
-    public function mapProfilesToAccount($map = array()) {
-
-        if(!$this->id) {
-            return;
+        if($this->id) {
+            $this->_loadMappedAccounts();
         }
         
-        $query = 'DELETE FROM #__zoo_account_user_map WHERE parent = '.$this->id;
-        $this->app->database->query($query);
+        $child = $this->_mappedAccounts->get('children.'.$id);
 
-        if(empty($map)) {
-            return ;
-        }
+        return $child;
 
-        foreach($map as $profile) {
-            $profile = $this->app->userprofile->get($profile);
-            $profile->removeAccountMap();
-            $query = 'INSERT INTO #__zoo_account_user_map (parent, child) VALUES ('.$this->id.','.$profile->id.')';
-            $this->app->database->query($query);
-        }
     }
 
-    public function mapOEMsToAccount($map = array()) {
+    /**
+     * Set a child account.
+     *
+     * @param  int $id The id of the child to set.
+     *
+     * @return object  Return $this for chaining.
+     *
+     * @since 1.0
+     */
+    public function setChild($id) {
 
-        if(!$this->id) {
-            return;
+        if($this->id) {
+            $this->_loadMappedAccounts();
+        }
+
+        $this->_mappedAccounts->set('children.'.$id, $this->app->account->get($id));
+
+        return $this;
+
+    }
+
+    /**
+     * Get all child accounts
+     *
+     * @return array  Returns an array of Account objects.
+     *
+     * @since 1.0
+     */
+    public function getChildren() {
+
+        if($this->id) {
+            $this->_loadMappedAccounts();
+        }
+
+        return $this->_mappedAccounts->get('children');
+
+    }
+
+    /**
+     * Get a parent for the account
+     *
+     * @param  int $id The id of the parent account to retrieve.
+     *
+     * @return mixed  Returns an Account Object if it exists.  If not, returns null
+     *
+     * @since 1.0
+     */
+    public function getParent($id) {
+
+        if($this->id) {
+            $this->_loadMappedAccounts();
         }
         
-        $query = 'DELETE FROM #__zoo_account_map WHERE parent = '.$this->id;
-        $this->app->database->query($query);
+        $parent = $this->_mappedAccounts->get('parents.'.$id);
 
-        if(empty($map)) {
-            return ;
-        }
+        return $parent;
 
-        foreach($map as $subaccount) {
-            $subaccount = $this->app->account->get($subaccount);
-            $subaccount->removeParentMap($this->id);
-            $query = 'INSERT INTO #__zoo_account_map (parent, child) VALUES ('.$this->id.','.$subaccount->id.')';
-            $this->app->database->query($query);
-        }
     }
 
-    public function mapToParents($map) {
+    /**
+     * Set a parent account.
+     *
+     * @param  int $id The id of the parent to set.
+     *
+     * @return object  Return $this for chaining.
+     *
+     * @since 1.0
+     */
+    public function setParent($id) {
 
-        if(!$this->id) {
-            return;
+        if($this->id) {
+            $this->_loadMappedAccounts();
         }
+
+        $this->_mappedAccounts->set('parents.'.$id, $this->app->account->get($id));
+
+        return $this;
+
+    }
+
+    /**
+     * Get all parent accounts
+     *
+     * @return array  Returns an array of Account objects.
+     *
+     * @since 1.0
+     */
+    public function getParents() {
+
+        if($this->id) {
+            $this->_loadMappedAccounts();
+        }
+
+        return $this->_mappedAccounts->get('parents');
+
+    }
+
+    /**
+     * Load sub-accounts into the cache.
+     *
+     * @param  boolean $reload Automatically reload all subaccounts from the database. Default is NULL
+     *
+     * @return array  Returns an array of Account Objects.
+     *
+     * @since 1.0
+     */
+    protected function _loadMappedAccounts($reload = false) {
+
+        // if the subaccounts array is empty load all subaccounts from the database and hold them in cache
+        if((!$this->_mappedAccountsLoaded || $reload) && $this->id) {
+            $query = 'SELECT * FROM #__zoo_account_map WHERE parent = '.$this->id.' OR child = '.$this->id;
+
+            $rows = $this->app->database->queryObjectList($query);
+
+            $this->_mappedAccounts = $this->app->parameter->create();
+
+            foreach($rows as $row) {
+                if($row->parent == $this->id) {
+                    $this->_mappedAccounts->set('children.'.$row->child, $this->app->account->get($row->child));
+                }
+                if($row->child == $this->id) {
+                    $this->_mappedAccounts->set('parents.'.$row->parent, $this->app->account->get($row->parent));
+                }
+            }
+        }
+
+        $this->_mappedAccountsLoaded = true;
+
+        return $this;
+
+    }
+
+    /**
+     * Map all related accounts to the database
+     *
+     * @return object $this Account object for chaining.
+     *
+     * @since 1.0
+     */
+    protected function _mapRelatedAccounts() {
+
+        // Load all parent and child accounts into the cache.
+        $this->_loadMappedAccounts();
+
+        // Remove all mappings where this account is the child from the database.
         $query = 'DELETE FROM #__zoo_account_map WHERE child = '.$this->id;
         $this->app->database->query($query);
 
-        if(empty($map)) {
-            return ;
-        }
+        // Remove all mappings where this account is the parent from the database.
+        $query = 'DELETE FROM #__zoo_account_map WHERE child = '.$this->id;
+        $this->app->database->query($query);
 
-        foreach($map as $parent) {
-            $parent = $this->app->account->get($parent);
+        // Map all of the parent accounts to the database.
+        foreach($this->_mappedAccounts->get('parents.') as $parent) {
             $query = 'INSERT INTO #__zoo_account_map (parent, child) VALUES ('.$parent->id.','.$this->id.')';
             $this->app->database->query($query);
         }
+
+        // Map all of the child accounts to the database.
+        foreach($this->_mappedAccounts->get('children.') as $child) {
+            $query = 'INSERT INTO #__zoo_account_map (parent, child) VALUES ('.$this->id.','.$child->id.')';
+            $this->app->database->query($query);
+        }
+
+        return $this;
     }
 
     public function isTaxable() {

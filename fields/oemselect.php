@@ -1,7 +1,7 @@
 <?php 
 	$account = $this->app->account->get($parent->getValue('id'));
 	$available = $this->app->table->account->all(array('conditions' => 'type = "oem"'));
-	$selected = $account->getOEMS();
+	$selected = $account->getAllOEMs();
 
 	// echo 'Available:';
 	// var_dump($available);

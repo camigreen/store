@@ -330,7 +330,6 @@
             if($('[name="price_display"]').val()) {
                 pricing.display = $('[name="price_display"]').val();
             }
-            var data = {};
             console.log(pricing);
             $.ajax({
                 type: 'POST',

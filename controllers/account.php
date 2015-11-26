@@ -58,25 +58,20 @@ class AccountController extends AppController {
         if (!$this->template = $this->application->getTemplate()) {
             return $this->app->error->raiseError(500, JText::_('No template selected'));
         }
-        // $orders = $this->app->database->queryAssocList('SELECT id FROM joomla_zoo_order');
+        $options = array();
+        $search = $this->app->request->get('search', 'string');
+        list($type, $kind) = explode('.', $search, 2);
+        var_dump($type);
+        var_dump($kind);
+        if($type != 'all') {
+            $conditions = "type = '$type'";
+            $conditions .= $kind != '' ? " AND kind = '$kind'" : '';
+            $options['conditions'] = $conditions;
+        }
 
-        // foreach($orders as $order) {
-
-        //     $_order = $this->app->order->create($order['id']);
-        //     $this->relayorder($_order);
-        // }       
-        // $account = $this->app->account->getByUser();
-        // var_dump($account);
-
-        $this->accounts = $this->app->table->account->all();
+        $this->accounts = $this->app->table->account->all($options);
         $this->title = "Accounts";
         $this->record_count = count($this->accounts);
-        
-        // Check ACL
-        // if (!$this->account->canAccess($this->userprofile->user)) {
-        //     return $this->app->error->raiseError(403, JText::_('Unable to access this account'));
-        // }
-
 
         $layout = 'search';
         $this->getView()->addTemplatePath($this->template->getPath().'/accounts');
@@ -139,11 +134,11 @@ class AccountController extends AppController {
                 $this->app->error->raiseError(500, JText::sprintf('Unable to access an account with the id of %s', $aid));
                 return;
             }
-            $type = $this->account->type;
+            $this->type = $this->account->type.($this->account->kind ? '.'.$this->account->kind : '');
             $this->title = "Edit Account";
         } else {
-            $this->account = $this->app->account->get();
-            $type = $this->app->request->get('type', 'string');
+            $this->account = $this->app->account->create();
+            $this->type = $this->app->request->get('type', 'string');
             $this->account->type = $type;
             $this->title = $type == 'default' ? "Create a New $template Account" : "Create a New $type Account";
 

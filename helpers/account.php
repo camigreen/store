@@ -19,25 +19,23 @@ class AccountHelper extends AppHelper {
 		parent::__construct($app);
 
 		$this->app->loader->register('Account', 'classes:account.php');
+		$this->table = $this->app->table->account;
 
         
 	}
 
-	public function get($id = null) {
-		if(!$id) {
-			$account = $this->app->object->create('account');
-			// trigger init event
-			$this->app->event->dispatcher->notify($this->app->event->create($account, 'account:init'));
-			return $account;
-		}
+	public function get($id) {
 
 		if (!isset($this->_accounts[$id])) {
-			$table = $this->app->table->account;
-			$account = $table->get($id);
+			$account = $this->table->get($id);
 			$this->_accounts[$id] = $account;
 		}
 		
 		return $this->_accounts[$id]; 
+	}
+
+	public function create($type = 'default') {
+
 	}
 
 	public function getByTypes() {
