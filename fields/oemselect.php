@@ -17,7 +17,7 @@
 	<?php foreach($selected as $id => $oem) : ?>
 		
 		<li id="<?php echo $oem->id; ?>" data-name="<?php echo $oem->name; ?>">
-			<input type="text" name="oems[]" value="<?php echo $oem->id; ?>" />
+			<input type="text" name="children[]" value="<?php echo $oem->id; ?>" />
 			<?php echo $oem->name.'<a href="#" class="uk-close uk-float-right uk-text-muted"></a>'; ?>
 		</li>
 	<?php endforeach; ?>
@@ -99,7 +99,7 @@
 			}
 			$.each(selected, function(k,v) {
 				var li = $('<li></li>').prop('id', k).data('name', v).html(v+'<a href="#" class="uk-close uk-float-right uk-text-muted"></a>');
-				var input = $('<input type="hidden" />').val(k).prop('name', 'oems[]');
+				var input = $('<input type="hidden" />').val(k).prop('name', 'children[]');
 				li.append(input);
 				_selected.append(li);
 			})

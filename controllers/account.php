@@ -34,6 +34,8 @@ class AccountController extends AppController {
         // set base url
         $this->baseurl = $this->app->link(array('controller' => $this->controller), false);
 
+        $this->cUser = $this->app->user->get();
+
         //var_dump($this->app->account->getCurrent());
 
         // registers tasks
@@ -128,17 +130,16 @@ class AccountController extends AppController {
 
         $aid = $this->app->request->get('aid', 'int');
         $edit = $aid > 0;
-        
         if($edit) {
             if(!$this->account = $this->table->get($aid)) {
                 $this->app->error->raiseError(500, JText::sprintf('Unable to access an account with the id of %s', $aid));
                 return;
             }
-            $this->type = $this->account->type.($this->account->kind ? '.'.$this->account->kind : '');
+            $type = $this->account->getLayout();
             $this->title = "Edit Account";
         } else {
             $this->account = $this->app->account->create();
-            $this->type = $this->app->request->get('type', 'string');
+            $type = $this->app->request->get('type', 'string');
             $this->account->type = $type;
             $this->title = $type == 'default' ? "Create a New $template Account" : "Create a New $type Account";
 
@@ -147,7 +148,7 @@ class AccountController extends AppController {
         $this->form = $this->app->form->create(array($this->template->getPath().'/accounts/config.xml', compact('type')));
         $this->form->setValues($this->account);
         $layout = 'edit';
-        
+        $this->type = $type;
         $this->groups = $this->form->getGroups();
          
         $this->getView()->addTemplatePath($this->template->getPath().'/accounts');
@@ -174,12 +175,11 @@ class AccountController extends AppController {
         $this->app->session->checkToken() or jexit('Invalid Token');
 
         // init vars
-        $now        = $this->app->date->create();
-        $cUser = $this->app->user->get()->id;
+        
         $aid = $this->app->request->get('aid', 'int');
         $post = $this->app->request->get('post:', 'array', array());
-        $tzoffset   = $this->app->date->getOffset();
         $type = $this->app->request->get('type', 'word', 'default');
+        var_dump($post);
 
         if($aid) {
             $account = $this->table->get($aid);
@@ -189,60 +189,17 @@ class AccountController extends AppController {
             $account->created_by = $cUser;
         }
 
-        $core = $post['core'];
+        $account->bind($post);
 
-        self::bind($account, $core);
+        //self::bind($account, $core);
 
-        $params = $this->app->parameter->create();
-
-
-        if(isset($post['params'])) {
-           foreach($post['params'] as $key => $value) {
-                $params->set($key.'.', $value);
-            } 
-        }
-        
-        $account->params = $params;
-
-        $elements = $this->app->parameter->create();
-        if(isset($post['elements'])) {
-            foreach($post['elements'] as $key => $value) {
-                if(is_array($value)) {
-                    $elements->set($key.'.', $value);  
-                } else {
-                    $elements->set($key, $value);
-                }
-                
-            }
-        }
-        
-        $account->elements = $elements;
 
         // Save to get the ID.
-        $this->table->save($account);
-        
-        $profiles = $this->app->request->get('profiles', 'array', array());
+        //$this->table->save($account);
+        $account->save();
 
-        $account->mapProfilesToAccount($profiles);
-
-        $oems = $this->app->request->get('oems', 'array', array());
-
-        $account->mapOEMsToAccount($oems);
-
-        $parents = $this->app->request->get('parents', 'array', array());
-
-        $account->mapToParents($parents);
-
-        // Set Created Date
-        try {
-            $account->created = $this->app->date->create($account->created, $tzoffset)->toSQL();
-        } catch (Exception $e) {
-            $account->created = $now->toSQL();
-        }
-
-        // Set Modified Date
-        $account->modified = $now->toSQL();
-        $account->modified_by = $cUser;
+        var_dump($account);
+        return;
 
         
         $result = $this->table->save($account);

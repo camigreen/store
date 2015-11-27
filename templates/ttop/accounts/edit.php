@@ -40,9 +40,9 @@
 	</div>
 	<div class="uk-width-8-10">
 		<div class="uk-width-1-1">
-			<form id="account_admin_form" class="uk-form sdfsfsd" method="post" action="<?php echo $this->baseurl; ?>">
-				<?php echo $this->partial($this->account->type.($this->account->kind ? '.'.$this->account->kind : ''), array('id' => $this->account->id)); ?>
-				<input type="hidden" name="task" />
+			<form id="account_admin_form" class="uk-form" method="post" action="<?php echo $this->baseurl; ?>">
+				<?php echo $this->partial($this->type, array('id' => $this->account->id)); ?>
+				<input type="text" name="task" />
 				<input type="hidden" name="aid" value="<?php echo $this->account->id; ?>" />
 				<input type="hidden" name="type" value="<?php echo $this->account->type; ?>" />
 				<?php echo $this->app->html->_('form.token'); ?>

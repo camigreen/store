@@ -50,15 +50,93 @@ class Account {
     }
 
     /**
+     * Bind data to this class
+     *
+     * @return object  Account Object  Returns $this for chaining.
+     *
+     * @since 1.0
+     */
+    public function bind($data) {
+
+        if(isset($data['elements'])) {
+            $elements = $this->app->parameter->create();
+           foreach($data['elements'] as $key => $value) {
+                if(is_array($value)) {
+                    $elements->set($key.'.', $value);
+                } else {
+                    $elements->set($key, $value);
+                }
+            }
+            $data['elements'] = $elements; 
+        }
+        if(isset($data['params'])) {
+            $params = $this->app->parameter->create();
+           foreach($data['params'] as $key => $value) {
+                if(is_array($value)) {
+                    $params->set($key.'.', $value);
+                } else {
+                    $params->set($key, $value);
+                }
+                
+            }
+            $data['params'] = $params; 
+        }
+
+        foreach($data as $key => $value) {
+            if(property_exists($this, $key)) {
+                $this->key = $value;
+            }
+        }
+
+        return $this;
+    }
+
+    public function save() {
+
+        // Init vars
+        $now = $this->app->date->create();
+        $cUser = $this->app->user->get()->id;
+        $tzoffset = $this->app->date->getOffset();
+        
+        // Set Created Date
+        try {
+            $this->created = $this->app->date->create($this->created, $tzoffset)->toSQL();
+        } catch (Exception $e) {
+            $this->created = $now->toSQL();
+        }
+
+        // Set Modified Date
+        $this->modified = $now->toSQL();
+        $this->modified_by = $cUser;
+
+        // Save the object to the database.
+        $this->app->table->account->save($this);
+
+        return $this;
+    }
+
+    /**
      * Get the account type
      *
      * @return string       The account type.
      *
-     * @since 2.0
+     * @since 1.0
      */
     public function getType() {
         $type = $this->kind ? $this->type.'.'.$this->kind : $this->type;
         return JText::_('ACCOUNT_TYPE_'.$type);
+    }
+
+    /**
+     * Get the account type
+     *
+     * @return string       The account type.
+     *
+     * @since 1.0
+     */
+    public function getLayout() {
+        $layout = $this->kind ? $this->type.'.'.$this->kind : $this->type;
+        return $layout;
     }
 
     /**

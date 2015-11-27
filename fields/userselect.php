@@ -18,7 +18,7 @@
 	<?php foreach($selected as $id => $profile) : ?>
 		
 		<li id="<?php echo $profile->id; ?>" data-name="<?php echo $profile->getUser()->name; ?>">
-			<input type="text" name="profiles[]" value="<?php echo $profile->id; ?>" />
+			<input type="text" name="children[]" value="<?php echo $profile->id; ?>" />
 			<?php echo $profile->getUser()->name.'<a href="#" class="uk-close uk-float-right uk-text-muted"></a>'; ?>
 		</li>
 	<?php endforeach; ?>
@@ -100,7 +100,7 @@
 			}
 			$.each(selected, function(k,v) {
 				var li = $('<li></li>').prop('id', k).data('name', v).html(v+'<a href="#" class="uk-close uk-float-right uk-text-muted"></a>');
-				var input = $('<input type="hidden" />').val(k).prop('name', 'profiles[]');
+				var input = $('<input type="hidden" />').val(k).prop('name', 'children[]');
 				li.append(input);
 				_selected.append(li);
 			})
