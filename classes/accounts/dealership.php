@@ -15,6 +15,12 @@ class DealershipAccount extends Account {
 
     public $type = 'dealership';
 
+    public function bind($data) {
+        
+        parent::bind($data);
+
+    }
+
     /**
      * Get an OEM account
      *

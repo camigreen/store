@@ -62,28 +62,26 @@ class Account {
             $elements = $this->app->parameter->create();
            foreach($data['elements'] as $key => $value) {
                 if(is_array($value)) {
-                    $elements->set($key.'.', $value);
+                    $this->elements->set($key.'.', $value);
                 } else {
-                    $elements->set($key, $value);
+                    $this->elements->set($key, $value);
                 }
             }
-            $data['elements'] = $elements; 
         }
         if(isset($data['params'])) {
             $params = $this->app->parameter->create();
            foreach($data['params'] as $key => $value) {
                 if(is_array($value)) {
-                    $params->set($key.'.', $value);
+                    $this->params->set($key.'.', $value);
                 } else {
-                    $params->set($key, $value);
+                    $this->params->set($key, $value);
                 }
                 
             }
-            $data['params'] = $params; 
         }
 
         foreach($data as $key => $value) {
-            if(property_exists($this, $key)) {
+            if(property_exists($this, $key) && $key != 'elements' && $key != 'params') {
                 $this->key = $value;
             }
         }

@@ -8,7 +8,7 @@
 		</fieldset>
 	</div>
 <?php endif; ?>
-<?php $this->form->setValues($this->account->elements->get('poc.0')); ?>
+<?php $this->form->setValues($this->account->elements->get('poc.')); ?>
 <?php if($this->form->checkGroup('poc')) : ?>
 	<div class="uk-form-row">
 		<fieldset id="poc">

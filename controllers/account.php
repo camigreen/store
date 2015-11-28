@@ -179,6 +179,7 @@ class AccountController extends AppController {
         $aid = $this->app->request->get('aid', 'int');
         $post = $this->app->request->get('post:', 'array', array());
         $type = $this->app->request->get('type', 'word', 'default');
+        echo 'Post</br>';
         var_dump($post);
 
         if($aid) {
@@ -190,6 +191,8 @@ class AccountController extends AppController {
         }
 
         $account->bind($post);
+        echo 'Bind</br>';
+        var_dump($account);
 
         //self::bind($account, $core);
 
@@ -203,7 +206,7 @@ class AccountController extends AppController {
 
         
         $result = $this->table->save($account);
-        $msg = 'The account has been successfully saved.';
+        $msg = 'The account was saved successfully.';
         $link = $this->baseurl;
         switch ($this->getTask()) {
             case 'apply' :
