@@ -36,15 +36,12 @@ class ElementPrice extends ElementStore {
 
 
         $pricing = $params['pricing'];
-        $account = $this->app->account->getCurrent();
+        $account = $this->app->account->getCurrent()->getParentAccount();
         $layout = $account->type;
-        $display = $account->elements->get('pricing.display', 'retail');
-        $pricing_str = $pricing->get('group').$pricing->get('option_values');
-        $prices['discount'] = $this->app->prices->get($pricing_str, 'discount');
-        $prices['retail'] = $this->app->prices->get($pricing_str, 'retail');
-        $prices['markup'] = $this->app->prices->get($pricing_str, 'markup');
+        $item_id = $params['id'];
+        $group = $pricing->get('group').$pricing->get('option_values');
         if(file_exists($this->app->path->path('elements:price/tmpl/'.$layout.'.php')) && $layout != 'default') {
-            return $this->renderLayout($this->app->path->path('elements:price/tmpl/'.$layout.'.php'), compact('prices','params', 'display'));
+            return $this->renderLayout($this->app->path->path('elements:price/tmpl/'.$layout.'.php'), compact('group','params', 'item_id'));
         } else {
             return $this->renderLayout($this->app->path->path('elements:price/tmpl/default.php'), compact('prices','params'));
         }

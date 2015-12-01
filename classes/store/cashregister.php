@@ -229,9 +229,9 @@ class CashRegister {
         // $this->clearOrder();
         $items = $this->app->cart->create();
         $this->order->transaction_id = "Purchase Order";
-        $this->order->elements->set('items', $items->getAllItems());
-        $this->order->account = $this->app->account->getCurrent()->id;
+        $this->order->elements->set('items.', $items->getAllItems());
         $this->order->calculateCommissions();
+        $this->order->account = $this->order->account->id;
         $this->app->table->orderdev->save($this->order);
         $result = array(
             'approved' => true,

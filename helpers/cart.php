@@ -74,7 +74,7 @@ class CartHelper extends AppHelper {
         return $count;
     }
 
-    public function getCartTotal($display = 'retail') {
+    public function getCartTotal($display = 'markup') {
         $total = 0.00;
         foreach($this->_items as $item) {
             
@@ -141,6 +141,8 @@ class CartItem {
     public $taxable = true;
     
     public $app;
+
+    protected $price;
     
     public function __construct($app, $item) {
 
@@ -158,6 +160,14 @@ class CartItem {
         }
         $this->attributes = $app->parameter->create($this->attributes);
         $this->shipping = $app->parameter->create($this->shipping);
+        $this->pricing = $app->parameter->create($this->pricing);
+        $this->price = $this->app->parameter->create();
+        $account = $this->app->account->getCurrent()->getParentAccount();
+        $markup = $account->params->get('pricing.markup');
+        $discount = $account->params->get('pricing.discount');
+        $this->price->set('retail', $this->app->prices->get($this->pricing->get('group'), 0));
+        $this->price->set('markup', $this->pricing->get('markup', $markup));
+        $this->price->set('discount', $discount); 
         //var_dump($this->options);
         $this->generateSKU();
         
@@ -182,20 +192,35 @@ class CartItem {
         return $html;
     }
     public function generateSKU() {
+        if($this->sku) {
+            return $this->sku;
+        }
         $options = '';
         foreach($this->options as $key => $value) {
             $options .= $key.$value->get('text');
         }
+        $options .= $this->getPrice();
         
         $this->sku = hash('md5', $this->id.$options);
         return $this->sku;
     }
 
-    public function getPrice($type = 'retail') {
-        return (float) $this->app->prices->get($this->pricing, $type);
+    public function getPrice($type = 'markup') {
+        $price = $this->price->get('retail', 0);
+
+        switch($type) {
+            case 'markup':
+                $price += $price*$this->price->get('markup');
+                break;
+            case 'discount':
+                $price -= $price*$this->price->get('discount');
+                break;
+        }
+
+        return (float) $price;
     }
     
-    public function getTotal($type = 'retail', $formatCurrency = false, $currency = 'USD') {
+    public function getTotal($type = 'markup', $formatCurrency = false, $currency = 'USD') {
         $price = $this->getPrice($type);
         $this->total = $price*$this->qty;
         if($formatCurrency) {

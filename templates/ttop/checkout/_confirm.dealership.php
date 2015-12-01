@@ -93,10 +93,7 @@ $salesperson = null;
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td>
-                            
-                        </td>
-                        <td class="uk-text-right">
+                        <td colspan="3" class="uk-text-right">
                             Subtotal:
                         </td>
                         <td>
@@ -104,10 +101,7 @@ $salesperson = null;
                         </td>
                     </tr>
                     <tr>
-                        <td>
-
-                        </td>
-                        <td class="uk-text-right">
+                        <td colspan="3" class="uk-text-right">
                             Shipping:
                         </td>
                         <td>
@@ -115,10 +109,7 @@ $salesperson = null;
                         </td>
                     </tr>
                     <tr>
-                        <td>
-
-                        </td>
-                        <td class="uk-text-right">
+                        <td colspan="3" class="uk-text-right">
                             Sales Tax:
                         </td>
                         <td>
@@ -126,10 +117,7 @@ $salesperson = null;
                         </td>
                     </tr>
                     <tr>
-                        <td>
-
-                        </td>
-                        <td class="uk-text-right">
+                        <td colspan="3" class="uk-text-right">
                             Total:
                         </td>
                         <td>

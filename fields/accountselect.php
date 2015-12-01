@@ -1,7 +1,15 @@
 <?php 
-	$parent = $this->app->account->get($parent->getValue('id'));
-	$available = $this->app->table->account->all(array('conditions' => 'type = "dealership"'));
-	$selected = $parent->getParentAccounts();
+
+	$available = array();
+	$selected = array();
+
+	if($id = $parent->getValue('id')) {
+		$account = $this->app->account->get($id);
+		$available =$this->app->table->account->all(array('conditions' => 'type = "dealership"'));
+		$selected = $account->getParents();
+	}
+
+	$name = $control_name."[$name][]";
 
 	// echo 'Available:';
 	// var_dump($available);
@@ -17,7 +25,7 @@
 	<?php foreach($selected as $id => $parent) : ?>
 		
 		<li id="<?php echo $parent->id; ?>" data-name="<?php echo $parent->name; ?>">
-			<input type="text" name="parents[]" value="<?php echo $parent->id; ?>" />
+			<input type="text" name="<?php echo $name; ?>" value="<?php echo $parent->id; ?>" />
 			<?php echo $parent->name.'<a href="#" class="uk-close uk-float-right uk-text-muted"></a>'; ?>
 		</li>
 	<?php endforeach; ?>
@@ -99,7 +107,7 @@
 			}
 			$.each(selected, function(k,v) {
 				var li = $('<li></li>').prop('id', k).data('name', v).html(v+'<a href="#" class="uk-close uk-float-right uk-text-muted"></a>');
-				var input = $('<input type="hidden" />').val(k).prop('name', 'parents[]');
+				var input = $('<input type="hidden" />').val(k).prop('name', '<?php echo $name; ?>');
 				li.append(input);
 				_selected.append(li);
 			})

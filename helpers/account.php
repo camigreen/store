@@ -36,10 +36,31 @@ class AccountHelper extends AppHelper {
 
 	public function create($type = 'default') {
 
+		if($type == 'default') {
+			$class = 'Account';
+		} else {
+			list($_type) = explode('.', $type,2);
+			$class = $_type."Account";
+			$this->app->loader->register($class, 'classes:accounts/'.strtolower($_type).'.php');
+		}
+
+		$account = new $class();
+		$account->type = $type;
+		$account->app = $this->app;
+
+		// trigger init event
+		$this->app->event->dispatcher->notify($this->app->event->create($account, 'account:init'));
+
+		return $account;
+
 	}
 
 	public function getByTypes() {
 		return $this->app->table->account->all();
+	}
+
+	public function getStoreAccount() {
+		return $this->get(7);
 	}
 
 	public function getByUser($user = null) {
@@ -64,8 +85,14 @@ class AccountHelper extends AppHelper {
 	}
 
 	public function getCurrent() {
-		$user = $this->app->userprofile->getCurrent();
-		return $this->getByUser($user);
+		$user = $this->app->user->get();
+		$accounts = $this->table->all(array('conditions' => "type LIKE 'user.%'"));
+		foreach($accounts as $account) {
+			if($account->elements->get('user') == $user->id) {
+				return $this->get($account->id);
+			}
+		}
+		return;
 	}
 
 	public function getUnassignedOEMs($options = null) {
@@ -81,21 +108,6 @@ class AccountHelper extends AppHelper {
         return $assignments;
 
 	}
-
-    public function mapProfilesToAccount($aid, $pids = array()) {
-    		$account = $this->get($aid);
-
-    		$account_profiles = $account->getAssignedProfiles();
-
-    		foreach($account_profiles as $key => $value) {
-    			if(!in_array($pids)) {
-    				$pids[] = $key;
-    			}
-    		}
-
-    		$account->mapProfilesToAccount($pids);
-
-    }
 
     
 

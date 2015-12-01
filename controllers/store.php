@@ -572,10 +572,9 @@ class StoreController extends AppController {
     }
 
     public function getPrice() {
-        $account = $this->app->account->getCurrent();
         $pricing = $this->app->request->get('post:pricing','array', array());
         $pricing = $this->app->parameter->create($pricing);
-        $prices = $this->app->prices->get($pricing->get('group'), $pricing->get('display', 'retail'));
+        $prices = $this->app->prices->get($pricing->get('group'), $pricing->get('markup'));
         $result['price'] = $prices;
         $this->outputToJSON($result);
 

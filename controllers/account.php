@@ -62,12 +62,8 @@ class AccountController extends AppController {
         }
         $options = array();
         $search = $this->app->request->get('search', 'string');
-        list($type, $kind) = explode('.', $search, 2);
-        var_dump($type);
-        var_dump($kind);
-        if($type != 'all') {
-            $conditions = "type = '$type'";
-            $conditions .= $kind != '' ? " AND kind = '$kind'" : '';
+        if($search != 'all') {
+            $conditions = "type = '$search'";
             $options['conditions'] = $conditions;
         }
 
@@ -135,12 +131,11 @@ class AccountController extends AppController {
                 $this->app->error->raiseError(500, JText::sprintf('Unable to access an account with the id of %s', $aid));
                 return;
             }
-            $type = $this->account->getLayout();
-            $this->title = "Edit Account";
+            $type = $this->account->type;
+            $this->title = 'Edit '.$this->account->getClassName().' Account';
         } else {
-            $this->account = $this->app->account->create();
             $type = $this->app->request->get('type', 'string');
-            $this->account->type = $type;
+            $this->account = $this->app->account->create($type);
             $this->title = $type == 'default' ? "Create a New $template Account" : "Create a New $type Account";
 
         }
@@ -193,6 +188,7 @@ class AccountController extends AppController {
         $account->bind($post);
         echo 'Bind</br>';
         var_dump($account);
+        //return;
 
         //self::bind($account, $core);
 
@@ -202,10 +198,8 @@ class AccountController extends AppController {
         $account->save();
 
         var_dump($account);
-        return;
+        //return;
 
-        
-        $result = $this->table->save($account);
         $msg = 'The account was saved successfully.';
         $link = $this->baseurl;
         switch ($this->getTask()) {

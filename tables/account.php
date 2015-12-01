@@ -55,8 +55,10 @@ class AccountTable extends AppTable {
 		// fetch object and execute init callback
 		$object = null;
 		if ($object = $this->database->fetchObject($result)) {
-			$class = $object->type."Account";
-			$this->app->loader->register($class, 'classes:accounts/'.strtolower($object->type).'.php');
+			list($type) = explode('.', $object->type,2);
+			$class = $type."Account";
+
+			$this->app->loader->register($class, 'classes:accounts/'.strtolower($type).'.php');
 			$obj = new $class();
 			foreach($object as $key => $value) {
 				if(property_exists($obj, $key)) {
@@ -89,8 +91,9 @@ class AccountTable extends AppTable {
 		// fetch objects and execute init callback
 		$objects = array();
 		while ($object = $this->database->fetchObject($result)) {
-			$class = $object->type."Account";
-			$this->app->loader->register($class, 'classes:accounts/'.strtolower($object->type).'.php');
+			list($type) = explode('.', $object->type,2);
+			$class = $type."Account";
+			$this->app->loader->register($class, 'classes:accounts/'.strtolower($type).'.php');
 			$obj = new $class();
 			foreach($object as $key => $value) {
 				if(property_exists($obj, $key)) {
@@ -128,11 +131,14 @@ class AccountTable extends AppTable {
 		return $result;
 	}
 
-	public function getUnassignedOEMs() {
-
-		$query = 'SELECT b.parent, a.* FROM #__zoo_account a LEFT JOIN (SELECT * FROM #__zoo_account_map) b ON a.id = b.child WHERE a.type = "oem"';
+	public function getUnassignedAccounts() {
+		$query = 'SELECT b.parent, a.* FROM #__zoo_account a LEFT JOIN (SELECT * FROM #__zoo_account_map) b ON a.id = b.child WHERE b.parent IS NULL';
         return $this->_queryObjectList($query);
+	}
 
+	public function getUnassignedAccountsByType($type) {
+		$query = 'SELECT b.parent, a.* FROM #__zoo_account a LEFT JOIN (SELECT * FROM #__zoo_account_map) b ON a.id = b.child WHERE b.parent IS NULL AND a.type = "'.$type.'"';
+        return $this->_queryObjectList($query);
 	}
 }
 

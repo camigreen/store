@@ -28,7 +28,7 @@ class OrderEvent {
         $order->params = $app->parameter->create($order->params);
         $order->elements = $app->parameter->create($order->elements);
        	$app->loader->register('OrderItem', 'classes:orderitem.php');
-        $items = $order->elements->get('items', array());
+        $items = $order->elements->get('items.', array());
         foreach($items as $key => $item) {
         	$item = new OrderItem($app, $item);
         	$item->params->set('processed', true);

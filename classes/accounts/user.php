@@ -17,8 +17,6 @@ class UserAccount extends Account {
 
     public $type = 'user';
 
-    public $kind = 'dealership';
-
     protected $_user;
 
     public function __construct() {
@@ -26,6 +24,10 @@ class UserAccount extends Account {
     }
 
     public function loadUser() {
+        if(!$this->elements->get('user')) {
+            $this->_user = new JUser();
+        }
+
         if(empty($this->_user)) {
             $this->_user = $this->app->user->get($this->elements->get('user'));
         }
@@ -38,17 +40,12 @@ class UserAccount extends Account {
         return $this->_user;
     }
 
-    // public function __get($name) {
-    //     if(property_exists($this->_user, $name)){
-    //         return $this->_user->$name;
-    //     }
-    //     return $this->$name;
-    // }
+    public function getParentAccount() {
+        $parents = array_values($this->getParents());
+        list($account) = $parents;
+        return $account;
+    }
 
-    // public function __set($name, $value) {
-    //     if(property_exists($this, $name)) {
-    //         $this->$name = $value;
-    //     }
-    // }
+
 
 }

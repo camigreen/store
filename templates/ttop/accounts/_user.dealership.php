@@ -48,17 +48,16 @@
 					</fieldset>
 				</div>
 			<?php endif; ?>
-			<?php $this->form->setValue('account', $this->account->getParents()); ?>
-			<?php if($this->form->checkGroup('elements')) : ?>
+			<?php $this->form->setValue('parents', $this->account->getParents()); ?>
+			<?php if($this->form->checkGroup('related')) : ?>
 				<div class="uk-form-row">
-					<fieldset id="elements">
+					<fieldset id="related">
 						<legend>User Assignments</legend>
-						<?php echo $this->form->render('elements')?>
+						<?php echo $this->form->render('related')?>
 					</fieldset>
 				</div>
 			<?php endif; ?>
-		<input type="hidden" name="kind" value="<?php echo $this->account->kind; ?>" />
-		<input type="text" name="user_id" value="<?php echo $user->id; ?>" />
+		<input type="hidden" name="user_id" value="<?php echo $user->id; ?>" />
 		<?php echo $this->app->html->_('form.token'); ?>
 		<script>
 			jQuery(function($) {

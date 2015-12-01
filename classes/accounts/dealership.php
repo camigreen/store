@@ -49,7 +49,7 @@ class DealershipAccount extends Account {
         $oems = array();
 
         foreach($this->_mappedAccounts->get('children.') as $child) {
-            if($child->type = 'oem') {
+            if($child->type == 'oem') {
                 $oems[$child->id] = $child;
             }
         }
@@ -64,6 +64,21 @@ class DealershipAccount extends Account {
             $categories[] = $oem->elements->get('category');
         }
         return $categories;
+    }
+
+    public function getMarkupOptions() {
+        $config = $this->getConfigForm()->getXML('pricing');
+        $options = array();
+        foreach($config->field as $field) {
+            if($field->attributes()->name == 'markup') {
+                $xml = $field->children();
+            }
+        }
+        foreach($xml as $option) {
+            $options[(string) $option->attributes()->value] = (string) $option;
+        }
+
+        return $options;
     }
 
 }

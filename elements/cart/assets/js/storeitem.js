@@ -46,7 +46,6 @@
 
     StoreItem.prototype = {
         item: {},
-        price: {},
         shipping: 0,
         qty: 1,
         total: 0,
@@ -306,30 +305,29 @@
             return $.md5(JSON.stringify(this.item));
         },
         _getPricing: function() {
-            var pricing;
+            var pricing = {}, options = '';
             var opts = this._getOptions();
             var attributes = this._getAttributes();
-            pricing = this.settings.pricePoints.group;
+            pricing.group = this.settings.pricePoints.group;
+            var markup = $('input[name="markup"]').val();
             $.each(this.settings.pricePoints.options, function(k,v) {
                 if($.type(opts[v]) !== 'undefined') {
-                    pricing += '.'+opts[v].value;
+                    options += '.'+opts[v].value;
                     return false;
                 }
                 if($.type(attributes[v]) !== 'undefined') {
-                    pricing += '.'+attributes[v].value;
+                    options += '.'+attributes[v].value;
                     return false;
                 }
             });
+            pricing.group += options;
+            pricing.markup = markup;
             return pricing;
         },
         _publishPrice: function () {
             this._debug('Publishing Price');
             var self = this;
-            var pricing = {};
-            pricing.group = this._getPricing();
-            if($('[name="price_display"]').val()) {
-                pricing.display = $('[name="price_display"]').val();
-            }
+            var pricing = this._getPricing();
             console.log(pricing);
             $.ajax({
                 type: 'POST',

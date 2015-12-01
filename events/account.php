@@ -22,7 +22,7 @@ class AccountEvent {
 	public static function init($event) {
 
 		$account = $event->getSubject();
-        $app         = $account->app;
+        $app = $account->app;
 
         if (is_string($account->params) || is_null($account->params)) {
             // decorate data as this
@@ -32,10 +32,6 @@ class AccountEvent {
         if (is_string($account->elements) || is_null($account->elements)) {
             // decorate data as this
             $account->elements = $app->parameter->create($account->elements);
-        }
-
-        if($account->type == 'user') {
-        	$account->loadUser();
         }
 
 	}

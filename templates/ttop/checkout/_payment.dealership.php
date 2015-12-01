@@ -16,7 +16,8 @@ $elements = $order->elements;
                     <tr>
                         <th class="uk-width-6-10">Item Name</th>
                         <th class="uk-width-2-10">Quantity</th>
-                        <th class="uk-width-2-10">Price</th>
+                        <th class="uk-width-1-10">Dealer Markup Price</th>
+                        <th class="uk-width-1-10">Dealer Price</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -33,6 +34,9 @@ $elements = $order->elements;
                                 <button class="uk-button uk-button-primary update-qty">Update</button>                
                             </td>
                             <td class="ttop-checkout-item-total">
+                                <?php echo $item->getTotal('markup', true); ?>
+                            </td>
+                            <td class="ttop-checkout-item-total">
                                 <?php echo $item->getTotal('discount', true); ?>
                             </td>
                         </tr>
@@ -40,7 +44,7 @@ $elements = $order->elements;
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="2" class="uk-text-right">
+                        <td colspan="3" class="uk-text-right">
                             Subtotal:
                         </td>
                         <td>
@@ -48,7 +52,7 @@ $elements = $order->elements;
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="uk-text-right">
+                        <td colspan="3" class="uk-text-right">
                             Shipping:
                         </td>
                         <td>
@@ -56,7 +60,7 @@ $elements = $order->elements;
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="uk-text-right">
+                        <td colspan="3" class="uk-text-right">
                             Sales Tax:
                         </td>
                         <td>
@@ -64,7 +68,7 @@ $elements = $order->elements;
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="uk-text-right">
+                        <td colspan="3" class="uk-text-right">
                             Total:
                         </td>
                         <td>

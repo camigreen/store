@@ -30,6 +30,8 @@ class OrderDev {
 
 	public $app;
 
+	protected $_user;
+
 	public function __construct() {
 
 	}
@@ -43,6 +45,7 @@ class OrderDev {
 	public function __toString () {
 		$result = $this->app->parameter->create();
 		$result->loadObject($this);
+		$result->set('account', $this->account->id);
 		return (string) $result;
 	}
 
@@ -77,12 +80,29 @@ class OrderDev {
 		return $this->id ? true : false;
 	}
 
+	public function getUser() {
+		if($this->created_by) {
+			$this->_user = $this->app->account->get($this->created_by);
+		}
+		if(empty($this->_user)) {
+			$this->_user = $this->app->account->getCurrent();
+			$this->created_by = $this->_user->id;
+		}
+		
+		return $this->_user;
+	}
+
+	public function getAccount() {
+		$this->account = $this->getUser()->getParentAccount();
+		return $this->account;
+	}
+
 	public function getTaxTotal() {
 
 		$taxtotal = 0;
 		$taxrate = 0.07;
 
-		$account = $this->app->account->get($this->account);
+		$account = $this->getAccount();
 		if($account->elements->get('pricing.tax_exempt', true)) {
 			$this->tax_total = 0;
 			return $this->tax_total;
@@ -118,8 +138,8 @@ class OrderDev {
 		$application = $this->app->zoo->getApplication();
 		$application->getCategoryTree();
 		$items = $this->elements->get('items.');
-		$account = $this->app->account->get($this->account);
-		$oems = $account->getOEMs();
+		$account = $this->getAccount();
+		$oems = $account->getAllOEMs();
 		foreach($items as $item) {
 			$_item = $this->app->table->item->get($item->id);
 			$item_cat = $_item->getPrimaryCategory();

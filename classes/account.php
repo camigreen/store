@@ -21,8 +21,6 @@ class Account {
 
     public $type = 'default';
 
-    public $kind;
-
     public $created;
 
     public $created_by;
@@ -82,9 +80,15 @@ class Account {
 
         foreach($data as $key => $value) {
             if(property_exists($this, $key) && $key != 'elements' && $key != 'params') {
-                $this->key = $value;
+                $this->$key = $value;
             }
         }
+
+        // Bind the related accounts.
+        if(isset($data['related'])) {
+            $this->_bindMappedAccounts($data['related']);
+        }
+        
 
         return $this;
     }
@@ -110,6 +114,8 @@ class Account {
         // Save the object to the database.
         $this->app->table->account->save($this);
 
+        $this->_mapRelatedAccounts();
+
         return $this;
     }
 
@@ -121,8 +127,7 @@ class Account {
      * @since 1.0
      */
     public function getType() {
-        $type = $this->kind ? $this->type.'.'.$this->kind : $this->type;
-        return JText::_('ACCOUNT_TYPE_'.$type);
+        return JText::_('ACCOUNT_TYPE_'.$this->type);
     }
 
     /**
@@ -132,9 +137,10 @@ class Account {
      *
      * @since 1.0
      */
-    public function getLayout() {
-        $layout = $this->kind ? $this->type.'.'.$this->kind : $this->type;
-        return $layout;
+    public function getClassName() {
+        list($class) = explode('.', $this->type, 2);
+
+        return $class;
     }
 
     /**
@@ -223,14 +229,8 @@ class Account {
      * @since 1.0
      */
     public function getChild($id) {
-
-        if($this->id) {
-            $this->_loadMappedAccounts();
-        }
         
-        $child = $this->_mappedAccounts->get('children.'.$id);
-
-        return $child;
+        return $this->_loadMappedAccounts()->_mappedAccounts->get('children.'.$id);
 
     }
 
@@ -245,11 +245,7 @@ class Account {
      */
     public function setChild($id) {
 
-        if($this->id) {
-            $this->_loadMappedAccounts();
-        }
-
-        $this->_mappedAccounts->set('children.'.$id, $this->app->account->get($id));
+        $this->_loadMappedAccounts()->_mappedAccounts->set('children.'.$id, $this->app->account->get($id));
 
         return $this;
 
@@ -264,12 +260,29 @@ class Account {
      */
     public function getChildren() {
 
-        if($this->id) {
-            $this->_loadMappedAccounts();
+        return $this->_loadMappedAccounts()->_mappedAccounts->get('children.');
+
+    }
+
+    /**
+     * Get all child accounts by type
+     *
+     * @return array  Returns an array of Account objects.
+     *
+     * @since 1.0
+     */
+    public function getChildrenByType($type) {
+
+        $accounts = $this->_loadMappedAccounts()->_mappedAccounts->get('children.');
+        $result = array();
+
+        foreach($accounts as $account) {
+            if($account->type == $type) {
+                $result[$account->id] = $account;
+            }
         }
 
-        return $this->_mappedAccounts->get('children');
-
+        return $result;
     }
 
     /**
@@ -281,15 +294,9 @@ class Account {
      *
      * @since 1.0
      */
-    public function getParent($id) {
-
-        if($this->id) {
-            $this->_loadMappedAccounts();
-        }
+    public function getParent($id = null) {
         
-        $parent = $this->_mappedAccounts->get('parents.'.$id);
-
-        return $parent;
+        return $this->_loadMappedAccounts()->_mappedAccounts->get('parents.'.$id);
 
     }
 
@@ -304,11 +311,7 @@ class Account {
      */
     public function setParent($id) {
 
-        if($this->id) {
-            $this->_loadMappedAccounts();
-        }
-
-        $this->_mappedAccounts->set('parents.'.$id, $this->app->account->get($id));
+        $this->_loadMappedAccounts()->_mappedAccounts->set('parents.'.$id, $this->app->account->get($id));
 
         return $this;
 
@@ -323,11 +326,7 @@ class Account {
      */
     public function getParents() {
 
-        if($this->id) {
-            $this->_loadMappedAccounts();
-        }
-
-        return $this->_mappedAccounts->get('parents');
+        return $this->_loadMappedAccounts()->_mappedAccounts->get('parents.');
 
     }
 
@@ -341,6 +340,10 @@ class Account {
      * @since 1.0
      */
     protected function _loadMappedAccounts($reload = false) {
+
+        if(!$this->id) {
+            $this->_mappedAccounts = $this->app->parameter->create();
+        }
 
         // if the subaccounts array is empty load all subaccounts from the database and hold them in cache
         if((!$this->_mappedAccountsLoaded || $reload) && $this->id) {
@@ -367,6 +370,45 @@ class Account {
     }
 
     /**
+     * Bind sub-accounts.
+     *
+     * @param  boolean $reload Automatically reload all subaccounts from the database. Default is NULL
+     *
+     * @return object  $this  Returns $this for chaining.
+     *
+     * @since 1.0
+     */
+    protected function _bindMappedAccounts($data = array()) {
+
+        $this->_loadMappedAccounts();
+
+        // Deal with the child accounts.
+        $accounts = array();
+        $this->_mappedAccounts->remove('children.');
+        if(isset($data['children'])) {
+            foreach($data['children'] as $child) {
+                $account = $this->app->account->get($child);
+                $accounts[$account->id] = $account;
+            }
+            $this->_mappedAccounts->set('children.', $accounts); 
+        }
+        // Deal with the parent accounts.
+        $accounts = array();
+        $this->_mappedAccounts->remove('parents.');
+        if(isset($data['parents'])) {
+            foreach($data['parents'] as $parent) {
+                $account = $this->app->account->get($parent);
+                $accounts[$account->id] = $account;
+            } 
+            $this->_mappedAccounts->set('parents.', $accounts);
+        }
+
+
+        return $this;
+
+    }
+
+    /**
      * Map all related accounts to the database
      *
      * @return object $this Account object for chaining.
@@ -383,17 +425,17 @@ class Account {
         $this->app->database->query($query);
 
         // Remove all mappings where this account is the parent from the database.
-        $query = 'DELETE FROM #__zoo_account_map WHERE child = '.$this->id;
+        $query = 'DELETE FROM #__zoo_account_map WHERE parent = '.$this->id;
         $this->app->database->query($query);
 
         // Map all of the parent accounts to the database.
-        foreach($this->_mappedAccounts->get('parents.') as $parent) {
+        foreach($this->_mappedAccounts->get('parents.', array()) as $parent) {
             $query = 'INSERT INTO #__zoo_account_map (parent, child) VALUES ('.$parent->id.','.$this->id.')';
             $this->app->database->query($query);
         }
 
         // Map all of the child accounts to the database.
-        foreach($this->_mappedAccounts->get('children.') as $child) {
+        foreach($this->_mappedAccounts->get('children.', array()) as $child) {
             $query = 'INSERT INTO #__zoo_account_map (parent, child) VALUES ('.$this->id.','.$child->id.')';
             $this->app->database->query($query);
         }
@@ -403,6 +445,14 @@ class Account {
 
     public function isTaxable() {
         return (bool) $this->elements->get('pricing.taxable', false);
+    }
+
+    public function getConfigForm() {
+        $template = $this->app->zoo->getApplication()->getTemplate();
+        $type = $this->type;
+        $form = $this->app->form->create(array($template->getPath().'/accounts/config.xml', compact('type')));
+
+        return $form;
     }
 
 }

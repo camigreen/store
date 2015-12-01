@@ -1,18 +1,28 @@
 <?php
+var_dump($params);
+	$price = $this->app->prices->get($group);
+	$markup = 0;
+	$discount = $this->app->prices->getDiscount($group);
+	$discountHTML = '<div class="uk-h4">Dealer MSRP</div><div>'.$this->app->number->currency($discount, array('currency' => 'USD')).'</div>';
+	$retail = $this->app->prices->getRetail($group);
+	$retailHTML = '<div class="uk-h4">MSRP</div><div>'.$this->app->number->currency($retail, array('currency' => 'USD')).'</div>';
+	$markuplist = $this->app->prices->getMarkupList($group);
+	$markupHTML = '<div class="uk-h4">Choose your markup</div><div><ul class="uk-list">';
+	foreach($markuplist as $value) {
+		if($value['default']) {
+			$markup = $value['markup'];
+		}
+		$markupHTML .= '<li><label><input id="mus-'.($value['markup']*100).'" name="markup_select" type="radio" value="'.$value['markup'].'"/>'.$value['formatted'].' '.$value['text'].'(+'.$this->app->number->currency($value['diff'],array('currency' => 'USD')).')</label></li>';
+	}
+	$markupHTML .= '</ul></div>';
 
-    $price_list[] = '<ul class="uk-list">';
-    foreach($prices as $key => $price) {
-        $price_list[] = '<li>'.JText::_('PRICE_'.$key).' - '.$this->app->number->currency($price, array('currency' => 'USD')).'</li>';
-    }
-    $price_list[] = '</ul>';
-
-    $price_list = implode("", $price_list);
 
 ?>
 <div id="<?php echo $params['id']; ?>-price">
 	<i class="currency"></i>
-	<span class="price"><?php echo number_format($prices['markup'], 2, '.', ''); ?></span>
+	<span class="price"><?php echo $this->app->number->precision($price, 2); ?></span>
 	<a id="price_display" href="#"class="uk-icon-button uk-icon-info-circle uk-text-top" style="margin-left:10px;" data-uk-tooltip title="Click here for pricing info!"></a>
+	<input type="text" name="markup" data-name="Boat Model" value="<?php echo $markup*100; ?>" />
 </div>
 
 <script>
@@ -21,16 +31,20 @@
 			$('#price_display').on('click', function(e) {
 				var select = $('<select name="price_display_select" />').append('<option value="retail">MSRP</option>').append('<option value="discount">Dealer Price</option>');
 				select.val('discount').change();
-				console.log(select);
 				var modal = $('<article class="uk-article" />')
 					.append('<p class="uk-article-title">Pricing Options</p>')
 					.append('<p class="uk-article-lead">These are the current pricing options.</p>')
-					.append('<?php echo $price_list; ?>')
+					.append('<?php echo $discountHTML; ?>')
+					.append('<?php echo $retailHTML; ?>')
+					.append('<?php echo $markupHTML; ?>')
 					.append('<hr class="uk-article-divider">');
+				var markup = $('#'+<?php echo $item_id; ?>).StoreItem('_getPricing').markup;
 				
 				UIkit.modal.confirm(modal.prop('outerHTML'), function(){
+					$('input[name="markup"]').val($('input:radio[name="markup_select"]:checked').val());
+					$('#'+<?php echo $item_id; ?>).StoreItem('_publishPrice');
 				});
-				
+				$('input#mus-'+markup).prop('checked', true);
 			})
 		})
 		

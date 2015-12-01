@@ -52,8 +52,8 @@ class OrderItem {
         $this->attributes = $app->parameter->create($this->attributes);
         $this->shipping = $app->parameter->create($this->shipping);
         $this->params = $this->app->parameter->create();
+        $this->pricing = $this->app->parameter->create($this->pricing);
         $this->generateSKU();
-        $this->getTotal('discount');
     }
 
 

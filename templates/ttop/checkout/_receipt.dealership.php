@@ -126,10 +126,7 @@ $items = $order->elements->get('items.');
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td>
-
-                            </td>
-                            <td>
+                            <td colspan="3" class="uk-text-right">
                                 Subtotal:
                             </td>
                             <td class="uk-text-right">
@@ -137,10 +134,7 @@ $items = $order->elements->get('items.');
                             </td>
                         </tr>
                         <tr>
-                            <td>
-
-                            </td>
-                            <td>
+                            <td colspan="3" class="uk-text-right">
                                 Shipping:
                             </td>
                             <td class="uk-text-right">
@@ -148,10 +142,7 @@ $items = $order->elements->get('items.');
                             </td>
                         </tr>
                         <tr>
-                            <td>
-
-                            </td>
-                            <td>
+                            <td colspan="3" class="uk-text-right">
                                 Sales Tax:
                             </td>
                             <td class="uk-text-right">
@@ -159,10 +150,7 @@ $items = $order->elements->get('items.');
                             </td>
                         </tr>
                         <tr>
-                            <td>
-
-                            </td>
-                            <td>
+                            <td colspan="3" class="uk-text-right">
                                 <p>Total:</p>
                             </td>
                             <td>

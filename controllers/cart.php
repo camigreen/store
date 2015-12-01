@@ -78,7 +78,7 @@ class CartController extends AppController {
             'result' => true,
             'items' => $this->cart->getAllItems(),
             'item_count' => $this->cart->getItemCount(),
-            'total' => $this->cart->getCartTotal($this->account->elements->get('pricing.display', 'retail'))
+            'total' => $this->cart->getCartTotal()
         );
         echo json_encode($result);
     }

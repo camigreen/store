@@ -1,8 +1,14 @@
 <?php 
-	$profiles = $this->app->userprofile->getUserAssignments();
-	$account = $this->app->account->get($parent->getValue('id'));
-	$available = isset($profiles[0]) ? $profiles[0] : array();
-	$selected = isset($profiles[$account->id]) ? $profiles[$account->id] : array();
+	$available = array();
+	$selected = array();
+
+	if($id = $parent->getValue('id')) {
+		$account = $this->app->account->get($id);
+		$available = $this->app->table->account->getUnassignedAccountsByType('user.dealership');
+		$selected = $account->getChildrenByType('user.dealership');
+	}
+
+	$name = $control_name."[$name][]";
 
 	// echo 'Available:';
 	// var_dump($available);
@@ -18,7 +24,7 @@
 	<?php foreach($selected as $id => $profile) : ?>
 		
 		<li id="<?php echo $profile->id; ?>" data-name="<?php echo $profile->getUser()->name; ?>">
-			<input type="text" name="children[]" value="<?php echo $profile->id; ?>" />
+			<input type="text" name="<?php echo $name; ?>" value="<?php echo $profile->id; ?>" />
 			<?php echo $profile->getUser()->name.'<a href="#" class="uk-close uk-float-right uk-text-muted"></a>'; ?>
 		</li>
 	<?php endforeach; ?>
@@ -100,7 +106,7 @@
 			}
 			$.each(selected, function(k,v) {
 				var li = $('<li></li>').prop('id', k).data('name', v).html(v+'<a href="#" class="uk-close uk-float-right uk-text-muted"></a>');
-				var input = $('<input type="hidden" />').val(k).prop('name', 'children[]');
+				var input = $('<input type="hidden" />').val(k).prop('name', '<?php echo $name; ?>');
 				li.append(input);
 				_selected.append(li);
 			})

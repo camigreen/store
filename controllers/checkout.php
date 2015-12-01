@@ -40,10 +40,6 @@ class CheckoutController extends AppController {
 
         $this->cart = $this->app->cart->create();
 
-        if($account = $this->app->account->getCurrent()) {
-            $this->account = $account;
-        }
-
         // registers tasks
         $this->registerTask('receipt', 'display');
         $this->registerTask('customer', 'display');
@@ -79,18 +75,18 @@ class CheckoutController extends AppController {
         $this->app->document->addScript('assets:js/formhandler.js');
 
         $order = $this->CR->order;
-
-        $user = $this->app->userprofile->getCurrent();
+        $account = $order->getAccount();
+        $user = $order->getUser();
         $this->page = 'customer';
-        if($this->account && $this->account->type != 'store') {
-            $this->page .= '.'.$this->account->type;
+        if($account && $account->type != 'store') {
+            $this->page .= '.'.$account->type;
             if(!$order->elements->get('billing.')) {
-                $order->elements->set('billing.', $this->account->elements->get('billing.'));
+                $order->elements->set('billing.', $account->elements->get('billing.'));
                 $order->elements->set('billing.phoneNumber', $user->elements->get('office_phone'));
                 $order->elements->set('billing.altNumber', $user->elements->get('mobile_phone'));
             }
             if(!$order->elements->get('shipping.')) {
-                $order->elements->set('shipping.', $this->account->elements->get('shipping.'));
+                $order->elements->set('shipping.', $account->elements->get('shipping.'));
                 $order->elements->set('shipping.phoneNumber', $user->elements->get('office_phone'));
                 $order->elements->set('shipping.altNumber', $user->elements->get('mobile_phone'));
             }
@@ -136,11 +132,13 @@ class CheckoutController extends AppController {
         $this->page = 'payment';
 
         $order = $this->CR->order;
+        $account = $order->getAccount();
+        $user = $order->getUser();
 
-        if($this->account && $this->account->type != 'store') {
-            $this->page .= '.'.$this->account->type;
-            $order->elements->set('payment.account_name', $this->account->name);
-            $order->elements->set('payment.account_number', $this->account->elements->get('account_number.number'));
+        if($account && $account->type != 'store') {
+            $this->page .= '.'.$account->type;
+            $order->elements->set('payment.account_name', $account->name);
+            $order->elements->set('payment.account_number', $account->elements->get('account_number.number'));
             $this->app->session->set('order',(string) $order,'checkout');
         }
 
@@ -180,11 +178,13 @@ class CheckoutController extends AppController {
         $this->app->document->addScript('assets:js/formhandler.js');
 
         $order = $this->CR->order;
+        $account = $order->getAccount();
+        $user = $order->getUser();
         $next = 'processCC';
         $layout = 'checkout';
         $this->page = 'confirm';
-        if($this->account && $this->account->type != 'store') {
-            $this->page .= '.'.$this->account->type;
+        if($account && $account->type != 'store') {
+            $this->page .= '.'.$account->type;
             $this->processCC = 'false';
             $next = 'processPO';
             
@@ -224,11 +224,12 @@ class CheckoutController extends AppController {
         }
         $id = $this->app->request->get('oid', 'int', 0);
         $order = $this->app->orderdev->get($id);
+        $account = $order->getAccount();
         $order->calculateCommissions();
         $layout = 'checkout';
         $this->page = 'receipt';
-        if($this->account && $this->account->type != 'store') {
-            $this->page .= '.'.$this->account->type;
+        if($account && $account->type != 'store') {
+            $this->page .= '.'.$account->type;
             
         }
 
@@ -255,7 +256,6 @@ class CheckoutController extends AppController {
 
     public function processPO () {
         $order = $this->CR->processPayment('PO');
-
         $link = $this->baseurl.'&task=receipt&oid='.$order->id;
         $this->setRedirect($link);
 

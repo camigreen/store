@@ -267,11 +267,12 @@ $this->app->document->addScript('assets:js/jquery-validation-1.13.1/dist/jquery.
                                 ProcessingModal();
                                 $.ajax({
                                     type: 'POST',
-                                    url: "?option=com_zoo&controller=store&task=cart&format=json",
+                                    url: "?option=com_zoo&controller=cart&task=updateQty&format=json",
                                     data: {job: 'updateQty', sku: sku, qty: qty},
                                     success: function(data){
                                         console.log(data);
-                                        $('input[name="step"]').val('payment');
+                                        $('input[name="next"]').val('payment');
+                                        self.$element.find('input, select').addClass('ignore');
                                         elem.closest('form').submit();
                                     },
                                     error: function(data, status, error) {
