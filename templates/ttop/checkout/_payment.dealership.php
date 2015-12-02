@@ -37,14 +37,14 @@ $elements = $order->elements;
                             </td>
                             <td class="ttop-checkout-item-total">
                                 <?php echo $item->getTotal('discount', true); ?>
-                                <?php echo '<p class="uk-text-small">(@ '.$item->getDiscountRate().' Discount)</p>'; ?>
+                                <?php echo '<p class="uk-text-small">('.$item->getDiscountRate().' Discount)</p>'; ?>
                             </td>
                             <td class="ttop-checkout-item-total">
                                 <?php echo $item->getTotal('retail', true); ?>
                             </td>
                             <td class="ttop-checkout-item-total">
                                 <?php echo $item->getTotal('markup', true); ?>
-                                <?php echo '<p class="uk-text-small">(@ '.$item->getMarkupRate().' Markup)</p>'; ?>
+                                <?php echo '<p class="uk-text-small">('.$item->getMarkupRate().' Markup)</p>'; ?>
                             </td>
                             <td class="ttop-checkout-item-total">
                                 <?php echo $item->getTotal('margin', true); ?>
