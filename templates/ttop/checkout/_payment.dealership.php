@@ -48,7 +48,7 @@ $elements = $order->elements;
                             </td>
                             <td class="ttop-checkout-item-total">
                                 <?php echo $item->getTotal('margin', true); ?>
-                                <?php echo '<p class="uk-text-small">('.$item->getProfitRate().' off MSRP)</p>'; ?>
+                                <?php echo '<p class="uk-text-small">(Total Discount '.$item->getProfitRate().')</p>'; ?>
                             </td>
                         </tr>
             <?php endforeach; ?>
