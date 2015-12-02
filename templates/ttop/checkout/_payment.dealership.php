@@ -36,6 +36,7 @@ $elements = $order->elements;
                             </td>
                             <td class="ttop-checkout-item-total">
                                 <?php echo $item->getTotal('markup', true); ?>
+                                <?php echo '(@ 5% Markup)'; ?>
                             </td>
                             <td class="ttop-checkout-item-total">
                                 <?php echo $item->getTotal('retail', true); ?>
