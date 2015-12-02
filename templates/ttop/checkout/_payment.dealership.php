@@ -80,7 +80,7 @@ $elements = $order->elements;
                     </tr>
                     <tr>
                         <td colspan="4" class="uk-text-right">
-                            Total:
+                            Total Balance Due:
                         </td>
                         <td>
                             <?php echo $this->app->number->currency($order->total,array('currency' => 'USD')); ?>
