@@ -57,7 +57,7 @@
 					</fieldset>
 				</div>
 			<?php endif; ?>
-		<input type="hidden" name="user_id" value="<?php echo $user->id; ?>" />
+		<input type="hidden" name="[params]user" value="<?php echo $user->id; ?>" />
 		<?php echo $this->app->html->_('form.token'); ?>
 		<script>
 			jQuery(function($) {

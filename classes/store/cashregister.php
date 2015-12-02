@@ -49,7 +49,6 @@ class CashRegister {
     
 
     public function __construct($app) {
-
         $app->loader->register('PageStore','classes:store/page.php');
         $this->app = $app;
         $this->merchant = $this->app->merchant->anet;
@@ -156,7 +155,7 @@ class CashRegister {
     }
     public function processOrder() {
         $this->order->orderDate = $this->app->date->create()->toSql();
-        $this->order->save();
+        $this->order->save(true);
 
         return $this;
     }
@@ -231,8 +230,7 @@ class CashRegister {
         $this->order->transaction_id = "Purchase Order";
         $this->order->elements->set('items.', $items->getAllItems());
         $this->order->calculateCommissions();
-        $this->order->account = $this->order->account->id;
-        $this->app->table->orderdev->save($this->order);
+        $this->order->save();
         $result = array(
             'approved' => true,
             'orderID' => $this->order->id

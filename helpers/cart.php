@@ -165,7 +165,7 @@ class CartItem {
         $account = $this->app->customer->getAccount();
         $markup = $account->params->get('pricing.markup');
         $discount = $account->params->get('pricing.discount');
-        $this->price->set('retail', $this->app->prices->get($this->pricing->get('group'), 0));
+        $this->price->set('retail', $this->app->prices->getRetail($this->pricing->get('group')));
         $this->price->set('markup', $this->pricing->get('markup', $markup));
         $this->price->set('discount', $discount); 
         //var_dump($this->options);
@@ -218,6 +218,14 @@ class CartItem {
         }
 
         return (float) $price;
+    }
+
+    public function getDiscountRate() {
+        return $this->app->number->toPercentage($this->price->get('discount')*100,0);
+    }
+    
+    public function getMarkupRate() {
+        return $this->app->number->toPercentage($this->price->get('markup')*100,0);
     }
     
     public function getTotal($type = 'markup', $formatCurrency = false, $currency = 'USD') {

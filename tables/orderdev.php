@@ -25,9 +25,6 @@ class OrderDevTable extends AppTable {
 			Boolean.
 	*/
 	public function save($object) {
-		$tzoffset = $this->app->date->getOffset();
-		$object->created = $this->app->date->create($object->created, $tzoffset)->toSQL();
-		$object->modified = $this->app->date->create($object->modified, $tzoffset)->toSQL();
 		$result = parent::save($object);
 		return $result;
 	}

@@ -34,6 +34,8 @@ class OrderItem {
     public $taxable = true;
     
     public $app;
+
+    protected $price;
     
     public function __construct($app, $item) {
 
@@ -51,34 +53,79 @@ class OrderItem {
         }
         $this->attributes = $app->parameter->create($this->attributes);
         $this->shipping = $app->parameter->create($this->shipping);
-        $this->params = $this->app->parameter->create();
-        $this->pricing = $this->app->parameter->create($this->pricing);
+        $this->pricing = $app->parameter->create($this->pricing);
+        $this->price = $this->app->parameter->create();
+        $account = $this->app->customer->getAccount();
+        $markup = $account->params->get('pricing.markup');
+        $discount = $account->params->get('pricing.discount');
+        $this->price->set('retail', $this->app->prices->getRetail($this->pricing->get('group')));
+        $this->price->set('markup', $this->pricing->get('markup', $markup));
+        $this->price->set('discount', $discount); 
+        //var_dump($this->options);
         $this->generateSKU();
+        
     }
 
-
+    
+    public function getDescription($type) {
+        $lines = array();
+        if ($type == 'receipt') {
+            foreach($this->options as $option) {
+                if (!isset($option['visible']) || $option['visible']) {
+                    $lines[] = $option['name'].': '.$option['text'];
+                }
+            } 
+            
+        } else {
+            foreach($this->options as $option) {
+                $lines[] = $option['name'].': '.$option['text'];
+            } 
+        }
+        $html = isset($lines) ? '<p>'.implode('</p><p>', $lines).'</p>' : '';
+        return $html;
+    }
     public function generateSKU() {
+        if($this->sku) {
+            return $this->sku;
+        }
         $options = '';
         foreach($this->options as $key => $value) {
             $options .= $key.$value->get('text');
         }
+        $options .= $this->getPrice();
         
         $this->sku = hash('md5', $this->id.$options);
         return $this->sku;
     }
 
-    public function getPrice($type = 'retail') {
-        return (float) $this->app->prices->get($this->pricing, $type);
+    public function getPrice($type = 'markup') {
+        $price = $this->price->get('retail', 0);
+
+        switch($type) {
+            case 'markup':
+                $price += $price*$this->price->get('markup');
+                break;
+            case 'discount':
+                $price -= $price*$this->price->get('discount');
+                break;
+            case 'margin':
+                $markup = $this->getPrice('markup');
+                $discount = $this->getPrice('discount');
+                $price  = $markup - $discount;
+        }
+
+        return (float) $price;
     }
 
-    public function isProcessed() {
-        return $this->params->get('processed', false);
+    public function getDiscountRate() {
+        return $this->app->number->toPercentage($this->price->get('discount')*100,0);
     }
     
-    public function getTotal($type = 'retail', $formatCurrency = false, $currency = 'USD') {
-        if($this->isProcessed()) {
-            return $this->total;
-        }
+    public function getMarkupRate() {
+        return $this->app->number->toPercentage($this->price->get('markup')*100,0);
+    }
+
+    public function getTotal($type = 'markup', $formatCurrency = false, $currency = 'USD') {
         $price = $this->getPrice($type);
         $this->total = $price*$this->qty;
         if($formatCurrency) {

@@ -22,7 +22,7 @@
 	<i class="currency"></i>
 	<span class="price"><?php echo $this->app->number->precision($price, 2); ?></span>
 	<a id="price_display" href="#"class="uk-icon-button uk-icon-info-circle uk-text-top" style="margin-left:10px;" data-uk-tooltip title="Click here for pricing info!"></a>
-	<input type="hidden" name="markup" data-name="Boat Model" value="<?php echo $markup*100; ?>" />
+	<input type="hidden" name="markup" data-name="Boat Model" value="<?php echo $markup; ?>" />
 </div>
 
 <script>
@@ -38,11 +38,11 @@
 					.append('<?php echo $retailHTML; ?>')
 					.append('<?php echo $markupHTML; ?>')
 					.append('<hr class="uk-article-divider">');
-				var markup = $('#'+<?php echo $item_id; ?>).StoreItem('_getPricing').markup;
+				var markup = $('#'+<?php echo $params['id']; ?>).StoreItem('_getPricing').markup*100;
 				
 				UIkit.modal.confirm(modal.prop('outerHTML'), function(){
 					$('input[name="markup"]').val($('input:radio[name="markup_select"]:checked').val());
-					$('#'+<?php echo $item_id; ?>).StoreItem('_publishPrice');
+					$('#'+<?php echo $params['id']; ?>).StoreItem('_publishPrice');
 				});
 				$('input#mus-'+markup).prop('checked', true);
 			})

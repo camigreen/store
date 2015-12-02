@@ -14,11 +14,12 @@ $elements = $order->elements;
             <table class="uk-table">
                 <thead>
                     <tr>
-                        <th class="uk-width-5-10">Item Name</th>
+                        <th class="uk-width-4-10">Item Name</th>
                         <th class="uk-width-2-10">Quantity</th>
-                        <th class="uk-width-1-10">Dealer Markup Price</th>
+                        <th class="uk-width-1-10">Dealer's Price</th>
                         <th class="uk-width-1-10">MSRP</th>
-                        <th class="uk-width-1-10">Dealer Price</th>
+                        <th class="uk-width-1-10">Dealer Markup Price</th>
+                        <th class="uk-width-1-10">Dealer Profit</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -35,14 +36,18 @@ $elements = $order->elements;
                                 <button class="uk-button uk-button-primary update-qty">Update</button>                
                             </td>
                             <td class="ttop-checkout-item-total">
-                                <?php echo $item->getTotal('markup', true); ?>
-                                <?php echo '<span class="uk-text-small">(@ 5% Markup)</span>'; ?>
+                                <?php echo $item->getTotal('discount', true); ?>
+                                <?php echo '<p class="uk-text-small">(@ '.$item->getDiscountRate().' Discount)</p>'; ?>
                             </td>
                             <td class="ttop-checkout-item-total">
                                 <?php echo $item->getTotal('retail', true); ?>
                             </td>
                             <td class="ttop-checkout-item-total">
-                                <?php echo $item->getTotal('discount', true); ?>
+                                <?php echo $item->getTotal('markup', true); ?>
+                                <?php echo '<p class="uk-text-small">(@ '.$item->getMarkupRate().' Markup)</p>'; ?>
+                            </td>
+                            <td class="ttop-checkout-item-total">
+                                <?php echo $item->getTotal('margin', true); ?>
                             </td>
                         </tr>
             <?php endforeach; ?>

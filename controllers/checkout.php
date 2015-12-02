@@ -222,10 +222,12 @@ class CheckoutController extends AppController {
         if (!$this->template = $this->application->getTemplate()) {
             return $this->app->error->raiseError(500, JText::_('No template selected'));
         }
-        $id = $this->app->request->get('oid', 'int', 0);
+        if(!$id = $this->app->request->get('oid', 'int', 0)) {
+            return $this->app->error->raiseError(500, JText::_('Unable to locate that order.'));
+        }
+        
         $order = $this->app->orderdev->get($id);
         $account = $order->getAccount();
-        $order->calculateCommissions();
         $layout = 'checkout';
         $this->page = 'receipt';
         if($account && $account->type != 'store') {
@@ -250,12 +252,13 @@ class CheckoutController extends AppController {
                 )
         );
         $this->order = $order;
-
         $this->getView()->addTemplatePath($this->template->getPath().'/checkout')->setLayout($layout)->display();
     }
 
     public function processPO () {
         $order = $this->CR->processPayment('PO');
+        var_dump($order);
+        return;
         $link = $this->baseurl.'&task=receipt&oid='.$order->id;
         $this->setRedirect($link);
 
@@ -277,12 +280,9 @@ class CheckoutController extends AppController {
     public function save() {
 
         $order = $this->CR->order;
-        $tzoffset   = $this->app->date->getOffset();
-        $now        = $this->app->date->create();
-        $cUser = $this->app->user->get()->id;
-        $post = $this->app->request->get('post:', 'array', array());
         $next = $this->app->request->get('next','word', 'customer');
-
+        $post = $this->app->request->get('post:', 'array', array());
+        
         if(isset($post['elements'])) {
             foreach($post['elements'] as $key => $value) {
                 if (is_array($value)) {
@@ -293,24 +293,16 @@ class CheckoutController extends AppController {
             }
         }
         
-        $order->account = $this->account->id;
-
-        // Set Created Date
-        try {
-            $order->created = $this->app->date->create($order->created, $tzoffset)->toSQL();
-        } catch (Exception $e) {
-            $order->created = $now->toSQL();
+        if(isset($post['params'])) {
+            foreach($post['params'] as $key => $value) {
+                if (is_array($value)) {
+                    $order->params->set($key.'.', $value);
+                } else {
+                    $order->params->set($key, $value);
+                }
+            }
         }
-
-        $order->created_by = $cUser;
-
-        // Set Modified Date
-        $order->modified = $now->toSQL();
-        $order->modified_by = $cUser;
-
-        $this->app->session->set('order',(string) $order,'checkout');
-
-
+        $order->save();
 
         $this->setRedirect($this->baseurl.'&task='.$next);
 

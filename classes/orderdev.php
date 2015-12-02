@@ -31,21 +31,43 @@ class OrderDev {
 	public $app;
 
 	protected $_user;
-
+	protected $_account;
+	
 	public function __construct() {
 
 	}
 
-	public function save() {
-		$this->table->save($this);
-		$this->app->session->set('order',$this,'checkout');
+	public function save($writeToDB = false) {
+
+		$tzoffset = $this->app->date->getOffset();
+		$now        = $this->app->date->create();
+		$cUser = $this->app->customer->getUser();
+
+        // Set Created Date
+        try {
+            $this->created = $this->app->date->create($this->created, $tzoffset)->toSQL();
+        } catch (Exception $e) {
+            $this->created = $now->toSQL();
+        }
+        $this->created_by = $cUser->id;
+
+        // Set Modified Date
+        $this->modified = $now->toSQL();
+        $this->modified_by = $cUser->id; 
+
+		if($writeToDB) {
+			$this->table->save($this);
+		}
+        $this->app->session->set('order',(string) $this,'checkout');
+
+		return $this;
 
 	}
 
 	public function __toString () {
 		$result = $this->app->parameter->create();
 		$result->loadObject($this);
-		$result->set('account', $this->account->id);
+		$result->remove('app');
 		return (string) $result;
 	}
 
@@ -60,7 +82,7 @@ class OrderDev {
 			$item = $this->app->cart->create()->get($sku);
 			$item->getTotal();
 		}
-		$discount = $this->app->account->get($this->account)->elements->get('pricing.discount', 0);
+		$discount = $this->getAccount()->elements->get('pricing.discount', 0);
 		return $item->total - ($item->total*$discount);
 	}
 
@@ -85,7 +107,7 @@ class OrderDev {
 			$this->_user = $this->app->account->get($this->created_by);
 		}
 		if(empty($this->_user)) {
-			$this->_user = $this->app->customer->getAccount();
+			$this->_user = $this->app->customer->getUser();
 			$this->created_by = $this->_user->id;
 		}
 		
@@ -93,17 +115,19 @@ class OrderDev {
 	}
 
 	public function getAccount() {
-		$this->account = $this->getUser()->getParentAccount();
-		return $this->account;
+		$this->_account = $this->getUser()->getParentAccount();
+		$this->account = $this->_account->id;
+		return $this->_account;
 	}
 
 	public function getTaxTotal() {
-
+		
+		// Init vars
 		$taxtotal = 0;
 		$taxrate = 0.07;
 
-		$account = $this->getAccount();
-		if($account->elements->get('pricing.tax_exempt', true)) {
+		
+		if(!$this->isTaxable()) {
 			$this->tax_total = 0;
 			return $this->tax_total;
 		}
@@ -140,6 +164,7 @@ class OrderDev {
 		$items = $this->elements->get('items.');
 		$account = $this->getAccount();
 		$oems = $account->getAllOEMs();
+		var_dump($this->elements);
 		foreach($items as $item) {
 			$_item = $this->app->table->item->get($item->id);
 			$item_cat = $_item->getPrimaryCategory();
@@ -161,10 +186,9 @@ class OrderDev {
             $taxable = (!in_array($state,$taxable_states) && !$this->elements->get('shipping_method'));
         }
 
-        if($account = $this->app->account->get($this->account)) {
+        if($account = $this->getAccount()) {
             $taxable = $account->isTaxable();
         }
-
         return $taxable;
     }
 

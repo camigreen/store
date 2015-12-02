@@ -76,29 +76,6 @@ class AccountController extends AppController {
         $this->getView()->addTemplatePath($this->template->getPath())->setLayout($layout)->display();
     }
 
-    public function relayorder($order) {
-
-        $orderdev = $this->app->orderdev->create();
-        $ignore = array('orderDate','salesperson');
-        foreach(get_object_vars($order) as $key => $value) {
-            if(in_array($key, $ignore)) {
-                continue;
-            }
-            if(property_exists($orderdev, $key)) {
-                $orderdev->$key = $value;
-            } else {
-                $orderdev->elements->set($key, $value);
-            }
-
-        }
-        $orderdev->created = $order->orderDate;
-        $orderdev->created_by = $order->salesperson;
-        $orderdev->modified = $order->orderDate;
-        $orderdev->modified_by = $order->salesperson;
-
-        $orderdev->save();
-    }
-
     public function upload() {
         $path = 'media/zoo/applications/store/images/';
         $this->app->document->setMimeEncoding('application/json');

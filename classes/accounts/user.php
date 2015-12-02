@@ -29,7 +29,7 @@ class UserAccount extends Account {
         }
 
         if(empty($this->_user)) {
-            $this->_user = $this->app->user->get($this->elements->get('user'));
+            $this->_user = $this->app->user->get($this->params->get('user'));
         }
         $this->name = $this->_user->name;
         return $this;
@@ -46,6 +46,77 @@ class UserAccount extends Account {
         return $account;
     }
 
+    public function getAssetName() {
+        return 'com_zoo';
+    }
+
+    /**
+     * Evaluates user permission
+     *
+     * @param JUser $user User Object
+     * @param int $asset_id
+     * @param int $created_by
+     *
+     * @return boolean True if user has permission
+     *
+     * @since 3.2
+     */
+    public function canEdit($user = null) {
+        $superadmin = $this->_user->superadmin ? $user->superadmin : true;
+        return $superadmin && $this->app->user->canEdit($user, $this->getAssetName());
+    }
+
+    /**
+     * Evaluates user permission
+     *
+     * @param int $asset_id
+     *
+     * @return boolean True if user has permission
+     *
+     * @since 3.2
+     */
+    public function canEditState($user = null) {
+        return $this->app->user->canEditState($user, $this->getAssetName());
+    }
+
+    /**
+     * Evaluates user permission
+     *
+     * @param int $asset_id
+     *
+     * @return boolean True if user has permission
+     *
+     * @since 3.2
+     */
+    public function canCreate() {
+        return $this->app->user->canCreate($this->getUser(), $this->getAssetName());
+    }
+
+    /**
+     * Evaluates user permission
+     *
+     * @param int $asset_id
+     *
+     * @return boolean True if user has permission
+     *
+     * @since 3.2
+     */
+    public function canDelete() {
+        return $this->canEdit($this->getUser()) && $this->app->user->canDelete($this->getUser(), $this->getAssetName());
+    }
+
+    /**
+     * Evaluates user permission
+     *
+     * @param int $asset_id
+     *
+     * @return boolean True if user has permission
+     *
+     * @since 3.2
+     */
+    public function canManage($user = null) {
+        return $this->app->user->canManage($user, $this->getAssetName());
+    }
 
 
 }

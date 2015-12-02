@@ -31,7 +31,6 @@ class OrderEvent {
         $items = $order->elements->get('items.', array());
         foreach($items as $key => $item) {
         	$item = new OrderItem($app, $item);
-        	$item->params->set('processed', true);
          	$order->elements->set('items.'.$key, $item);
          }
         //$order->elements->set('items', $app->parameter->create($items));

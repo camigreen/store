@@ -444,7 +444,7 @@ class Account {
     }
 
     public function isTaxable() {
-        return (bool) $this->elements->get('pricing.taxable', false);
+        return (bool) !$this->elements->get('pricing.tax_exempt', true);
     }
 
     public function getConfigForm() {

@@ -83,9 +83,5 @@ class CartController extends AppController {
         echo json_encode($result);
     }
 
-    public function getCart() {
-        var_dump($this->app->prices->getShipping('t-top-boat-cover.24'));
-    }
-
     
 }
