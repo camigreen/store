@@ -16,9 +16,9 @@ $elements = $order->elements;
                     <tr>
                         <th class="uk-width-4-10">Item Name</th>
                         <th class="uk-width-2-10">Quantity</th>
-                        <th class="uk-width-1-10">Dealer's Price</th>
                         <th class="uk-width-1-10">MSRP</th>
                         <th class="uk-width-1-10">Customer Retail Price</th>
+                        <th class="uk-width-1-10">Dealer's Price</th>
                         <th class="uk-width-1-10">Dealer Profit</th>
                     </tr>
                 </thead>
