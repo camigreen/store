@@ -18,7 +18,7 @@ $elements = $order->elements;
                         <th class="uk-width-2-10">Quantity</th>
                         <th class="uk-width-1-10">Dealer's Price</th>
                         <th class="uk-width-1-10">MSRP</th>
-                        <th class="uk-width-1-10">Dealer Markup Price</th>
+                        <th class="uk-width-1-10">Customer Retail Price</th>
                         <th class="uk-width-1-10">Dealer Profit</th>
                     </tr>
                 </thead>
@@ -48,6 +48,7 @@ $elements = $order->elements;
                             </td>
                             <td class="ttop-checkout-item-total">
                                 <?php echo $item->getTotal('margin', true); ?>
+                                <?php echo '<p class="uk-text-small">(@ '.$item->getMarkupRate().' Markup)</p>'; ?>
                             </td>
                         </tr>
             <?php endforeach; ?>

@@ -231,6 +231,13 @@ class CartItem {
     public function getMarkupRate() {
         return $this->app->number->toPercentage($this->price->get('markup')*100,0);
     }
+
+    public function getProfitRate() {
+        $markup = $this->price->get('markup')*100;
+        $discount = $this->price->get('discount')*100;
+        $profit = $markup + $discount;
+        return $this->app->number->toPercentage($profit,0);
+    }
     
     public function getTotal($type = 'markup', $formatCurrency = false, $currency = 'USD') {
         $price = $this->getPrice($type);
