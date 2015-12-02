@@ -215,6 +215,10 @@ class CartItem {
             case 'discount':
                 $price -= $price*$this->price->get('discount');
                 break;
+            case 'margin':
+                $markup = $this->getPrice('markup');
+                $discount = $this->getPrice('discount');
+                $price  = $markup - $discount;
         }
 
         return (float) $price;
