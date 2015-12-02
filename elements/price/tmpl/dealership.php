@@ -1,5 +1,5 @@
 <?php
-var_dump($params);
+
 	$price = $this->app->prices->get($group);
 	$markup = 0;
 	$discount = $this->app->prices->getDiscount($group);
@@ -22,7 +22,7 @@ var_dump($params);
 	<i class="currency"></i>
 	<span class="price"><?php echo $this->app->number->precision($price, 2); ?></span>
 	<a id="price_display" href="#"class="uk-icon-button uk-icon-info-circle uk-text-top" style="margin-left:10px;" data-uk-tooltip title="Click here for pricing info!"></a>
-	<input type="text" name="markup" data-name="Boat Model" value="<?php echo $markup*100; ?>" />
+	<input type="hidden" name="markup" data-name="Boat Model" value="<?php echo $markup*100; ?>" />
 </div>
 
 <script>
