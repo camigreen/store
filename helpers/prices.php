@@ -21,7 +21,7 @@ class PricesHelper extends AppHelper {
         include $this->app->path->path('prices:prices.php');
         $this->items = $this->app->parameter->create($item);
         $this->shipping = $this->app->parameter->create($shipping);
-        $this->account = $this->app->account->getCurrent()->getParentAccount();
+        $this->account = $this->app->customer->getAccount();
     }
 
     public function test() {

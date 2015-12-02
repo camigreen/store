@@ -84,17 +84,6 @@ class AccountHelper extends AppHelper {
 		return $account;
 	}
 
-	public function getCurrent() {
-		$user = $this->app->user->get();
-		$accounts = $this->table->all(array('conditions' => "type LIKE 'user.%'"));
-		foreach($accounts as $account) {
-			if($account->elements->get('user') == $user->id) {
-				return $this->get($account->id);
-			}
-		}
-		return;
-	}
-
 	public function getUnassignedOEMs($options = null) {
 		$oems = $this->app->table->account->getUnassignedOEMs();
 		$assignments = array();

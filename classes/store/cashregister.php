@@ -56,7 +56,7 @@ class CashRegister {
         $this->order = $this->app->orderdev->create();
         $this->application = $this->app->zoo->getApplication();
 
-        $this->account = $this->app->account->getCurrent();
+        $this->account = $this->app->customer->getAccount();
         $this->setNotificationEmails();
         $this->calculateTotals();
     }

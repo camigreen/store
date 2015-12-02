@@ -36,7 +36,6 @@ class AccountController extends AppController {
 
         $this->cUser = $this->app->user->get();
 
-        //var_dump($this->app->account->getCurrent());
 
         // registers tasks
         $this->registerTask('apply', 'save');

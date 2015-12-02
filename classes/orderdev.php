@@ -85,7 +85,7 @@ class OrderDev {
 			$this->_user = $this->app->account->get($this->created_by);
 		}
 		if(empty($this->_user)) {
-			$this->_user = $this->app->account->getCurrent();
+			$this->_user = $this->app->customer->getAccount();
 			$this->created_by = $this->_user->id;
 		}
 		
