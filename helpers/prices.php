@@ -31,7 +31,7 @@ class PricesHelper extends AppHelper {
 
     
     public function get($group, $markup = null) {   
-        $markup = !is_null($markup) || $markup === 0 ? $markup : $this->account->params->get('pricing.markup');
+        $markup = !is_null($markup) || $markup === 0 ? $markup : $this->account->params->get('markup')/100;
 
         $retail = $this->items->get($group);
 
@@ -44,7 +44,7 @@ class PricesHelper extends AppHelper {
     }
 
     public function getDiscount($group, $discount = null) {
-        $discount = $discount || $discount == '0' ? $discount : $this->account->params->get('pricing.discount');
+        $discount = $discount || $discount == '0' ? $discount : $this->account->params->get('discount')/100;
 
         $retail = $this->getRetail($group);
 
@@ -53,7 +53,7 @@ class PricesHelper extends AppHelper {
     }
 
     public function getMarkupList($group) {
-        $default = (float) $this->account->params->get('pricing.markup');
+        $default = (float) $this->account->params->get('markup')/100;
         $store = $this->app->account->getStoreAccount();
         $markups = $store->params->get('options.markup.');
         $list = array();

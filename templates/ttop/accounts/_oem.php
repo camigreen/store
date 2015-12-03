@@ -16,12 +16,12 @@
 		</fieldset>
 	</div>
 <?php endif; ?>
-<?php $this->form->setValues($this->account->elements); ?>
-<?php if($this->form->checkGroup('commission')) : ?>
+<?php $this->form->setValues($this->account->params); ?>
+<?php if($this->form->checkGroup('settings')) : ?>
 	<div class="uk-form-row">
-		<fieldset id="commission">
-			<legend>Account Commission</legend>
-			<?php echo $this->form->render('commission')?>
+		<fieldset id="settings">
+			<legend>Account Settings</legend>
+			<?php echo $this->form->render('settings')?>
 		</fieldset>
 	</div>
 <?php endif; ?>

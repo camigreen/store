@@ -42,5 +42,14 @@ class CustomerHelper extends AppHelper {
     public function isRegistered() {
         return $this->getUser() ? true : false;
     }
+
+    public function isReseller() {
+        $resellers = array('dealership');
+        return in_array($this->_account->type, $resellers);
+    }
+
+    public function getAccountTerms() {
+        return $this->_account->params->get('terms', 'DUR');
+    }
     
 }

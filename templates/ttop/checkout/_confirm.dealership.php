@@ -60,72 +60,30 @@ $salesperson = null;
             <div>Customer Name:  <?php echo $elements->get('payment.customer_name'); ?></div>
             <div>Purchase Order Number:  <?php echo $elements->get('payment.po_number'); ?></div>
         </div>
-        <div class='uk-width1-1 items-table uk-margin-top'>
-            <table class="uk-table uk-table-condensed uk-table-striped uk-table-hover">
-                <thead>
-                    <tr>
-                        <th>Item Name</th>
-                        <th>Quantity</th>
-                        <th>Dealer Markup Price</th>
-                        <th>Price</th>
-                    </tr>
-                </thead>
-                <tbody>
-            <?php foreach ($items as $sku => $item) : ?>
-                        <tr>
-                            <td>
-                                <div class="ttop-checkout-item-name"><?php echo $item->name ?></div>
-                                <div class="ttop-checkout-item-description"><?php echo $item->description ?></div>
-                                <div class="ttop-checkout-item-options"><?php echo $item->getOptions(); ?></div>
-
-                            </td>
-                            <td class="ttop-checkout-item-qty">
-                                <?php echo $item->qty; ?>
-                            </td>
-                            <td class="ttop-checkout-item-qty">
-                                <?php echo $this->app->number->currency($item->getTotal('markup'), array('currency' => 'USD')); ?>
-                            </td>
-                            <td class="ttop-checkout-item-total">
-                                <?php echo $this->app->number->currency($item->getTotal('discount'), array('currency' => 'USD')); ?>
-                            </td>
-                        </tr>
-            <?php endforeach; ?>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="3" class="uk-text-right">
-                            Subtotal:
-                        </td>
-                        <td>
-                            <?php echo $this->app->number->currency($order->subtotal,array('currency' => 'USD')); ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="3" class="uk-text-right">
-                            Shipping:
-                        </td>
-                        <td>
-                            <?php echo $this->app->number->currency($order->ship_total,array('currency' => 'USD')); ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="3" class="uk-text-right">
-                            Sales Tax:
-                        </td>
-                        <td>
-                            <?php echo $this->app->number->currency($order->tax_total,array('currency' => 'USD')); ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="3" class="uk-text-right">
-                            Total:
-                        </td>
-                        <td>
-                            <?php echo $this->app->number->currency($order->total,array('currency' => 'USD')); ?>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
+        <div class='uk-width1-1 uk-margin-top'>
+            <?php if($this->app->customer->isReseller()) : ?>
+            <div class="uk-width-1-1">
+                <button class="uk-button uk-button-primary uk-width-1-3 uk-margin-bottom items-table uk-hidden" data-uk-toggle="{target:'.items-table'}">Hide Full Invoice</button>
+                <button class="uk-button uk-button-primary uk-width-1-3 uk-margin-bottom items-table" data-uk-toggle="{target:'.items-table'}">View Full Invoice</button>
+            </div>
+            <div class='uk-width1-1 items-table uk-hidden'>
+                <?php echo $this->partial('item.table.reseller',compact('order')); ?>
+            </div>
+             <div class='uk-width1-1 items-table'>
+                <?php echo $this->partial('item.table',compact('order')); ?>
+            </div>
+            <script>
+                jQuery(function($) {
+                    $('button.items-table').on('click', function(e){
+                        e.preventDefault();
+                    })
+                })
+            </script>
+        <?php else : ?>
+            <div class='uk-width1-1 items-table retail'>
+                <?php echo $this->partial('item.table',compact('order')); ?>
+            </div>
+        <?php endif; ?>
         </div>
         <div class="uk-width-1-1">
             <?php if($elements->get('shipping_method') == 'LP') : ?>

@@ -26,6 +26,7 @@ class UserAccount extends Account {
     public function save() {
 
         parent::save();
+        $this->_user->save();
 
     }
 
@@ -33,11 +34,7 @@ class UserAccount extends Account {
 
         if(isset($data['user'])) {
             $user = $this->getUser();
-            foreach($data['user'] as $key => $value) {
-                if(property_exists($user, $key)) {
-                    $user->$key = $value;
-                }
-            }
+            $user->bind($data['user']);
             if(isset($data['user']['name'])) {
                 $this->name = $data['user']['name'];
             }

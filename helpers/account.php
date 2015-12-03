@@ -60,7 +60,7 @@ class AccountHelper extends AppHelper {
 	}
 
 	public function getStoreAccount() {
-		return $this->get(7);
+		return $this->table->find('first', array('conditions' => "type = 'store'"));
 	}
 
 	public function getByUser($user = null) {

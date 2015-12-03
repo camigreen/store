@@ -92,10 +92,10 @@ $elements = $order->elements;
                         <legend>
                             Payment Information
                         </legend>
-                        <div class="uk-width-1-1 uk-text-center">
-                            We Accept
-                            <img class="uk-align-center" style="width:225px;" src="images/cc/cc_all.png" />
-                        </div>
+                    <div class="uk-width-1-1 uk-text-center">
+                        We Accept
+                        <img class="uk-align-center" style="width:225px;" src="images/cc/cc_all.png" />
+                    </div>
                     </div>
                     <div class="uk-width-1-1">
                         <label>Card Number</label>

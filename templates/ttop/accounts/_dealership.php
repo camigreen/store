@@ -1,5 +1,5 @@
 <?php $this->form->setValues($this->account); ?>
-<?php $this->form->setValue('number', $this->account->elements->get('account_number.number')); ?>
+<?php $this->form->setValue('account_number', $this->account->elements->get('account_number')); ?>
 <?php if($this->form->checkGroup('details')) : ?>
 	<div class="uk-form-row">
 		<fieldset id="details">
@@ -35,12 +35,12 @@
 		</fieldset>
 	</div>
 <?php endif; ?>
-<?php $this->form->setValues($this->account->elements->get('pricing.')); ?>
-<?php if($this->form->checkGroup('pricing')) : ?>
+<?php $this->form->setValues($this->account->params); ?>
+<?php if($this->form->checkGroup('settings')) : ?>
 	<div class="uk-form-row">
 		<fieldset id="elements">
-			<legend>Account Pricing</legend>
-			<?php echo $this->form->render('pricing')?>
+			<legend>Account Settings</legend>
+			<?php echo $this->form->render('settings')?>
 		</fieldset>
 	</div>
 <?php endif; ?>

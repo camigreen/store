@@ -163,8 +163,8 @@ class CartItem {
         $this->pricing = $app->parameter->create($this->pricing);
         $this->price = $this->app->parameter->create();
         $account = $this->app->customer->getAccount();
-        $markup = $account->params->get('pricing.markup');
-        $discount = $account->params->get('pricing.discount');
+        $markup = $account->params->get('markup')/100;
+        $discount = $account->params->get('discount')/100;
         $this->price->set('retail', $this->app->prices->getRetail($this->pricing->get('group')));
         $this->price->set('markup', $this->pricing->get('markup', $markup));
         $this->price->set('discount', $discount); 

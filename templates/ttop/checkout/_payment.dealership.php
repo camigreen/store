@@ -5,90 +5,33 @@
  * and open the template in the editor.
  */
 $order = $this->order;
-$items = $this->cart->getAllItems();
-$elements = $order->elements;
 ?>
 <div class="uk-width-1-1 uk-container-center ttop-checkout-payment">
     <div class="uk-grid">
-        <div class='uk-width1-1 items-table'>
-            <table class="uk-table">
-                <thead>
-                    <tr>
-                        <th class="uk-width-4-10">Item Name</th>
-                        <th class="uk-width-2-10">Quantity</th>
-                        <th class="uk-width-1-10">MSRP</th>
-                        <th class="uk-width-1-10">Customer Retail Price</th>
-                        <th class="uk-width-1-10">Dealer's Price</th>
-                        <th class="uk-width-1-10">Dealer Profit</th>
-                    </tr>
-                </thead>
-                <tbody>
-            <?php foreach ($items as $sku => $item) : ?>
-                        <tr id="<?php echo $sku; ?>">
-                            <td>
-                                <div class="ttop-checkout-item-name"><?php echo $item->name ?></div>
-                                <div class="ttop-checkout-item-description"><?php echo $item->description ?></div>
-                                <div class="ttop-checkout-item-options"><?php echo $item->getOptions(); ?></div>
-
-                            </td>
-                            <td class="ttop-checkout-item-total">
-                                <input type="number" class="uk-width-1-3 uk-text-center" name="qty" value="<?php echo $item->qty ?>" min="1"/>
-                                <button class="uk-button uk-button-primary update-qty">Update</button>                
-                            </td>
-                            <td class="ttop-checkout-item-total">
-                                <?php echo $item->getTotal('retail', true); ?>
-                            </td>
-                            <td class="ttop-checkout-item-total">
-                                <?php echo $item->getTotal('markup', true); ?>
-                                <?php echo '<p class="uk-text-small">('.$item->getMarkupRate().' Markup)</p>'; ?>
-                            </td>
-                            <td class="ttop-checkout-item-total">
-                                <?php echo $item->getTotal('discount', true); ?>
-                                <?php echo '<p class="uk-text-small">('.$item->getDiscountRate().' Discount)</p>'; ?>
-                            </td>
-                            <td class="ttop-checkout-item-total">
-                                <?php echo $item->getTotal('margin', true); ?>
-                                <?php echo '<p class="uk-text-small">(Total Discount '.$item->getProfitRate().')</p>'; ?>
-                            </td>
-                        </tr>
-            <?php endforeach; ?>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="4" class="uk-text-right">
-                            Subtotal:
-                        </td>
-                        <td>
-                            <?php echo $this->app->number->currency($order->subtotal,array('currency' => 'USD')); ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="4" class="uk-text-right">
-                            Shipping:
-                        </td>
-                        <td>
-                            <?php echo $this->app->number->currency($order->ship_total,array('currency' => 'USD')); ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="4" class="uk-text-right">
-                            Sales Tax:
-                        </td>
-                        <td>
-                            <?php echo $this->app->number->currency($order->tax_total,array('currency' => 'USD')); ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="4" class="uk-text-right">
-                            Total Balance Due:
-                        </td>
-                        <td>
-                            <?php echo $this->app->number->currency($order->total,array('currency' => 'USD')); ?>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
+        <?php if($this->app->customer->isReseller()) : ?>
+            <div class="uk-width-1-1">
+                <button class="uk-button uk-button-primary uk-width-1-3 uk-margin-bottom items-table uk-hidden" data-uk-toggle="{target:'.items-table'}">Hide Full Invoice</button>
+                <button class="uk-button uk-button-primary uk-width-1-3 uk-margin-bottom items-table" data-uk-toggle="{target:'.items-table', animation: 'uk-animation-fade'}">View Full Invoice</button>
+            </div>
+            <div class='uk-width1-1 items-table uk-hidden'>
+                <?php echo $this->partial('item.table.reseller',compact('order')); ?>
+            </div>
+             <div class='uk-width1-1 items-table'>
+                <?php echo $this->partial('item.table',compact('order')); ?>
+            </div>
+            <script>
+                jQuery(function($) {
+                    $('button.items-table').on('click', function(e){
+                        e.preventDefault();
+                    })
+                })
+            </script>
+        <?php else : ?>
+            <div class='uk-width1-1 items-table retail'>
+                <?php echo $this->partial('item.table',compact('order')); ?>
+            </div>
+        <?php endif; ?>
+        
         <div class="uk-width-1-1 uk-text-center uk-margin-top">
             <h4 class="uk-text-warning">T-Top Boat Covers holds the right to adjust product pricing for any reason.</h4>
         </div>
@@ -104,20 +47,20 @@ $elements = $order->elements;
                             Payment Information
                         </legend>
                     </div>
-                    <div class="uk-width-1-1">
-                        <label>Account Name:</label>
-                        <input type="text" name="elements[payment][account_name]" disabled class="ttop-checkout-field required" value='<?php echo $elements->get('payment.account_name'); ?>'/>
-                        <label>Account Number:</label>
-                        <input type="text" name="elements[payment][account_number]" disabled class="ttop-checkout-field required" value='<?php echo $elements->get('payment.account_number') ?>'/>
-                        <label>Customer Name</label>
-                        <input type="text" name="elements[payment][customer_name]" class="ttop-checkout-field required" value='<?php echo $elements->get('payment.customer_name') ?>'/>
-                        <label>P.O. Number:</label>
-                        <input type="text" name="elements[payment][po_number]" class="ttop-checkout-field required" value='<?php echo $elements->get('payment.po_number') ?>'/>
-                    </div>
-                    <div class="uk-width-1-1">
-
-                    </div> 
-
+                    <?php if($this->app->customer->isReseller()) : ?>
+                        <div class="uk-width-1-1">
+                            <?php echo $this->partial('payment.purchaseorder',compact('order')); ?>
+                        </div>
+                        <?php if($this->app->customer->getAccountTerms() == 'DUR') : ?>
+                            <div class="uk-width-1-1">
+                                <?php echo $this->partial('payment.creditcard',compact('order')); ?>
+                            </div>
+                        <?php endif; ?>
+                    <?php else : ?> 
+                        <div class="uk-width-1-1">
+                            <?php echo $this->partial('payment.creditcard',compact('order')); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </fieldset>
         </div>

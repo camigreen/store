@@ -152,13 +152,12 @@ class AccountController extends AppController {
         $type = $this->app->request->get('type', 'word', 'default');
         echo 'Post</br>';
         var_dump($post);
+        // return;
 
         if($aid) {
             $account = $this->table->get($aid);
         } else {
-            $account = $this->app->account->get();
-            $account->type = $type;
-            $account->created_by = $cUser;
+            $account = $this->app->account->create($type);
         }
 
         $account->bind($post);
@@ -166,13 +165,8 @@ class AccountController extends AppController {
         var_dump($account);
         //return;
 
-        //self::bind($account, $core);
-
-
-        // Save to get the ID.
-        //$this->table->save($account);
         $account->save();
-
+        echo 'Save</br>';
         var_dump($account);
         //return;
 

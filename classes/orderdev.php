@@ -82,7 +82,7 @@ class OrderDev {
 			$item = $this->app->cart->create()->get($sku);
 			$item->getTotal();
 		}
-		$discount = $this->getAccount()->elements->get('pricing.discount', 0);
+		$discount = $this->getAccount()->params->get('discount', 0)/100;
 		return $item->total - ($item->total*$discount);
 	}
 
