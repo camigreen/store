@@ -23,8 +23,31 @@ class UserAccount extends Account {
         parent::__construct();
     }
 
+    public function save() {
+
+        parent::save();
+
+    }
+
+    public function bind($data = array()) {
+
+        if(isset($data['user'])) {
+            $user = $this->getUser();
+            foreach($data['user'] as $key => $value) {
+                if(property_exists($user, $key)) {
+                    $user->$key = $value;
+                }
+            }
+            if(isset($data['user']['name'])) {
+                $this->name = $data['user']['name'];
+            }
+        }
+        parent::bind($data);
+
+    }
+
     public function loadUser() {
-        if(!$this->elements->get('user')) {
+        if(!$this->params->get('user')) {
             $this->_user = new JUser();
         }
 

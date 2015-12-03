@@ -15,7 +15,7 @@ class DealershipAccount extends Account {
 
     public $type = 'dealership';
 
-    public function bind($data) {
+    public function bind($data = array()) {
         
         parent::bind($data);
 

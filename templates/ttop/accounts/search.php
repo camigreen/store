@@ -17,7 +17,7 @@
 				<thead>
 					<tr>
 						<th class="uk-width-1-10"></th>
-						<th class="uk-text-center uk-width-1-10" >ID</th>
+						<th class="uk-text-center uk-width-1-10">ID</th>
 						<th class="uk-width-2-10">Name</th>
 						<th class="uk-width-2-10">Account Number</th>
 						<th class="uk-width-1-10">Type</th>

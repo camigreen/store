@@ -54,7 +54,7 @@ class Account {
      *
      * @since 1.0
      */
-    public function bind($data) {
+    public function bind($data = array()) {
 
         if(isset($data['elements'])) {
             $elements = $this->app->parameter->create();
