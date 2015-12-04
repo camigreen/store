@@ -17,7 +17,7 @@ $this->app->document->addScript('assets:js/jquery-validation-1.13.1/dist/jquery.
         <button class="uk-button uk-button-primary uk-width-1-3 uk-margin-bottom" data-uk-toggle="{target:'#variables'}">Show/Hide Variables</button>
     </div>
     <div id="variables" class="uk-width-1-1 uk-hidden">
-        <?php var_dump($order); ?>
+        <?php //var_dump($order); ?>
     </div>
 </div>
 <?php endif; ?>
