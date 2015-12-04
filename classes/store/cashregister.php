@@ -78,7 +78,7 @@ class CashRegister {
     }
     
     public function sendNotificationEmail($oid, $for = 'payment') {
-        if(!$this->application->getParams()->get('global.store.notify_email_enable')) {
+        if(!$this->app->account->getStoreAccount()->params->get('notify_email_enable', true)) {
             return;
         }
         $order = $this->app->orderdev->get($oid);

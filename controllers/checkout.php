@@ -278,8 +278,8 @@ class CheckoutController extends AppController {
     public function notify() {
         $CR = $this->app->cashregister->start();
 
-        //$CR->sendNotificationEmail(6367, 'invoice');
-        $CR->sendNotificationEmail(6367, 'payment');
+        $CR->sendNotificationEmail(6371, 'invoice');
+        $CR->sendNotificationEmail(6371, 'payment');
     }
 
     public function save() {
