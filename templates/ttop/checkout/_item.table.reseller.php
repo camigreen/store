@@ -1,5 +1,5 @@
 <?php 
-    $items = $this->cart->getAllItems();
+    $items = $this->cart->getAllItems() ? $this->cart->getAllItems() : $order->elements->get('items.');
 ?>
 <table class="uk-table">
     <thead>

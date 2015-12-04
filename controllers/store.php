@@ -194,7 +194,6 @@ class StoreController extends AppController {
             return $this->app->error->raiseError(500, JText::_('PDF template does not exist'));
         }
         $this->app->document->setMimeEncoding('application/pdf');
-
         $pdf = $this->app->pdf->$type;
         $id = $this->app->request->get('id','int');
         $order = $this->app->orderdev->get($id);

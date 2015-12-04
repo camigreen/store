@@ -55,12 +55,9 @@ class OrderItem {
         $this->shipping = $app->parameter->create($this->shipping);
         $this->pricing = $app->parameter->create($this->pricing);
         $this->price = $this->app->parameter->create();
-        $account = $this->app->customer->getAccount();
-        $markup = $account->params->get('markup');
-        $discount = $account->params->get('discount');
         $this->price->set('retail', $this->app->prices->getRetail($this->pricing->get('group')));
-        $this->price->set('markup', $this->pricing->get('markup', $markup));
-        $this->price->set('discount', $discount); 
+        $this->price->set('markup', $this->pricing->get('markup', 0));
+        $this->price->set('discount', 0); 
         //var_dump($this->options);
         $this->generateSKU();
         

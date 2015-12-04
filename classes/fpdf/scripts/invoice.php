@@ -31,8 +31,8 @@ class InvoiceFormPDF extends FormPDF {
         	);
         	$order->set('shipto', $shipto);
     	}
-
-	    foreach($order->elements->get('items.') as $item) {
+    	$item_array = array();
+	    foreach($order->elements->get('items.', array()) as $item) {
 	    	$options = array();
 	    	foreach($item->options as $option) {
 	    		$options[] = $option['name'].': '.$option['text'];
@@ -55,11 +55,12 @@ class InvoiceFormPDF extends FormPDF {
 	    $tzoffset = $this->app->date->getOffset();
 	    $order->set('created', $this->app->html->_('date', $order->created, JText::_('DATE_FORMAT_STORE1'), $tzoffset));
 	    $order->set('salesperson', $this->app->account->get($order->created_by)->name);
-	    $order->set('delivery_method', JText::_('SHIPPING_METHOD_'.$order->elements->get('shipping_method')));
+	    $order->set('delivery_method', JText::_(($ship = $order->elements->get('shipping_method')) ? 'SHIPPING_METHOD_'.$ship : ''));
 	    $order->set('account_name', $order->elements->get('payment.account_name'));
 	    $order->set('account_number', $order->elements->get('payment.account_number'));
 	    $order->set('po_number', $order->elements->get('payment.po_number'));
-	    $order->set('terms', JText::_('ACCOUNT_TERMS_'.$order->params->get('terms')));
+	    $order->set('customer', $order->elements->get('payment.customer_name'));
+	    $order->set('terms', JText::_(($terms = $order->params->get('terms')) ? 'ACCOUNT_TERMS_'.$terms : ''));
 
 	    $order->remove('app');
 

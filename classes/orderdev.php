@@ -21,7 +21,7 @@ class OrderDev {
 	public $params;
 	public $elements;
 	public $access = 12;
-	public $status;
+	public $status = 1;
 	public $subtotal;
 	public $tax_total;
 	public $ship_total;
@@ -74,6 +74,46 @@ class OrderDev {
 		return (string) $result;
 	}
 
+	/**
+	 * Get the item published status
+	 *
+	 * @return int The item status
+	 *
+	 * @since 1.0
+	 */
+	public function getStatus() {
+		return $this->status;
+	}
+
+	/**
+	 * Set the order status
+	 *
+	 * @param int  $status The new item status
+	 * @param boolean $save  If the change should be saved to the database
+	 *
+	 * @return Order $this for chaining support
+	 *
+	 * @since 1.0
+	 */
+	public function setStatus($status, $save = false) {
+		if ($this->status != $status) {
+
+			// set status
+			$old_status   = $this->status;
+			$this->status = $status;
+
+			// autosave order?
+			if ($save) {
+				$this->app->table->item->save($this);
+			}
+
+			// fire event
+		    $this->app->event->dispatcher->notify($this->app->event->create($this, 'order:statusChanged', compact('old_status')));
+		}
+
+		return $this;
+	}
+
 	public function getOrderDate() {
 		$tzoffset   = $this->app->date->getOffset();
 		$date = $this->app->date->create($this->created, $tzoffset);
@@ -89,14 +129,14 @@ class OrderDev {
 		return $item->total - ($item->total*$discount);
 	}
 
-	public function getSubtotal() {
+	public function getSubtotal($type = 'discount') {
 
 		if(!$items = $this->elements->get('items.')) {
 			$items = $this->app->cart->create()->getAllItems();
 		}
 		$this->subtotal = 0;
 		foreach($items as $item) {
-			$this->subtotal += $item->getTotal('discount');
+			$this->subtotal += $item->getTotal($type);
 		}
 		return $this->subtotal;
 	}
@@ -146,10 +186,10 @@ class OrderDev {
 		$this->tax_total = $taxtotal;
 		return $this->tax_total;
 	}
-	public function calculateTotals() {
+	public function calculateTotals($type = 'discount') {
 
 		if(!$this->isProcessed()) {
-			$this->getSubtotal();
+			$this->getSubtotal($type);
 			$this->getTaxTotal();
 		}
 
@@ -161,6 +201,7 @@ class OrderDev {
 
 		return $totals;
 	}
+
 	public function calculateCommissions() {
 		$application = $this->app->zoo->getApplication();
 		$application->getCategoryTree();

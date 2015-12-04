@@ -92,6 +92,19 @@ class OrderEvent {
 	}
 
 	/**
+	 * Placeholder for the statusChanged event
+	 *
+	 * @param  AppEvent $event The event triggered
+	 */
+
+	public static function statusChanged($event) {
+
+		$item = $event->getSubject();
+		$old_status = $event['old_status'];
+
+	}
+
+	/**
 	 * Placeholder for the deleted event
 	 *
 	 * @param  AppEvent $event The event triggered
