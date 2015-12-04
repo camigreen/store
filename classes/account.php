@@ -260,7 +260,7 @@ class Account {
      */
     public function getChildren() {
 
-        return $this->_loadMappedAccounts()->_mappedAccounts->get('children.');
+        return $this->_loadMappedAccounts()->_mappedAccounts->get('children.', array());
 
     }
 
@@ -273,7 +273,7 @@ class Account {
      */
     public function getChildrenByType($type) {
 
-        $accounts = $this->_loadMappedAccounts()->_mappedAccounts->get('children.');
+        $accounts = $this->_loadMappedAccounts()->_mappedAccounts->get('children.', array());
         $result = array();
 
         foreach($accounts as $account) {
@@ -444,7 +444,7 @@ class Account {
     }
 
     public function isTaxable() {
-        return (bool) !$this->elements->get('pricing.tax_exempt', true);
+        return (bool) !$this->elements->get('tax_exempt', true);
     }
 
     public function getConfigForm() {

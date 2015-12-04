@@ -229,16 +229,15 @@ class CashRegister {
         $items = $this->app->cart->create();
         $this->order->transaction_id = "Purchase Order";
         $this->order->elements->set('items.', $items->getAllItems());
-        $this->order->calculateCommissions();
-        $this->order->save();
+        //this->order->calculateCommissions();
+        $this->order->save(true);
         $result = array(
             'approved' => true,
             'orderID' => $this->order->id
         );
         $this->order->result = $result;
-
-        $this->sendNotificationEmail($this->order->id, 'invoice');
-        $this->sendNotificationEmail($this->order->id, 'payment');
+        //$this->sendNotificationEmail($this->order->id, 'invoice');
+        //$this->sendNotificationEmail($this->order->id, 'payment');
         $this->clearOrder();
         
         return $this->order;

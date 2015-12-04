@@ -138,7 +138,7 @@ class CheckoutController extends AppController {
         if($account && $account->type != 'store') {
             $this->page .= '.'.$account->type;
             $order->elements->set('payment.account_name', $account->name);
-            $order->elements->set('payment.account_number', $account->elements->get('account_number.number'));
+            $order->elements->set('payment.account_number', $account->elements->get('account_number'));
             $this->app->session->set('order',(string) $order,'checkout');
         }
 

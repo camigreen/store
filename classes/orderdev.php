@@ -43,17 +43,20 @@ class OrderDev {
 		$now        = $this->app->date->create();
 		$cUser = $this->app->customer->getUser();
 
-        // Set Created Date
-        try {
+
+    	// set created date
+		try {
             $this->created = $this->app->date->create($this->created, $tzoffset)->toSQL();
         } catch (Exception $e) {
-            $this->created = $now->toSQL();
+            $this->created = $this->app->date->create()->toSQL();
         }
         $this->created_by = $cUser->id;
 
         // Set Modified Date
         $this->modified = $now->toSQL();
         $this->modified_by = $cUser->id; 
+
+        $this->params->set('terms', $this->app->customer->getAccount()->params->get('terms'));
 
 		if($writeToDB) {
 			$this->table->save($this);
@@ -190,6 +193,10 @@ class OrderDev {
             $taxable = $account->isTaxable();
         }
         return $taxable;
+    }
+
+    public function getShippingMethod() {
+    	return JText::_('SHIPPING_METHOD_'.$this->elements->get('shipping_method'));
     }
 
 }

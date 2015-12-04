@@ -7,19 +7,12 @@ class FormPDF extends GridPDF {
 	public $type;
 	public $table_x = 0;
 
-	public function __construct($app, $type) {
-		$this->app = $app;
-		$this->type = $type;
-		$path = $this->app->path->path('classes:fpdf/scripts/'.$type.'.xml');
-	    $this->form = $this->xml2obj(simplexml_load_file($path));
-	  //   	    echo '<pre>';
-			// var_dump($this->form);
-			// echo '</pre>';
-	    $this->grid = (bool) $this->form->get('grid',0);
+	public function __construct() {
     	parent::__construct();
 	}
 
 	public function generate() {
+		$this->grid = (bool) $this->form->get('grid',0);
 		$margins = $this->form->margins;
 		$this->AliasNbPages();
 		$font = $this->form->font;
@@ -59,80 +52,39 @@ class FormPDF extends GridPDF {
 	    }
 	}
 
-	public function setData($order) {
-    $company = $this->form->company;
-    $data['form_title'] = $this->form->title;
-    $data['companyname'] = $company->companyname;
-    $data['companyaddress'] = array(
-    	$company->address->street,
-    	$company->address->city.', '.$company->address->state.'  '.$company->address->zip,
-    	$company->phone,
-    	$company->website,
-    	$company->email
-    );
-    $data['billto'] = array(
-                $order->elements->get('billing.name'),
-                $order->elements->get('billing.street1'),
-                ($order->elements->get('billing.street2') ? $order->elements->get('billing.street2') : null),
-                $order->elements->get('billing.city').', '.$order->elements->get('billing.state').' '.$order->elements->get('billing.postalCode'),
-                $order->elements->get('billing.phoneNumber').'  '.$order->elements->get('billing.altNumber'),
-                $order->elements->get('email')
-            );
-    if($order->elements->get('shipping_method') != 'LP') {
-        $data['shipto'] = array(
-            $order->elements->get('shipping.name'),
-            $order->elements->get('shipping.street1'),
-            $order->elements->get('shipping.street2'),
-            $order->elements->get('shipping.city').', '.$order->elements->get('shipping.state').' '.$order->elements->get('shipping.postalCode'),
-            $order->elements->get('shipping.phoneNumber').' '.$order->elements->get('shipping.altNumber')
-        );
-    }
-    $data['order_date'] = $order->getOrderDate();
-    $data['subtotal'] = $this->app->number->currency($order->getSubtotal(), array('currency' => 'USD'));
-    $data['shipping'] = $this->app->number->currency($order->ship_total, array('currency' => 'USD'));
-    $data['taxes'] = $this->app->number->currency($order->getTaxTotal(), array('currency' => 'USD'));
-    $data['total'] = $this->app->number->currency($order->total, array('currency' => 'USD'));
-    foreach($order->elements->get('items.') as $item) {
-    	$options = array();
-    	foreach($item->options as $option) {
-    		$options[] = $option['name'].': '.$option['text'];
-    	}
-    	$item_array[] = array(
-    		'item_description' => array(
-    			array('format' => 'item-name','text' => $item->name),
-    			array('format' => 'item-options','text' => implode("\n",$options))
-    		),
-    		'qty' => array('text' => $item->qty),
-    		'markup_price' => array('text' => $this->app->prices->get($item->pricing, 'markup')),
-    		'price' => array('text' => $item->getTotal())
-    	);
-    	$options = array();
+	public function getFields() {
+		foreach($this->form->pages as $page) {
+			foreach($page->fields as $key => $value) {
+				$fields[] = $key;
+			}
+		}
+		return $fields;
+	}
 
-    }
-    $data['items'] = $item_array;
-	$data['order_details'][0] = array(
-			'salesperson' => array('text' => $this->app->user->get($order->created_by)->name),
-    		'order_number' => array('text' => $order->id),
-    		'delivery_method' => array('text' => $order->elements->get('shipping_method') == 'LP' ? 'Local Pickup' : 'UPS Ground')
-    		//'payment_information' => array('text' => $order->creditCard->card_name.' ending in '.substr($order->creditCard->cardNumber, -4)),
-    		//'transaction_id' => array('text' => $order->transaction_id)
-    );
-    switch($this->type) {
-    	case 'receipt':
-    		$data['order_details'][0]['payment_information'] = array('text' => $order->creditCard->card_name.' ending in '.substr($order->creditCard->cardNumber, -4));
-    		$data['order_details'][0]['transaction_id'] = array('text' => $order->transaction_id);
-    		break;
-    	case 'workorder':	
-    	case 'invoice':
-    		$data['order_details'][0]['account_name'] = array('text' => $order->elements->get('payment.account_name'));
-    		$data['order_details'][0]['po_number'] = array('text' => $order->elements->get('payment.po_number'));
-    		break;
-    }
-	// echo '<pre>';
-	// var_dump($data['items']);
-	// echo '</pre>';
-    $this->order_data = $data;
-    return $this;
+	public function setData($order) {
+		$path = $this->app->path->path('classes:fpdf/scripts/'.$this->type.'.xml');
+	    $this->form = $this->xml2obj(simplexml_load_file($path));
+	    $fields = $this->getFields();
+	    $data = array();
+	    foreach($fields as $field) {
+			if(!is_null($order->get($field))) {
+				$data[$field] = $order->get($field);
+			}
+		}
+
+	    $company = $this->form->company;
+	    $data['form_title'] = $this->form->title;
+	    $data['companyname'] = $company->companyname;
+	    $data['companyaddress'] = array(
+	    	$company->address->street,
+	    	$company->address->city.', '.$company->address->state.'  '.$company->address->zip,
+	    	$company->phone,
+	    	$company->website,
+	    	$company->email
+	    );
+
+	    $this->order_data = $data;
+	    return $this;
 	}
 	public function pageNumbers($field) {
 		$field->text = "Page {$this->PageNo()} of {nb}";
@@ -228,9 +180,10 @@ class FormPDF extends GridPDF {
 			
 	}
 	public function textbox($field) {
-		
 		$this->format($field);
+		//var_dump($this->order_data);
 		$text = isset($this->order_data[$field->name]) ? $this->order_data[$field->name] : $field->get('text','');
+		//var_dump($text);
 		$text = $field->get('all-caps',0) ? strtoupper($text) : $text;
 		$this->SetXY($field->x, $field->y);
 		if(is_array($text)) {
@@ -240,6 +193,8 @@ class FormPDF extends GridPDF {
 			$this->SetXY($field->x, $field->y);
 			$this->MultiCell($field->w, $field->get('line-height',5), $txt, 0, $field->get('align','L'));
 		} else {
+			//var_dump($text);
+			$text = $this->format($field, $text);
 			$this->Cell($field->w, $field->get('h', 0), $text, $field->get('border', 0), 0, $field->get('align','L'));
 		}
 		
