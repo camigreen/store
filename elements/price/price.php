@@ -46,7 +46,7 @@ class ElementPrice extends ElementStore {
         if(file_exists($this->app->path->path('elements:price/tmpl/'.$layout.'.php')) && $layout != 'default') {
             return $this->renderLayout($this->app->path->path('elements:price/tmpl/'.$layout.'.php'), compact('group','params'));
         } else {
-            return $this->renderLayout($this->app->path->path('elements:price/tmpl/default.php'), compact('prices','params'));
+            return $this->renderLayout($this->app->path->path('elements:price/tmpl/default.php'), compact('group','params'));
         }
         
 

@@ -74,6 +74,10 @@ class CartHelper extends AppHelper {
         return $count;
     }
 
+    public function isEmpty() {
+        return empty($this->_items);
+    }
+
     public function getCartTotal($display = 'markup') {
         $total = 0.00;
         foreach($this->_items as $item) {

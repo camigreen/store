@@ -60,6 +60,10 @@ class CheckoutController extends AppController {
     */
     public function display($cachable = false, $urlparams = false) {
 
+        if($this->cart->isEmpty()) {
+            $this->setRedirect('/');
+        }
+
         if($this->task != 'receipt') {
             $this->CR = $this->app->cashregister->start();
         }
