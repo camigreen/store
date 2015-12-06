@@ -261,8 +261,6 @@ class CheckoutController extends AppController {
 
     public function processPO () {
         $order = $this->CR->processPayment('PO');
-        var_dump($order);
-        return;
         $link = $this->baseurl.'&task=receipt&oid='.$order->id;
         $this->setRedirect($link);
 
@@ -279,6 +277,13 @@ class CheckoutController extends AppController {
         $id = $this->app->request->get('id','int');
         $order = $this->app->orderdev->get($id);
         $pdf->setData($order)->generate()->toBrowser();
+    }
+
+    public function notify() {
+        $CR = $this->app->cashregister->start();
+
+        $CR->sendNotificationEmail(6371, 'invoice');
+        $CR->sendNotificationEmail(6371, 'payment');
     }
 
     public function save() {

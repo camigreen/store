@@ -16,3 +16,12 @@
 		</fieldset>
 	</div>
 <?php endif; ?>
+<?php $this->form->setValues($this->account->params); ?>
+<?php if($this->form->checkGroup('settings')) : ?>
+	<div class="uk-form-row">
+		<fieldset id="settings">
+			<legend>Account Settings</legend>
+			<?php echo $this->form->render('settings')?>
+		</fieldset>
+	</div>
+<?php endif; ?>

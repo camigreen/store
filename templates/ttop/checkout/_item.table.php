@@ -1,5 +1,6 @@
 <?php 
     $items = $this->cart->getAllItems();
+    $order->calculateTotals('markup');
 ?>
 <table class="uk-table">
     <thead>

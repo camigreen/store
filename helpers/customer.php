@@ -51,5 +51,9 @@ class CustomerHelper extends AppHelper {
     public function getAccountTerms() {
         return $this->_account->params->get('terms', 'DUR');
     }
+
+    public function getDiscountRate() {
+        return $this->app->number->toPercentage($this->_account->params->get('discount'),0);
+    }
     
 }

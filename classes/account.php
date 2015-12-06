@@ -455,4 +455,9 @@ class Account {
         return $form;
     }
 
+    public function getNotificationEmails() {
+        $email = $this->elements->get('poc.order_notification') ? array($this->elements->get('poc.email')) : array();
+        return $email;
+    }
+
 }

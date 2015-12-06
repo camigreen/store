@@ -43,8 +43,6 @@ class CashRegister {
     
     public $app;
     
-    protected $notification_emails = array();
-    
     protected $shipper;
     
 
@@ -56,7 +54,6 @@ class CashRegister {
         $this->application = $this->app->zoo->getApplication();
 
         $this->account = $this->app->customer->getAccount();
-        $this->setNotificationEmails();
         $this->calculateTotals();
     }
     
@@ -76,17 +73,17 @@ class CashRegister {
         $this->order->items = $cart->getAllItems();
     }
     
-    protected function setNotificationEmails() {
-        $emails = array_map('trim', explode(',',$this->application->getParams()->get('global.store.notify_emails')));
-        $this->notification_emails = array_merge($this->notification_emails,$emails);
+    protected function getNotificationEmails() {
+        return explode("\n", $this->app->account->getStoreAccount()->params->get('notify_emails'));
     }
     
     public function sendNotificationEmail($oid, $for = 'payment') {
-        if(!$this->application->getParams()->get('global.store.notify_email_enable')) {
+        if(!$this->app->account->getStoreAccount()->params->get('notify_email_enable', true)) {
             return;
         }
         $order = $this->app->orderdev->get($oid);
         $email = $this->app->mail->create();
+
         $CR = $this;  
            if ($for == 'payment') {
                 $pdf = $this->app->pdf->workorder;
@@ -94,7 +91,7 @@ class CashRegister {
                 $path = $this->app->path->path('assets:pdfs/'.$filename);
                 $email->setSubject("T-Top Boat Cover Online Order Notification");
                 $email->setBodyFromTemplate($this->application->getTemplate()->resource.'mail.checkout.order.php');
-                $email->addRecipient($this->notification_emails);
+                $email->addRecipient($this->getNotificationEmails());
                 $email->addAttachment($path,'Order-'.$this->order->id.'.pdf');
                 $email->Send();
                 unlink($path);
@@ -110,11 +107,13 @@ class CashRegister {
                 unlink($path);
             } 
             if($for == 'invoice') {
+                $addresses = $order->getAccount()->getNotificationEmails();
+                $addresses[] = $order->elements->get('email');
                 $filename = $this->app->pdf->invoice->setData($order)->generate()->toFile();
                 $path = $this->app->path->path('assets:pdfs/'.$filename);
                 $email->setSubject("Thank you for your order.");
                 $email->setBodyFromTemplate($this->application->getTemplate()->resource.'mail.checkout.invoice.php');
-                $email->addRecipient($order->elements->get('email'));
+                $email->addRecipient($addresses);
                 $email->addAttachment($path,'Invoice-'.$this->order->id.'.pdf');
                 $email->Send();
                 unlink($path);
@@ -225,10 +224,13 @@ class CashRegister {
     }
 
     public function processPO () {
-        // $this->clearOrder();
+
         $items = $this->app->cart->create();
         $this->order->transaction_id = "Purchase Order";
         $this->order->elements->set('items.', $items->getAllItems());
+        // Update Payment Status
+        $this->order->params->set('payment.status', 2);
+        $this->order->setStatus(2);
         //this->order->calculateCommissions();
         $this->order->save(true);
         $result = array(
@@ -236,8 +238,8 @@ class CashRegister {
             'orderID' => $this->order->id
         );
         $this->order->result = $result;
-        //$this->sendNotificationEmail($this->order->id, 'invoice');
-        //$this->sendNotificationEmail($this->order->id, 'payment');
+        $this->sendNotificationEmail($this->order->id, 'invoice');
+        $this->sendNotificationEmail($this->order->id, 'payment');
         $this->clearOrder();
         
         return $this->order;

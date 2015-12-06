@@ -9,6 +9,9 @@
 		<fieldset group="elements" label="Account Elements" controlname="elements">
 			<field name="sales_manager_commission" type="store.option" optionset="smcommission" width="1-2" default="0" label="Sales Manager Commission" description="The additional commission given to sales managers." />
 		</fieldset>	
+		<fieldset group="settings" label="Account Settings" controlname="params">
+			<field name="notify_emails" type="textarea" rows="5" cols="40" width="1-2" default="" label="New Order Notification Emails" description="An email will be sent to the listed emails. Enter a new line between each email." />
+		</fieldset>
 	</type>
 	<type name="dealership">
 		<fieldset group="details" label="Details" controlname="core" >

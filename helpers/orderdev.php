@@ -52,6 +52,8 @@ class OrderDevHelper extends AppHelper {
         // trigger the init event
         $this->app->event->dispatcher->notify($this->app->event->create($order, 'order:init'));
 
+        $order->params->set('payment.status', 1);
+
         return $order;
     }
 

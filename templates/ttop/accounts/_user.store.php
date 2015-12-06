@@ -50,8 +50,8 @@
 					</fieldset>
 				</div>
 			<?php endif; ?>
-		<input type="hidden" name="[params]user" value="<?php echo $user->id; ?>" />
-		<input type="hidden" name="[related][parents][]" value="<?php echo $store->id; ?>" />
+		<input type="hidden" name="params[user]" value="<?php echo $user->id; ?>" />
+		<input type="hidden" name="related[parents][]" value="<?php echo $store->id; ?>" />
 		<?php echo $this->app->html->_('form.token'); ?>
 		<script>
 			jQuery(function($) {

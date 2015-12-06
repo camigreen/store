@@ -1,6 +1,6 @@
 <?php 
 
-class InvoiceFormPDF extends FormPDF {
+class WorkOrderFormPDF extends FormPDF {
 
 	public function __construct() {
 		$this->type = strtolower(basename(get_class(), 'FormPDF'));
